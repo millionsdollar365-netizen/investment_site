@@ -1,0 +1,43 @@
+# Environment
+.env
+config/config.php
+includes/config.php
+
+# Uploads & Media
+/src/assets/uploads/
+/src/assets/images/user-uploads/
+
+# Logs
+logs/
+*.log
+
+# Cache
+cache/
+*.tmp
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Database backups
+backups/*.sql
+backups/*.zip
+
+# Temp files
+tmp/
+temp/
+
+# Node (if using build tools)
+node_modules/
+package-lock.json
+
+# PHPUnit
+vendor/
+composer.lock
