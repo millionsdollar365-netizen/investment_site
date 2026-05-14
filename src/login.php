@@ -36,6 +36,10 @@ requireLogout();
                 <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded font-semibold">Login</button>
             </form>
 
+            <p class="text-center mt-2">
+                <a href="/forgot-password.php" class="text-sm text-blue-600">Forgot password?</a>
+            </p>
+
             <p class="text-center mt-4">
                 Don't have an account? <a href="/register.php" class="text-blue-600">Register here</a>
             </p>

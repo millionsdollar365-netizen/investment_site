@@ -245,6 +245,18 @@ function resetPassword($token, $new_password) {
 }
 
 /**
+ * Remove sensitive fields before returning user data in JSON responses.
+ */
+function sanitizeUserForClient(array $user) {
+    unset(
+        $user['password_hash'],
+        $user['password_reset_token'],
+        $user['password_reset_expires']
+    );
+    return $user;
+}
+
+/**
  * Change user password
  */
 function changeUserPassword($user_id, $old_password, $new_password) {

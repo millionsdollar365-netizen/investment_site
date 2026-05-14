@@ -3,6 +3,13 @@
 **Project Start:** May 14, 2026  
 **Status:** In Progress
 
+<!--
+  Cursor attribution (debugging / iteration pin):
+  Tag: CURSOR-2026-05-14-AUTH-API
+  Agent: Auto (Cursor)
+  Full explicit changelog: see PERSONAL_ADDITIONS.md in repo root.
+-->
+
 ---
 
 ## BUILD PHASES COMPLETION TRACKER
@@ -46,25 +53,29 @@
 - [x] Reset script created
 - [x] Database documentation complete
 
-### ⏳ PHASE 4: API ENDPOINTS - IN PROGRESS
-- [ ] api/auth/register.php created
-- [ ] api/auth/login.php created
-- [ ] api/auth/logout.php created
-- [ ] api/auth/check-session.php created
-- [ ] api/auth/forgot-password.php created
-- [ ] api/auth/reset-password.php created
+<!-- Cursor | Auto | 2026-05-14 | Phase 4 (auth only): src/api/auth/* + bootstrap — see PERSONAL_ADDITIONS.md §2 -->
 
-### ⏳ PHASE 5: AUTHENTICATION SYSTEM
-- [ ] api/auth/register.php created
-- [ ] api/auth/login.php created
-- [ ] api/auth/logout.php created
-- [ ] api/auth/check-session.php created
-- [ ] api/auth/forgot-password.php created
-- [ ] api/auth/reset-password.php created
-- [ ] register.php frontend created
-- [ ] login.php frontend created
-- [ ] forgot-password.php frontend created
-- [ ] reset-password.php frontend created
+### ✅ PHASE 4: API ENDPOINTS — AUTH COMPLETE
+- [x] api/auth/register.php created
+- [x] api/auth/login.php created
+- [x] api/auth/logout.php created
+- [x] api/auth/check-session.php created
+- [x] api/auth/forgot-password.php created
+- [x] api/auth/reset-password.php created
+
+<!-- Cursor | Auto | 2026-05-14 | Phase 5: shells forgot-password.php, reset-password.php, login link; checklist aligned — PERSONAL_ADDITIONS.md §4 -->
+
+### ✅ PHASE 5: AUTHENTICATION SYSTEM - COMPLETE
+- [x] api/auth/register.php created
+- [x] api/auth/login.php created
+- [x] api/auth/logout.php created
+- [x] api/auth/check-session.php created
+- [x] api/auth/forgot-password.php created
+- [x] api/auth/reset-password.php created
+- [x] register.php frontend created
+- [x] login.php frontend created
+- [x] forgot-password.php frontend created
+- [x] reset-password.php frontend created
 
 ### ⏳ PHASE 6: API ENDPOINTS IMPLEMENTATION
 - [ ] User endpoints (get-dashboard, get-profile, update-profile, etc.)
@@ -128,7 +139,9 @@
 | 1 | May 14 | 1 | Initial directory structure and config templates | ✅ |
 | 2 | May 14 | 2 | Local development setup and core functionality | ✅ |
 | 3 | May 14 | 3 | Database migrations, seeders, and backup scripts | ✅ |
-| 4 | - | 4 | API Endpoints - Auth & User | ⏳ |
+| 4 | May 14 | 4 | User auth API endpoints (`src/api/auth/*`) + `includes/config.php` bootstrap | ✅ |
+<!-- Cursor | Auto | 2026-05-14 | Git log row above (commit #4) = auth API iteration; see PERSONAL_ADDITIONS.md -->
+
 | 5 | - | 4 | API Endpoints - Investments & Deposits | ⏳ |
 | 6 | - | 4 | API Endpoints - Withdrawals & Admin | ⏳ |
 | 7 | - | 5 | API Endpoints - Cron Jobs | ⏳ |
@@ -139,16 +152,18 @@
 
 ## NOTES & BLOCKERS
 
+<!-- Cursor | Auto | 2026-05-14 | Notes expanded for auth iteration — PERSONAL_ADDITIONS.md §5 -->
+
 ### Completed
 - Phase 1: ✅ Repository structure initialized
 - Phase 2: ✅ Local development setup with core includes
 - Phase 3: ✅ Database schema, migrations, seeders, and backup/restore utilities
-- 50+ files created
-- 3 git commits pushed
+- Phase 4 (auth): ✅ `src/api/auth/*` — register, login, logout, check-session, forgot/reset password
+- Phase 5 (auth shells): ✅ `forgot-password.php`, `reset-password.php`, login forgot-password link
+- Committed `src/includes/config.php` loads `config/config.php` or `config.example.php`, then `db.php` and `functions.php` (fixes missing DB bootstrap for `session.php` / dashboard helpers)
 
 ### Current Task
-- Phase 3: COMPLETE ✅
-- Ready to start Phase 4: API Endpoints Implementation
+- Phase 6: User, investment, deposit, withdrawal, admin, and cron API endpoints
 
 ### Available Database Scripts
 - `bash scripts/run-migrations.sh` - Run all migrations
@@ -158,13 +173,15 @@
 - `bash scripts/create-admin.sh` - Create admin user
 
 ### Next Steps
-1. Phase 4: Create API endpoints (auth, users, investments, deposits, withdrawals)
-2. Phase 5: Create cron job endpoints (daily ROI, completion, cleanup)
-3. Phase 6: Complete all dashboard and admin pages
-4. Phase 7: Setup GitHub Actions for automated deployment
-5. Deployment to cPanel
+1. Phase 6: User dashboard APIs (`api/user/*`), investments, deposits, withdrawals
+2. Admin APIs (`api/admin/*`) and cron endpoints (`api/cron/*`)
+3. Expand dashboard/admin pages to consume those APIs
+4. GitHub Actions and deployment hardening (Phases 9–11)
+5. Tests and security pass (Phases 12–13)
 
 ---
 
-**Last Updated:** May 14, 2026 — Phase 3 Complete  
-**Next Update:** After Phase 4 completion
+<!-- Cursor | Auto | 2026-05-14 | Footer timestamp below reflects Phase 4 auth completion -->
+
+**Last Updated:** May 14, 2026 — Phase 4 (auth APIs) complete  
+**Next Update:** After user/finance API endpoints land
