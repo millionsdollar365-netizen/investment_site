@@ -6,6 +6,7 @@
 
 require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/admin-session.php';
+require_once __DIR__ . '/../includes/security.php';
 
 requireAdminLogout();
 ?>
@@ -15,6 +16,7 @@ requireAdminLogout();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login - <?php echo SITE_NAME; ?></title>
+    <meta name="csrf-token" content="<?php echo Security::getCsrfToken(); ?>">
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50">
@@ -46,8 +48,9 @@ requireAdminLogout();
     <script>
         document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             const formData = new FormData(e.target);
+            formData.append('csrf_token', document.querySelector('meta[name="csrf-token"]').content);
             const response = await fetch('/api/admin/login.php', {
                 method: 'POST',
                 body: formData

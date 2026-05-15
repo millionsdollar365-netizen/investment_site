@@ -13,6 +13,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     error('Method not allowed', null, 405);
 }
 
+require_once __DIR__ . '/../../includes/security.php';
+Security::requireCsrf();
+
 $token = trim($_POST['token'] ?? '');
 $password = $_POST['password'] ?? '';
 $password_confirm = $_POST['password_confirm'] ?? '';

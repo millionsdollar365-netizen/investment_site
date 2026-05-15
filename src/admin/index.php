@@ -28,7 +28,7 @@ $admin = getCurrentAdmin();
                 </div>
                 <div class="flex items-center space-x-4">
                     <span class="text-white"><?php echo htmlspecialchars($admin['username']); ?></span>
-                    <a href="/api/admin/logout.php" class="bg-white text-red-600 px-4 py-2 rounded font-semibold">Logout</a>
+                    <form action="/api/admin/logout.php" method="POST" style="display:inline"><button type="submit" class="bg-white text-red-600 px-4 py-2 rounded font-semibold">Logout</button></form>
                 </div>
             </div>
         </div>

@@ -82,12 +82,6 @@ function isSessionValid() {
         return false;
     }
     
-    // Check IP address hasn't changed (security)
-    if (isset($_SESSION['ip_address']) && $_SESSION['ip_address'] !== ($_SERVER['REMOTE_ADDR'] ?? '')) {
-        logoutUser();
-        return false;
-    }
-    
     // Update login time (refresh session)
     $_SESSION['login_time'] = time();
     

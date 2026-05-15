@@ -51,53 +51,51 @@ You're at a critical point:
 
 ## WHAT YOU NEED TO DO RIGHT NOW
 
-### 1. **Decide on Deployment Method**
-- **Manual (cPanel FTP):** Fastest to get live, then add automation
-- **GitHub Actions:** Takes more setup, but automated forever after
+### 1. **Choose Your Deployment Method**
 
-### 2. **If Manual Deployment (Recommended First):**
+**Option A: Manual Deployment** (Faster to get live)
+- Read: **[MANUAL_CPANEL_DEPLOYMENT.md](MANUAL_CPANEL_DEPLOYMENT.md)** (11 steps, 30-60 min)
+- Upload files to cPanel
+- Configure `.env` and database
+- Test everything
 
-**Step 1:** Get cPanel Access
-- [ ] cPanel hostname/domain
-- [ ] cPanel username
-- [ ] cPanel password (or FTP credentials)
+**Option B: GitHub Actions Automation** (Setup once, deploy forever)
+- Read: **[GITHUB_ACTIONS_SETUP.md](GITHUB_ACTIONS_SETUP.md)** (10-15 min)
+- Add GitHub secrets
+- Test workflow
+- Auto-deploys on every push to main
 
-**Step 2:** Create Database on cPanel
-- [ ] Go to cPanel → MySQL Databases
-- [ ] Create: `primeaxis_prod`
-- [ ] Create user: `primeaxis_user` with strong password
-- [ ] Grant all privileges
+**Recommendation:** Do **Option A first** (go live today), then setup **Option B** (automate tomorrow)
 
-**Step 3:** Upload Files
-- [ ] Download this repo as ZIP
-- [ ] Via cPanel File Manager OR FTP:
-  - Upload `src/` contents to `/public_html/`
-  - Upload `database/` to `/home/username/database/`
-  - Upload `scripts/` to `/home/username/scripts/`
-  - Upload `config/` to `/home/username/config/`
+### 2. **For Manual Deployment (Option A):**
 
-**Step 4:** Configure Production Settings
-- [ ] Create `.env` in `/home/username/.env` with production values (use template from DEPLOY_CHECKLIST.md)
-- [ ] Create `config/config.php` from `config.example.php` with production values
-- [ ] SSH in and run: `chmod -R 777 assets/uploads logs config`
+Follow **[MANUAL_CPANEL_DEPLOYMENT.md](MANUAL_CPANEL_DEPLOYMENT.md)** which has:
+- Part 1: Prepare local files
+- Part 2: Login to cPanel
+- Part 3: Create database (6 steps)
+- Part 4: Upload files via FTP/File Manager (2 methods)
+- Part 5: Create production config files (.env, config.php)
+- Part 6: Set file permissions (important!)
+- Part 7: Run database migrations
+- Part 8: Create admin user
+- Part 9: Test the site (5 test steps)
+- Part 10: Setup cron jobs (optional)
+- Part 11: Monitor and maintain
 
-**Step 5:** Setup Database
-- [ ] SSH in:
-  ```bash
-  cd ~/public_html
-  mysql -u primeaxis_user -p primeaxis_prod < database/schema.sql
-  mysql -u primeaxis_user -p primeaxis_prod < database/seeders/plans.sql
-  ```
-- [ ] Create admin user: `bash scripts/create-admin.sh`
+**Time:** 30-60 minutes
+**Difficulty:** Intermediate
 
-**Step 6:** Test
-- [ ] Visit https://primeaxisinv.com
-- [ ] Test registration, login, deposit, investment
-- [ ] Check logs for errors
+### 3. **For GitHub Actions (Option B):**
 
-**Step 7 (Optional):** Add Cron Jobs
-- [ ] cPanel → Advanced → Cron Jobs
-- [ ] Add 3 cron jobs (see DEPLOY_CHECKLIST.md section 6)
+Follow **[GITHUB_ACTIONS_SETUP.md](GITHUB_ACTIONS_SETUP.md)** which has:
+- Prerequisites (what you need)
+- Generate SSH key (if needed)
+- Add 6 GitHub secrets (step-by-step)
+- Test the workflow
+- Deploy to production
+
+**Time:** 10-15 minutes setup, then instant deploy on every push
+**Difficulty:** Beginner (just copy/paste)
 
 ---
 
@@ -193,30 +191,32 @@ git push origin main
 ## NEXT STEPS: TIMELINE
 
 ### Today (May 15):
+- [ ] Read **[LAUNCH_STATUS.md](LAUNCH_STATUS.md)** (this file) — 5 min
 - [ ] Choose: Manual deployment OR GitHub Actions?
-- [ ] Read DEPLOY_CHECKLIST.md thoroughly
-- [ ] Prepare cPanel credentials
+- [ ] Download deployment guide (see Quick Links above)
 
 ### Tomorrow (May 16):
-- [ ] Option A: Deploy manually to cPanel
+- [ ] **Option A:** Follow **[MANUAL_CPANEL_DEPLOYMENT.md](MANUAL_CPANEL_DEPLOYMENT.md)** (30-60 min)
   - OR
-- [ ] Option B: Setup GitHub secrets + test workflow
+- [ ] **Option B:** Follow **[GITHUB_ACTIONS_SETUP.md](GITHUB_ACTIONS_SETUP.md)** (10-15 min)
 
 ### Within 1 Week:
-- [ ] Go live (live testing)
+- [ ] Go live (live testing on production)
 - [ ] Monitor logs for errors
 - [ ] Fix any production issues
 - [ ] Setup cron jobs if not done
 
 ### Within 2 Weeks:
-- [ ] Phase 9 automation (GitHub Actions if not done)
-- [ ] Phase 10 security hardening
+- [ ] Phase 9 automation (GitHub Actions if not done in Step 1)
+- [ ] Phase 10 security hardening (additional security measures)
 - [ ] Phase 11+ ongoing maintenance
 
 ---
 
 ## QUICK LINKS
 
+- **[MANUAL_CPANEL_DEPLOYMENT.md](MANUAL_CPANEL_DEPLOYMENT.md)** — 11-step manual deployment guide (30-60 min)
+- **[GITHUB_ACTIONS_SETUP.md](GITHUB_ACTIONS_SETUP.md)** — GitHub Actions secrets setup (10-15 min)
 - **[DEPLOY_CHECKLIST.md](DEPLOY_CHECKLIST.md)** — 67-item pre-deployment checklist
 - **[DEPLOYMENT.md](DEPLOYMENT.md)** — Deployment guide with 3 methods
 - **[PROGRESS.md](PROGRESS.md)** — Build progress tracker

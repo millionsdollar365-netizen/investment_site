@@ -16,14 +16,14 @@ class Security {
     }
     
     /**
-     * Hash password
+     * Hash password using bcrypt (cost 12)
      */
     public static function hashPassword($password) {
         return password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
     }
-    
+
     /**
-     * Verify password
+     * Verify password against bcrypt hash
      */
     public static function verifyPassword($password, $hash) {
         return password_verify($password, $hash);
@@ -37,13 +37,24 @@ class Security {
     }
     
     /**
-     * Verify CSRF token
+     * Verify CSRF token from POST request.
+     * Call in any POST endpoint that needs protection.
      */
-    public static function verifyCsrfToken($token) {
-        if (!isset($_SESSION['csrf_token'])) {
-            return false;
+    public static function requireCsrf() {
+        $token = $_POST['csrf_token'] ?? '';
+        if (empty($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $token)) {
+            http_response_code(403);
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'Invalid or missing CSRF token']);
+            exit;
         }
-        return hash_equals($_SESSION['csrf_token'], $token);
+    }
+
+    /**
+     * Get the current CSRF token (for embedding in forms/meta tags)
+     */
+    public static function getCsrfToken() {
+        return $_SESSION['csrf_token'] ?? '';
     }
     
     /**

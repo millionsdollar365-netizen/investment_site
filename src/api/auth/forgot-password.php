@@ -14,6 +14,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     error('Method not allowed', null, 405);
 }
 
+require_once __DIR__ . '/../../includes/security.php';
+Security::requireCsrf();
+
 $email = strtolower(trim($_POST['email'] ?? ''));
 
 if (!Validator::email($email)) {

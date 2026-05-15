@@ -92,12 +92,6 @@ function isAdminSessionValid() {
         return false;
     }
     
-    // Check IP address hasn't changed (security)
-    if (isset($_SESSION['admin_ip_address']) && $_SESSION['admin_ip_address'] !== ($_SERVER['REMOTE_ADDR'] ?? '')) {
-        logoutAdmin();
-        return false;
-    }
-    
     // Update login time
     $_SESSION['admin_login_time'] = time();
     

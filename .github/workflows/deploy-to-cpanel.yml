@@ -45,8 +45,8 @@ jobs:
             chmod -R 755 .
             chmod -R 777 assets/uploads logs
             
-            # Run pending migrations (if any)
-            # php scripts/run-migrations.sh
+            # Run pending migrations
+            php scripts/run-migrations.sh
             
             # Clear any caches
             rm -rf logs/*.log 2>/dev/null || true

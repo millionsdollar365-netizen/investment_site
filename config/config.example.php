@@ -101,9 +101,14 @@ if (session_status() === PHP_SESSION_NONE) {
     session_name(SESSION_NAME);
     session_start([
         'cookie_httponly' => true,
-        'cookie_secure' => (SITE_URL === 'https://'),
+        'cookie_secure' => (strpos(SITE_URL, 'https://') === 0),
         'cookie_samesite' => 'Lax',
         'gc_maxlifetime' => SESSION_TIMEOUT
     ]);
+}
+
+// Generate CSRF token if none exists
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 ?>

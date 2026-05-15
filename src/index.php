@@ -25,7 +25,7 @@ require_once __DIR__ . '/includes/session.php';
                 <div class="flex items-center space-x-4">
                     <?php if (isLoggedIn()): ?>
                         <a href="/dashboard/" class="text-gray-700 hover:text-gray-900">Dashboard</a>
-                        <a href="/api/auth/logout.php" class="bg-red-600 text-white px-4 py-2 rounded">Logout</a>
+                        <form action="/api/auth/logout.php" method="POST" style="display:inline"><button type="submit" class="bg-red-600 text-white px-4 py-2 rounded">Logout</button></form>
                     <?php else: ?>
                         <a href="/login.php" class="text-gray-700 hover:text-gray-900">Login</a>
                         <a href="/register.php" class="bg-blue-600 text-white px-4 py-2 rounded">Register</a>

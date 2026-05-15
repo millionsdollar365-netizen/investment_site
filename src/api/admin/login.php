@@ -14,6 +14,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     error('Method not allowed', null, 405);
 }
 
+require_once __DIR__ . '/../../includes/security.php';
+Security::requireCsrf();
+
 $username = trim($_POST['username'] ?? '');
 $password = $_POST['password'] ?? '';
 
