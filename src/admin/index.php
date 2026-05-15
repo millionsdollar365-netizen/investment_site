@@ -37,22 +37,26 @@ $admin = getCurrentAdmin();
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <h2 class="text-3xl font-bold mb-8">Admin Dashboard</h2>
 
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8" id="statsGrid">
             <div class="bg-white p-6 rounded shadow">
                 <p class="text-gray-600">Total Users</p>
-                <p class="text-3xl font-bold">0</p>
+                <p class="text-3xl font-bold" id="statTotalUsers">Loading...</p>
+                <p class="text-sm text-gray-500" id="statActiveUsers"></p>
             </div>
             <div class="bg-white p-6 rounded shadow">
                 <p class="text-gray-600">Pending Deposits</p>
-                <p class="text-3xl font-bold">0</p>
+                <p class="text-3xl font-bold" id="statPendingDeposits">Loading...</p>
+                <p class="text-sm text-gray-500" id="statPendingDepositsAmount"></p>
             </div>
             <div class="bg-white p-6 rounded shadow">
                 <p class="text-gray-600">Pending Withdrawals</p>
-                <p class="text-3xl font-bold">0</p>
+                <p class="text-3xl font-bold" id="statPendingWithdrawals">Loading...</p>
+                <p class="text-sm text-gray-500" id="statPendingWithdrawalsAmount"></p>
             </div>
             <div class="bg-white p-6 rounded shadow">
                 <p class="text-gray-600">Total Balance</p>
-                <p class="text-3xl font-bold">$0.00</p>
+                <p class="text-3xl font-bold" id="statTotalBalance">Loading...</p>
+                <p class="text-sm text-gray-500">Invested: <span id="statTotalInvested"></span></p>
             </div>
         </div>
 
@@ -68,5 +72,26 @@ $admin = getCurrentAdmin();
             </div>
         </div>
     </div>
+
+    <script>
+        async function loadDashboard() {
+            const res = await fetch('/api/admin/dashboard.php');
+            const data = await res.json();
+
+            if (!data.success) return;
+
+            const d = data.data;
+            document.getElementById('statTotalUsers').textContent = d.users.total;
+            document.getElementById('statActiveUsers').textContent = d.users.active + ' active';
+            document.getElementById('statPendingDeposits').textContent = d.deposits.pending_count;
+            document.getElementById('statPendingDepositsAmount').textContent = '$' + d.deposits.pending_amount.toFixed(2) + ' pending';
+            document.getElementById('statPendingWithdrawals').textContent = d.withdrawals.pending_count;
+            document.getElementById('statPendingWithdrawalsAmount').textContent = '$' + d.withdrawals.pending_amount.toFixed(2) + ' pending';
+            document.getElementById('statTotalBalance').textContent = '$' + d.balances.total.toFixed(2);
+            document.getElementById('statTotalInvested').textContent = '$' + d.investments.total_amount.toFixed(2);
+        }
+
+        loadDashboard();
+    </script>
 </body>
 </html>

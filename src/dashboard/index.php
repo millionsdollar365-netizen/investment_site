@@ -6,12 +6,11 @@
 
 require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/session.php';
+require_once __DIR__ . '/../includes/auth.php';
 
 requireLogin();
 
 $user = getCurrentUser();
-$balance = $user['balance'];
-$interest_balance = $user['interest_balance'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -39,18 +38,18 @@ $interest_balance = $user['interest_balance'];
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <h2 class="text-3xl font-bold mb-8">Welcome, <?php echo htmlspecialchars($user['first_name']); ?>!</h2>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8" id="statsGrid">
             <div class="bg-white p-6 rounded shadow">
                 <p class="text-gray-600">Total Balance</p>
-                <p class="text-3xl font-bold text-blue-600"><?php echo formatCurrency($balance); ?></p>
+                <p class="text-3xl font-bold text-blue-600" id="statBalance">Loading...</p>
             </div>
             <div class="bg-white p-6 rounded shadow">
                 <p class="text-gray-600">Interest Balance</p>
-                <p class="text-3xl font-bold text-green-600"><?php echo formatCurrency($interest_balance); ?></p>
+                <p class="text-3xl font-bold text-green-600" id="statInterest">Loading...</p>
             </div>
             <div class="bg-white p-6 rounded shadow">
                 <p class="text-gray-600">Active Investments</p>
-                <p class="text-3xl font-bold text-purple-600">0</p>
+                <p class="text-3xl font-bold text-purple-600" id="statInvestments">Loading...</p>
             </div>
         </div>
 
@@ -74,6 +73,41 @@ $interest_balance = $user['interest_balance'];
                 </div>
             </div>
         </div>
+
+        <div class="bg-white p-6 rounded shadow mt-6">
+            <h3 class="text-xl font-bold mb-4">Recent Transactions</h3>
+            <div id="recentTransactions" class="text-gray-500">Loading...</div>
+        </div>
     </div>
+
+    <script>
+        async function loadDashboard() {
+            const res = await fetch('/api/user/dashboard.php');
+            const data = await res.json();
+
+            if (!data.success) return;
+
+            const d = data.data;
+            document.getElementById('statBalance').textContent = '$' + parseFloat(d.balance).toFixed(2);
+            document.getElementById('statInterest').textContent = '$' + parseFloat(d.interest_balance).toFixed(2);
+            document.getElementById('statInvestments').textContent = d.active_investments;
+
+            const txContainer = document.getElementById('recentTransactions');
+            if (!d.recent_transactions.length) {
+                txContainer.innerHTML = '<p class="text-gray-500">No transactions yet.</p>';
+            } else {
+                txContainer.innerHTML = d.recent_transactions.map(t =>
+                    `<div class="flex justify-between py-2 border-b">
+                        <span>${escHtml(t.type)} — ${escHtml(t.description || '')}</span>
+                        <span class="font-semibold">$${parseFloat(t.amount).toFixed(2)}</span>
+                    </div>`
+                ).join('');
+            }
+        }
+
+        function escHtml(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+        loadDashboard();
+    </script>
 </body>
 </html>

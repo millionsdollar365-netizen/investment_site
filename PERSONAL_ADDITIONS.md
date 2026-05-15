@@ -198,3 +198,222 @@ Then manually or with HTTP client:
 ---
 
 *End of personal additions log for tag `CURSOR-2026-05-14-AUTH-API`.*
+
+---
+
+## 9. Iteration metadata — Phase 6
+
+| Field | Value |
+|--------|--------|
+| **Tool / assistant** | Claude Code (agent: claude) |
+| **Human-readable tag** | `CLAUDE-2026-05-14-PHASE6-API` |
+| **Calendar date** | May 14, 2026 |
+| **Phases addressed** | **Phase 6** — All API endpoints (user, investments, deposits, withdrawals, admin, cron) |
+| **Phases not addressed** | Phase 7+ (dashboard pages, static assets, CI, tests, security hardening) |
+| **Repository root** | `investment_site/` |
+
+Use the tag **`CLAUDE-2026-05-14-PHASE6-API`** when searching git history, tickets, or chat logs.
+
+---
+
+## 10. Phase 6 — what was implemented
+
+Phase 6 covers every remaining API endpoint category. All 27 files follow the exact convention established by `src/api/auth/*`:
+1. `require_once` needed includes from `../../includes/`
+2. Check `$_SERVER['REQUEST_METHOD']`, reject non-matching with 405
+3. Extract and normalize inputs from `$_POST` or `$_GET`
+4. Validate with `Validator::` static methods
+5. Call existing helper functions (no inline duplicate SQL for business logic)
+6. Return `success(...)` or `error(...)` from `response.php`
+
+### 10.1 User endpoints — `src/api/user/` (6 files)
+
+| File | Method | Description |
+|------|--------|-------------|
+| `dashboard.php` | GET | Balance, interest_balance, active investments count, total invested, referral code + count, pending deposits/withdrawals, recent 5 transactions |
+| `profile.php` | GET | Full user row via `getCurrentUser()`, sanitized via `sanitizeUserForClient()` |
+| `update-profile.php` | POST | Update first_name, last_name, phone (regex validated), bio |
+| `change-password.php` | POST | current_password + new_password + confirm → `changeUserPassword()` |
+| `transactions.php` | GET | Paginated (page/limit params) transaction history for current user |
+| `referrals.php` | GET | Referred users with name/email, commission totals |
+
+### 10.2 Investment endpoints — `src/api/investments/` (3 files)
+
+| File | Method | Description |
+|------|--------|-------------|
+| `plans.php` | GET | Active investment plans (id, name, description, min/max, duration, ROI) |
+| `create.php` | POST | Validates plan exists/active, amount within min/max, sufficient balance; deducts balance; creates investment row + transaction record |
+| `list.php` | GET | Current user's investments joined with plan name |
+
+### 10.3 Deposit endpoints — `src/api/deposits/` (2 files)
+
+| File | Method | Description |
+|------|--------|-------------|
+| `create.php` | POST | Creates pending deposit with payment_method and transaction_ref |
+| `list.php` | GET | Current user's deposits (all statuses) |
+
+### 10.4 Withdrawal endpoints — `src/api/withdrawals/` (2 files)
+
+| File | Method | Description |
+|------|--------|-------------|
+| `create.php` | POST | Validates balance, deducts amount, creates pending withdrawal + transaction |
+| `list.php` | GET | Current user's withdrawals (all statuses) |
+
+### 10.5 Admin endpoints — `src/api/admin/` (11 files)
+
+| File | Method | Description |
+|------|--------|-------------|
+| `login.php` | POST | `authenticateAdmin()` + `loginAdmin()`, returns admin data (password_hash unset) |
+| `logout.php` | GET/POST | Dual-mode: POST returns JSON, GET redirects to admin login page |
+| `check-session.php` | GET | Admin session status + admin data |
+| `dashboard.php` | GET | Stats: total/active users, invested amount, pending deposits/withdrawals counts + amounts, total balances |
+| `users.php` | GET | Paginated user list with optional search and status filter |
+| `user-detail.php` | GET | Single user by id with their investments, deposits, withdrawals, transactions, referrals |
+| `update-user.php` | POST | Update status, balance, interest_balance; logs old/new values to audit_logs |
+| `deposits.php` | GET | Paginated deposits list joined with user names |
+| `approve-deposit.php` | POST | Sets deposit approved, credits user balance, creates transaction, audit log |
+| `reject-deposit.php` | POST | Sets deposit rejected with reason, audit log |
+| `withdrawals.php` | GET | Paginated withdrawals list joined with user names |
+| `approve-withdrawal.php` | POST | Sets withdrawal approved, audit log |
+| `reject-withdrawal.php` | POST | Sets withdrawal rejected, refunds user balance, creates adjustment transaction, audit log |
+
+### 10.6 Cron endpoints — `src/api/cron/` (3 files)
+
+| File | Method | Description |
+|------|--------|-------------|
+| `process-profits.php` | POST | Loops active investments with end_date > NOW(); credits daily_roi to total_profit and user interest_balance; creates profit transactions |
+| `complete-investments.php` | POST | Finds active investments where end_date <= NOW(); marks completed, returns principal to user balance, creates transactions |
+| `cleanup.php` | POST | Clears expired password_reset_token rows |
+
+---
+
+## 11. What was explicitly *not* done
+
+- No rate limiting on any endpoint
+- No CSRF tokens wired into forms/APIs
+- No admin role checks on admin endpoints (all authenticated admins can access)
+- No email notifications on deposit/withdrawal approval
+- No referral commission logic in cron (referral bonus on investment creation not yet wired)
+- PHP syntax checks not run (same PHP-on-PATH constraint as prior iteration)
+
+---
+
+## 12. File manifest (this iteration)
+
+| Path | Action |
+|------|--------|
+| `src/api/user/dashboard.php` | **Created** |
+| `src/api/user/profile.php` | **Created** |
+| `src/api/user/update-profile.php` | **Created** |
+| `src/api/user/change-password.php` | **Created** |
+| `src/api/user/transactions.php` | **Created** |
+| `src/api/user/referrals.php` | **Created** |
+| `src/api/investments/plans.php` | **Created** |
+| `src/api/investments/create.php` | **Created** |
+| `src/api/investments/list.php` | **Created** |
+| `src/api/deposits/create.php` | **Created** |
+| `src/api/deposits/list.php` | **Created** |
+| `src/api/withdrawals/create.php` | **Created** |
+| `src/api/withdrawals/list.php` | **Created** |
+| `src/api/admin/login.php` | **Created** |
+| `src/api/admin/logout.php` | **Created** |
+| `src/api/admin/check-session.php` | **Created** |
+| `src/api/admin/dashboard.php` | **Created** |
+| `src/api/admin/users.php` | **Created** |
+| `src/api/admin/user-detail.php` | **Created** |
+| `src/api/admin/update-user.php` | **Created** |
+| `src/api/admin/deposits.php` | **Created** |
+| `src/api/admin/approve-deposit.php` | **Created** |
+| `src/api/admin/reject-deposit.php` | **Created** |
+| `src/api/admin/withdrawals.php` | **Created** |
+| `src/api/admin/approve-withdrawal.php` | **Created** |
+| `src/api/admin/reject-withdrawal.php` | **Created** |
+| `src/api/cron/process-profits.php` | **Created** |
+| `src/api/cron/complete-investments.php` | **Created** |
+| `src/api/cron/cleanup.php` | **Created** |
+| `PERSONAL_ADDITIONS.md` | **Modified** (this iteration) |
+| `PROGRESS.md` | **Modified** |
+
+---
+
+*End of personal additions log for tag `CLAUDE-2026-05-14-PHASE6-API`.*
+
+---
+
+## 13. Iteration metadata — Phase 7
+
+| Field | Value |
+|--------|--------|
+| **Tool / assistant** | Claude Code (agent: claude) |
+| **Human-readable tag** | `CLAUDE-2026-05-14-PHASE7-ADMIN` |
+| **Calendar date** | May 14, 2026 |
+| **Phases addressed** | **Phase 7** — Admin frontend pages + 3 new admin API endpoints |
+| **Phases not addressed** | Phase 8+ (static assets, deployment, tests, security) |
+| **Repository root** | `investment_site/` |
+
+Use the tag **`CLAUDE-2026-05-14-PHASE7-ADMIN`** when searching git history, tickets, or chat logs.
+
+---
+
+## 14. Phase 7 — what was implemented
+
+Phase 7 covers expanding the admin frontend. The user dashboard pages already existed and were consuming the Phase 6 APIs. This iteration created the 6 missing admin management pages and updated the admin dashboard to fetch live data. Three new admin API endpoints were added to support pages that had no backend.
+
+### 14.1 New admin API endpoints — `src/api/admin/` (3 files)
+
+| File | Method | Description |
+|------|--------|-------------|
+| `investments.php` | GET | Paginated list of all investments joined with user names and plan names. Supports `page`, `limit`, `status` params. |
+| `plans.php` | GET | List of all investment plans ordered by min_amount. |
+| `settings.php` | GET/POST | GET lists all settings key-value pairs. POST updates a single setting by key, with audit logging. |
+
+### 14.2 New admin pages — `src/admin/` (6 files)
+
+| File | Description |
+|------|-------------|
+| `users.php` | Paginated user table with search bar and status filter. View detail modal (investments, deposits, withdrawals, referrals via `/api/admin/user-detail.php`). Edit modal for status/balance/interest_balance via `/api/admin/update-user.php`. |
+| `deposits.php` | Paginated deposit table with status filter. Approve/reject buttons for pending deposits. Reject prompts for reason via modal. Uses `/api/admin/approve-deposit.php` and `/api/admin/reject-deposit.php`. |
+| `withdrawals.php` | Paginated withdrawal table with status filter. Approve/reject buttons for pending withdrawals. Reject refunds user balance (handled server-side). Uses `/api/admin/approve-withdrawal.php` and `/api/admin/reject-withdrawal.php`. |
+| `investments.php` | Paginated investments table with status filter. Read-only view — investments are managed by cron. |
+| `plans.php` | Read-only table of all investment plans showing name, description, min/max, duration, daily ROI, and status. |
+| `settings.php` | Editable settings table. Click "Edit" on any row to open a modal with key (read-only) and value (editable). |
+
+### 14.3 Updated admin page
+
+| File | Change |
+|------|--------|
+| `admin/index.php` | Replaced hardcoded static stats (all zeros) with live data fetched from `/api/admin/dashboard.php`. Shows: total users (active count), pending deposits (amount), pending withdrawals (amount), total balance (invested amount). |
+
+---
+
+## 15. What was explicitly *not* done
+
+- No CSRF tokens on admin forms (same gap as user-facing forms)
+- No rate limiting on admin endpoints
+- No admin role-based access control (all authenticated admins can access all pages)
+- No confirmation dialogs on approve/reject beyond JS `confirm()`
+- Settings page JS uses inline onclick with escaped values — safe for typical setting values, may fail if values contain double quotes
+- Plans page is read-only — no create/edit/delete for investment plans
+
+---
+
+## 16. File manifest (this iteration)
+
+| Path | Action |
+|------|--------|
+| `src/api/admin/investments.php` | **Created** |
+| `src/api/admin/plans.php` | **Created** |
+| `src/api/admin/settings.php` | **Created** |
+| `src/admin/users.php` | **Created** |
+| `src/admin/deposits.php` | **Created** |
+| `src/admin/withdrawals.php` | **Created** |
+| `src/admin/investments.php` | **Created** |
+| `src/admin/plans.php` | **Created** |
+| `src/admin/settings.php` | **Created** |
+| `src/admin/index.php` | **Modified** (live dashboard stats) |
+| `PROGRESS.md` | **Modified** |
+| `PERSONAL_ADDITIONS.md` | **Modified** (this iteration) |
+
+---
+
+*End of personal additions log for tag `CLAUDE-2026-05-14-PHASE7-ADMIN`.*

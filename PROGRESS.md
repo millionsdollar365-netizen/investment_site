@@ -77,18 +77,22 @@
 - [x] forgot-password.php frontend created
 - [x] reset-password.php frontend created
 
-### ⏳ PHASE 6: API ENDPOINTS IMPLEMENTATION
-- [ ] User endpoints (get-dashboard, get-profile, update-profile, etc.)
-- [ ] Investment endpoints (create, list)
-- [ ] Deposit endpoints (create, list)
-- [ ] Withdrawal endpoints (create, list)
-- [ ] Admin endpoints (login, dashboard, user management, etc.)
-- [ ] Cron endpoints (process-profits, complete-investments, cleanup)
+<!-- Claude | 2026-05-14 | Phase 6: 27 API files across 6 subdirectories — PERSONAL_ADDITIONS.md §10 -->
 
-### ⏳ PHASE 7: FRONTEND PAGES
-- [ ] Public pages (index.php, login, register)
-- [ ] User dashboard pages (investments, deposits, withdrawals, referrals, etc.)
-- [ ] Admin pages (dashboard, users, deposits, withdrawals, etc.)
+### ✅ PHASE 6: API ENDPOINTS IMPLEMENTATION — COMPLETE
+- [x] User endpoints (dashboard, profile, update-profile, change-password, transactions, referrals)
+- [x] Investment endpoints (plans, create, list)
+- [x] Deposit endpoints (create, list)
+- [x] Withdrawal endpoints (create, list)
+- [x] Admin endpoints (login, logout, check-session, dashboard, users, user-detail, update-user, deposits, approve-deposit, reject-deposit, withdrawals, approve-withdrawal, reject-withdrawal)
+- [x] Cron endpoints (process-profits, complete-investments, cleanup)
+
+<!-- Claude | 2026-05-14 | Phase 7: admin pages + 3 new admin API endpoints — PERSONAL_ADDITIONS.md §13 -->
+
+### ✅ PHASE 7: FRONTEND PAGES — COMPLETE
+- [x] Public pages (index.php, login, register, forgot-password, reset-password)
+- [x] User dashboard pages (dashboard, investments, deposits, withdrawals, transactions, profile, referrals, settings)
+- [x] Admin pages (login, dashboard, users, deposits, withdrawals, investments, plans, settings)
 
 ### ⏳ PHASE 8: STATIC ASSETS
 - [ ] CSS (app.css with TailwindCSS)
@@ -142,11 +146,15 @@
 | 4 | May 14 | 4 | User auth API endpoints (`src/api/auth/*`) + `includes/config.php` bootstrap | ✅ |
 <!-- Cursor | Auto | 2026-05-14 | Git log row above (commit #4) = auth API iteration; see PERSONAL_ADDITIONS.md -->
 
-| 5 | - | 4 | API Endpoints - Investments & Deposits | ⏳ |
-| 6 | - | 4 | API Endpoints - Withdrawals & Admin | ⏳ |
-| 7 | - | 5 | API Endpoints - Cron Jobs | ⏳ |
-| 8 | - | 6 | Dashboard & Admin Pages | ⏳ |
-| 9 | - | 7 | Deployment Configuration | ⏳ |
+| 5 | May 14 | 6 | All Phase 6 API endpoints (user, investments, deposits, withdrawals, admin, cron) — 27 files | ✅ |
+<!-- Claude | 2026-05-14 | Git log row above (commit #5) = Phase 6 API iteration; see PERSONAL_ADDITIONS.md §10 -->
+
+<!-- Claude | 2026-05-14 | Git log row below (commit #6) = Phase 7 admin pages; see PERSONAL_ADDITIONS.md §13 -->
+
+| 6 | May 14 | 7 | Admin pages (users, deposits, withdrawals, investments, plans, settings) + 3 new admin API endpoints | ✅ |
+| 7 | - | 8 | Static Assets (Tailwind, JS) | ⏳ |
+| 8 | - | 9 | Deployment Configuration | ⏳ |
+| 9 | - | 10 | Testing & Security | ⏳ |
 
 ---
 
@@ -161,9 +169,13 @@
 - Phase 4 (auth): ✅ `src/api/auth/*` — register, login, logout, check-session, forgot/reset password
 - Phase 5 (auth shells): ✅ `forgot-password.php`, `reset-password.php`, login forgot-password link
 - Committed `src/includes/config.php` loads `config/config.php` or `config.example.php`, then `db.php` and `functions.php` (fixes missing DB bootstrap for `session.php` / dashboard helpers)
+- Phase 6 (all APIs): ✅ 27 files — `api/user/*` (6), `api/investments/*` (3), `api/deposits/*` (2), `api/withdrawals/*` (2), `api/admin/*` (11), `api/cron/*` (3)
+- Phase 7 (frontend): ✅ 8 user dashboard pages + 9 admin pages + 3 new admin API endpoints
+
+<!-- Claude | 2026-05-14 | Phase 7 admin pages — see PERSONAL_ADDITIONS.md §13 -->
 
 ### Current Task
-- Phase 6: User, investment, deposit, withdrawal, admin, and cron API endpoints
+- Phase 8: Static assets (Tailwind CSS, JS, images, uploads)
 
 ### Available Database Scripts
 - `bash scripts/run-migrations.sh` - Run all migrations
@@ -173,15 +185,14 @@
 - `bash scripts/create-admin.sh` - Create admin user
 
 ### Next Steps
-1. Phase 6: User dashboard APIs (`api/user/*`), investments, deposits, withdrawals
-2. Admin APIs (`api/admin/*`) and cron endpoints (`api/cron/*`)
-3. Expand dashboard/admin pages to consume those APIs
-4. GitHub Actions and deployment hardening (Phases 9–11)
-5. Tests and security pass (Phases 12–13)
+1. Phase 8: Static assets (Tailwind CSS, JS, images, uploads)
+2. GitHub Actions and deployment hardening (Phases 9–11)
+3. Tests and security pass (Phases 12–13)
 
 ---
 
-<!-- Cursor | Auto | 2026-05-14 | Footer timestamp below reflects Phase 4 auth completion -->
+<!-- Claude | 2026-05-14 | Footer updated for Phase 7 admin pages -->
 
-**Last Updated:** May 14, 2026 — Phase 4 (auth APIs) complete  
-**Next Update:** After user/finance API endpoints land
+**Last Updated:** May 14, 2026 — Phase 7 (all frontend pages) complete<br>
+**Next Update:** After Phase 8 static assets
+**Next Update:** After Phase 7 dashboard pages land
