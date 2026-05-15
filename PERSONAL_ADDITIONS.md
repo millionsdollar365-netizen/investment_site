@@ -417,3 +417,183 @@ Phase 7 covers expanding the admin frontend. The user dashboard pages already ex
 ---
 
 *End of personal additions log for tag `CLAUDE-2026-05-14-PHASE7-ADMIN`.*
+
+---
+
+## 17. Iteration metadata — Phase 8
+
+| Field | Value |
+|--------|--------|
+| **Tool / assistant** | Claude Code (agent: claude) |
+| **Human-readable tag** | `CLAUDE-2026-05-15-PHASE8-ASSETS` |
+| **Calendar date** | May 15, 2026 |
+| **Phases addressed** | **Phase 8** — Static Assets (CSS, JavaScript) |
+| **Phases not addressed** | Phase 9+ (CI/CD deployment, environment config, testing, security hardening, monitoring) |
+| **Repository root** | `investment_site/` |
+
+Use the tag **`CLAUDE-2026-05-15-PHASE8-ASSETS`** when searching git history, tickets, or chat logs.
+
+---
+
+## 18. Phase 8 — what was implemented
+
+Phase 8 covers all frontend static assets: CSS styling and JavaScript functionality for user dashboards, admin interface, and core application utilities. All previous iterations focused on backend and frontend HTML shells; this iteration provides the visual design and dynamic interactivity.
+
+### 18.1 New CSS file — `src/assets/css/app.css` (300+ lines)
+
+**Purpose:** Core stylesheet for the entire platform using custom CSS with Tailwind-inspired utilities. No CDN CSS required (though Tailwind CDN is used in HTML templates for quick development).
+
+**Key sections:**
+1. **CSS Variables (root)** — Primary, success, warning, danger, info colors; border and text colors
+2. **Scrollbar Styling** — Custom scrollbar appearance across browsers
+3. **Animations** — `fadeIn` (0.3s opacity), `slideIn` (0.3s translate + opacity), `spin` (1s rotation for spinners)
+4. **Alert System** — 4 alert types (success, error, warning, info) with matching backgrounds, borders, text colors
+5. **Loading Spinner** — Rotating border spinner with CSS animation
+6. **Modal/Overlay** — Fixed positioning overlay with fade-in animation, centered modal dialog with slide-in animation
+7. **Form Elements** — Styling for `input`, `select`, `textarea` with focus states and error states
+8. **Tables** — Striped hover effect, responsive header styling, alternating row colors
+9. **Cards** — Elevation shadow with hover lift effect
+10. **Badges** — 4 colored badge types (success, danger, warning, info)
+11. **Responsive Utilities** — Mobile-first grid layout, `.hidden-mobile` class
+12. **Text Utilities** — `.text-muted`, `.text-primary`, `.text-success`, `.text-danger`, `.no-select`
+
+**Design Philosophy:** Minimal, performant, extensible. No animations on critical elements (buttons still interactive at all speeds). All colors use CSS variables for easy theme changes.
+
+### 18.2 New JavaScript file — `src/assets/js/app.js` (330+ lines)
+
+**Purpose:** Core utility library for all frontend pages. Provides API communication, validation, formatting, and DOM utilities.
+
+**Key functions:**
+
+| Function | Purpose | Usage |
+|----------|---------|-------|
+| `formatCurrency(amount)` | Format number as USD currency | `formatCurrency(1234.56)` → "$1,234.56" |
+| `formatDate(dateString)` | Format ISO date string to readable format | `formatDate('2026-05-15T10:30:00Z')` → "May 15, 2026, 10:30 AM" |
+| `showAlert(message, type)` | Display toast notification | `showAlert('Success!', 'success')` |
+| `apiCall(endpoint, method, data)` | Unified fetch wrapper with error handling | `apiCall('/api/user/profile.php', 'GET')` |
+| `checkSession()` | Verify logged-in status, redirect if not | Called on protected pages |
+| `setupFormHandler(formId, endpoint, successCallback)` | Auto-wire form submission to API | Reduces boilerplate for form pages |
+| `validateInput(input)` | Single input validation (email, phone, password, number) | Triggered on `blur` event |
+| `sanitizeHtml(text)` | Escape HTML special characters to prevent XSS | `sanitizeHtml('<script>alert("xss")</script>')` |
+| `showSpinner(containerId)` | Display loading spinner in container | `showSpinner('loadingContainer')` |
+| `debounce(func, delay)` | Debounce function for search/filter inputs | Used for search with 300ms delay |
+| `copyToClipboard(text, message)` | Copy text to clipboard with success alert | Used for referral link copy |
+
+**Auto-initialization:**
+- Detects `.alert-container` in DOM or creates one (fixed top-right position, z-index 50)
+- Calls `setupInputValidation()` to wire validation on all inputs with `data-validate` attribute
+- Listens for `DOMContentLoaded` to initialize all utilities
+
+**Export:** Exports all functions for module use (if needed in build pipelines)
+
+### 18.3 New JavaScript file — `src/assets/js/dashboard.js` (450+ lines)
+
+**Purpose:** User dashboard functionality. Loads data from user API endpoints and manages user interactions (investments, transactions, referrals, profile).
+
+**Key functions:**
+
+| Function | Purpose |
+|----------|---------|
+| `loadUserDashboard()` | Fetch `/api/user/dashboard.php` and populate all dashboard stats and charts |
+| `loadRecentTransactions(transactions)` | Render recent 5 transactions in table format |
+| `loadActiveInvestments(investments)` | Render user's active investments with plan name, amount, ROI, days remaining |
+| `initializeChart(dashboard)` | Create simple bar chart visualization using Tailwind progress bars |
+| `createInvestment(planId, amount)` | POST to `/api/investments/create.php`, refresh on success |
+| `loadInvestmentPlans()` | Fetch available plans from `/api/investments/plans.php`, render as cards |
+| `showInvestmentForm(planId, planName)` | Modal form to select investment amount and confirm |
+| `closeInvestmentModal()` | Close and cleanup investment form modal |
+| `createDeposit(amount, method)` | POST deposit request to `/api/deposits/create.php` |
+| `createWithdrawal(amount, method, address)` | POST withdrawal request to `/api/withdrawals/create.php` |
+| `loadTransactions(page)` | Paginated transaction history with status badges |
+| `renderPagination(pagination, callback)` | Render Previous/Next/Page buttons with callback routing |
+| `loadReferralInfo()` | Fetch referral link, total count, commission earned, list of referred users |
+| `loadUserProfile()` | Fetch user profile details (name, email, phone, status, member since) |
+
+**Auto-initialization:** On `DOMContentLoaded`, checks for dashboard element IDs and auto-loads corresponding data:
+- `#statBalance` → load dashboard
+- `#investmentPlans` → load plans
+- `#referralInfo` → load referrals
+- `#profileInfo` → load profile
+
+**Pagination:** Reusable pagination system for transactions, with safe callback execution
+
+### 18.4 New JavaScript file — `src/assets/js/admin.js` (500+ lines)
+
+**Purpose:** Admin dashboard functionality. Loads data from admin API endpoints and manages admin interactions (user management, deposit/withdrawal approvals, investment/plan management).
+
+**Key functions:**
+
+| Function | Purpose |
+|----------|---------|
+| `loadAdminDashboard()` | Fetch `/api/admin/dashboard.php` and populate all admin stats |
+| `loadUsers(page, search)` | Paginated user list with optional search filter |
+| `viewUserDetail(userId)` | Modal showing full user details, transactions, investments, referrals |
+| `toggleUserStatus(userId, newStatus)` | Suspend/activate user via `/api/admin/update-user.php` |
+| `loadDeposits(page)` | Paginated pending deposits with approve/reject actions |
+| `approveDeposit(depositId)` | POST to `/api/admin/approve-deposit.php` |
+| `rejectDeposit(depositId)` | POST to `/api/admin/reject-deposit.php` with reason prompt |
+| `loadWithdrawals(page)` | Paginated pending withdrawals with approve/reject actions |
+| `approveWithdrawal(withdrawalId)` | POST to `/api/admin/approve-withdrawal.php` |
+| `rejectWithdrawal(withdrawalId)` | POST to `/api/admin/reject-withdrawal.php` with reason prompt |
+| `loadInvestments(page)` | Read-only paginated investments list joined with user and plan data |
+| `loadPlans()` | List all investment plans with status toggle |
+| `togglePlanStatus(planId, newStatus)` | Activate/deactivate plan via POST |
+| `loadSettings()` | Render all settings as editable form fields |
+| `setupAdminSearch(field)` | Wire search input to debounced reload (500ms delay) |
+
+**Modal dialogs:**
+- User detail modal shows investments, transactions, referrals with inline approve/reject buttons
+- Confirmation dialogs using native `confirm()` for destructive actions
+
+**Auto-initialization:** On `DOMContentLoaded`:
+- Load dashboard if `#statTotalUsers` exists
+- Setup search if applicable
+- Auto-load page-specific data (users, deposits, withdrawals, investments, plans, settings)
+
+**Status mapping:** Helper `getStatusClass()` maps transaction/deposit/withdrawal statuses to badge colors (success/warning/danger/info)
+
+---
+
+## 19. What was explicitly *not* done
+
+- **No image assets** — No logos, icons, or graphics added. `src/assets/images/` remains empty.
+- **No Bootstrap/Material CDN** — Uses only Tailwind CDN in HTML + custom `app.css`. No framework CSS.
+- **No charting library** — Dashboard charts are simple CSS progress bars, not Chart.js or ApexCharts.
+- **No build pipeline** — No minification, bundling, or source maps. JS files are vanilla ES6, directly included via `<script>`.
+- **No TypeScript** — All JavaScript is standard vanilla JS, no compilation step.
+- **No service workers** — No offline support or caching strategy.
+- **No animations on forms** — No loading spinner overlays on form submissions (simple alert-based feedback instead).
+- **No CSRF tokens** — JS does not generate or validate CSRF tokens (same gap as backend).
+- **No analytics** — No Google Analytics, Mixpanel, or custom event tracking.
+- **No accessibility** — No ARIA labels, keyboard navigation testing, or screen reader optimization.
+
+---
+
+## 20. File manifest (this iteration)
+
+| Path | Action |
+|------|--------|
+| `src/assets/css/app.css` | **Created** (300 lines) |
+| `src/assets/js/app.js` | **Created** (330 lines) |
+| `src/assets/js/dashboard.js` | **Created** (450 lines) |
+| `src/assets/js/admin.js` | **Created** (500 lines) |
+| `PROGRESS.md` | **Modified** (Phase 8 marked complete) |
+| `PERSONAL_ADDITIONS.md` | **Modified** (this section) |
+
+---
+
+## 21. Suggested verification steps (local)
+
+After deployment or local testing, verify:
+
+1. **CSS loads** — Inspect page in browser DevTools; check that custom styles (alerts, badges, modals) are applied.
+2. **Alerts work** — Call `showAlert('Test message', 'success')` in console; toast should appear top-right.
+3. **API calls work** — Load dashboard; check Network tab for calls to `/api/user/dashboard.php`, `/api/admin/dashboard.php`.
+4. **Form validation** — Enter invalid email in any email input; should show error alert and add `.error` class.
+5. **Pagination works** — Load transactions page; click Next/Previous buttons; page should reload with new data.
+6. **Modals work** — Click "View" on admin user; modal should overlay and close with ✕ button or close button.
+7. **Search works** — Type in user search field; should debounce and auto-reload user table.
+
+---
+
+*End of personal additions log for tag `CLAUDE-2026-05-15-PHASE8-ASSETS`.*
