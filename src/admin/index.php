@@ -27,6 +27,7 @@ $admin = getCurrentAdmin();
                     <h1 class="text-2xl font-bold text-white"><?php echo SITE_NAME; ?> Admin</h1>
                 </div>
                 <div class="flex items-center space-x-4">
+                    <a href="/admin/change-password.php" class="text-white hover:text-red-100 text-sm">Change Password</a>
                     <span class="text-white"><?php echo htmlspecialchars($admin['username']); ?></span>
                     <form action="/api/admin/logout.php" method="POST" style="display:inline"><button type="submit" class="bg-white text-red-600 px-4 py-2 rounded font-semibold">Logout</button></form>
                 </div>
