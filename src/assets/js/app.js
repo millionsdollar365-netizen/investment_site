@@ -48,6 +48,16 @@ function showAlert(message, type = 'info') {
     });
 }
 
+// Override native alert() so ALL pages get SweetAlert2 popups
+window.alert = function(message) {
+    Swal.fire({
+        icon: 'error',
+        title: 'Notice',
+        text: message || 'An error occurred',
+        confirmButtonColor: '#3b82f6'
+    });
+};
+
 /**
  * Handle API errors
  */

@@ -19,6 +19,8 @@ $user = getCurrentUser();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Referrals - <?php echo SITE_NAME; ?></title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/assets/js/app.js"></script>
 </head>
 <body class="bg-gray-50">
     <nav class="bg-white shadow">

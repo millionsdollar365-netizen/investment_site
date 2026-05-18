@@ -13,6 +13,8 @@ $admin = getCurrentAdmin();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Withdrawals - <?php echo SITE_NAME; ?> Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/assets/js/app.js"></script>
 </head>
 <body class="bg-gray-50">
     <nav class="bg-red-700 shadow">

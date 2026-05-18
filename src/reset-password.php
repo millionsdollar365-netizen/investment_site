@@ -20,6 +20,8 @@ $token = isset($_GET['token']) ? trim($_GET['token']) : '';
     <title>Set new password - <?php echo SITE_NAME; ?></title>
     <meta name="csrf-token" content="<?php echo Security::getCsrfToken(); ?>">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/assets/js/app.js"></script>
 </head>
 <body class="bg-gray-50">
     <div class="min-h-screen flex items-center justify-center">
