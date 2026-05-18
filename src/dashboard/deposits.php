@@ -19,6 +19,7 @@ $user = getCurrentUser();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Deposits - <?php echo SITE_NAME; ?></title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="/assets/css/app.css">
 </head>
 <body class="bg-gray-50">
@@ -115,8 +116,6 @@ $user = getCurrentUser();
         </div>
     </div>
 
-    <div id="alert-container"></div>
-
     <script src="/assets/js/app.js"></script>
     <script>
         let currentWalletData = null;
@@ -202,12 +201,16 @@ $user = getCurrentUser();
 
         document.getElementById('depositForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             const formData = new FormData(e.target);
 
             try {
-                const response = await apiCall('/api/deposits/create.php', 'POST', new URLSearchParams(formData));
-                showWalletModal(response);
+                const result = await apiCall('/api/deposits/create.php', 'POST', formData);
+                if (result && result.success) {
+                    showWalletModal(result.data);
+                } else if (result) {
+                    showAlert(result.message, 'error');
+                }
             } catch (error) {
                 showAlert(error, 'error');
             }

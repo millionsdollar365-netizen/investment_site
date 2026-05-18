@@ -30,19 +30,22 @@ function formatDate(dateString) {
 }
 
 /**
- * Show alert/notification
+ * Show SweetAlert2 notification
  */
 function showAlert(message, type = 'info') {
-    const alertDiv = document.createElement('div');
-    alertDiv.className = `alert alert-${type}`;
-    alertDiv.textContent = message;
-    
-    const container = document.querySelector('.alert-container') || document.body;
-    container.insertBefore(alertDiv, container.firstChild);
-    
-    setTimeout(() => {
-        alertDiv.remove();
-    }, 5000);
+    const icons = {
+        success: 'success',
+        error: 'error',
+        warning: 'warning',
+        info: 'info'
+    };
+    Swal.fire({
+        icon: icons[type] || 'info',
+        title: type.charAt(0).toUpperCase() + type.slice(1),
+        text: message,
+        timer: type === 'success' ? 2500 : undefined,
+        showConfirmButton: type !== 'success'
+    });
 }
 
 /**
