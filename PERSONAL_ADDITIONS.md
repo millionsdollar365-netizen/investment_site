@@ -597,3 +597,194 @@ After deployment or local testing, verify:
 ---
 
 *End of personal additions log for tag `CLAUDE-2026-05-15-PHASE8-ASSETS`.*
+
+---
+
+## 22. CLAUDE-2026-05-18-PRE-DEPLOY-FIXES
+
+**Tag:** `CLAUDE-2026-05-18-PRE-DEPLOY-FIXES`
+**Date:** May 18, 2026
+**Assistant:** Claude Opus 4.7
+**Context:** Pre-deployment security audit — 34 files changed across 7 fixes before going live on Hostinger.
+
+### 22.1 Cookie secure flag fix
+- **File:** `config/config.example.php:104`
+- **Bug:** `SITE_URL === 'https://'` compared full URL against partial string — always false
+- **Fix:** Changed to `strpos(SITE_URL, 'https://') === 0`
+
+### 22.2 Password hashing — bcrypt
+- **File:** `src/includes/security.php`
+- **Status:** Reverted to pure bcrypt (`password_hash` with `PASSWORD_BCRYPT`, cost 12)
+- **Note:** Briefly used SHA-256 pre-hash + bcrypt, then salted SHA-256, but user chose clean bcrypt
+
+### 22.3 IP session binding removed
+- **Files:** `src/includes/session.php`, `src/includes/admin-session.php`
+- **Removed:** IP address check that logged users out on network change (mobile users, load balancers)
+
+### 22.4 Logout changed from GET to POST
+- **Files:** 16 frontend pages + 2 API endpoints
+- **Change:** All logout links converted from `<a href="/api/*/logout.php">` to `<form method="POST">` with submit buttons
+- **API endpoints** (`api/auth/logout.php`, `api/admin/logout.php`): now POST-only, redirect on success
+
+### 22.5 CSRF protection added
+- **Files:** 5 API endpoints + 5 frontend forms
+- **Token generation:** In `config/config.example.php` session bootstrap: `$_SESSION['csrf_token'] = bin2hex(random_bytes(32))`
+- **Verification:** `Security::requireCsrf()` added to `security.php` — compares POST token vs session token with `hash_equals()`
+- **Protected endpoints:** login, register, forgot-password, reset-password, admin-login
+- **Frontend:** Meta tag `<meta name="csrf-token">` on all auth forms; JS appends token to FormData before fetch
+
+### 22.6 GitHub Actions migration runner uncommented
+- **File:** `.github/workflows/deploy-to-cpanel.yml`
+- **Change:** `# php scripts/run-migrations.sh` → `php scripts/run-migrations.sh`
+
+### 22.7 Deployment guides added
+- **Files created:** `GITHUB_ACTIONS_SETUP.md` (8 KB), `MANUAL_CPANEL_DEPLOYMENT.md` (14 KB)
+
+### 22.8 File manifest (this iteration)
+
+| Path | Action |
+|------|--------|
+| `config/config.example.php` | Modified (cookie secure + CSRF generation) |
+| `src/includes/security.php` | Modified (bcrypt + CSRF helpers) |
+| `src/includes/session.php` | Modified (removed IP binding) |
+| `src/includes/admin-session.php` | Modified (removed IP binding) |
+| `.github/workflows/deploy-to-cpanel.yml` | Modified (uncommented migrations) |
+| `src/api/auth/login.php` | Modified (CSRF check) |
+| `src/api/auth/register.php` | Modified (CSRF check) |
+| `src/api/auth/forgot-password.php` | Modified (CSRF check) |
+| `src/api/auth/reset-password.php` | Modified (CSRF check) |
+| `src/api/auth/logout.php` | Modified (POST-only) |
+| `src/api/admin/login.php` | Modified (CSRF check) |
+| `src/api/admin/logout.php` | Modified (POST-only) |
+| `src/index.php` | Modified (logout form) |
+| `src/login.php` | Modified (CSRF meta tag + JS) |
+| `src/register.php` | Modified (CSRF meta tag + JS) |
+| `src/forgot-password.php` | Modified (CSRF meta tag + JS) |
+| `src/reset-password.php` | Modified (CSRF meta tag + JS) |
+| `src/admin/login.php` | Modified (CSRF meta tag + JS) |
+| 9 dashboard pages | Modified (logout form links → POST forms) |
+| 7 admin pages | Modified (logout form links → POST forms) |
+| `GITHUB_ACTIONS_SETUP.md` | Created |
+| `MANUAL_CPANEL_DEPLOYMENT.md` | Created |
+| `LAUNCH_STATUS.md` | Modified |
+
+**Deferred issues:** Error message leakage in `auth.php:77`, no rate limiting on auth endpoints — logged in [[known-deferred-issues]].
+
+---
+
+## 23. CLAUDE-2026-05-18-SWEETALERT2
+
+**Tag:** `CLAUDE-2026-05-18-SWEETALERT2`
+**Date:** May 18, 2026
+**Assistant:** Claude Opus 4.7
+**Context:** Replaced all plain JavaScript alerts with SweetAlert2 colored popups.
+
+### 23.1 What changed
+- Added SweetAlert2 CDN (`sweetalert2@11`) to all pages
+- Rewrote `showAlert()` in `app.js` to use `Swal.fire()` — green success, red error, yellow warning, blue info
+- Overrode `window.alert` so native `alert()` calls also show SweetAlert2 popups
+- Added SweetAlert2 CDN + `app.js` to 16 PHP pages
+
+### 23.2 File manifest
+
+| Path | Action |
+|------|--------|
+| `src/assets/js/app.js` | Modified (showAlert → SweetAlert2, window.alert override) |
+| 5 public pages (login, register, forgot, reset, admin-login) | Modified (SweetAlert2 CDN) |
+| 9 dashboard pages | Modified (SweetAlert2 CDN + app.js) |
+| 8 admin pages (index, users, deposits, withdrawals, investments, plans, settings, change-password) | Modified (SweetAlert2 CDN + app.js) |
+
+---
+
+## 24. CLAUDE-2026-05-18-ARGON-DASHBOARD
+
+**Tag:** `CLAUDE-2026-05-18-ARGON-DASHBOARD`
+**Date:** May 18, 2026
+**Assistant:** Claude Opus 4.7
+**Context:** Full UI redesign — replaced Tailwind CDN with self-hosted Argon Dashboard CSS across all 23 pages.
+
+### 24.1 Phase A — Asset extraction
+- `src/assets/css/argon.css` (270 lines) — All Argon styles extracted from Creative Tim template (sidebar, topbar, cards, tables, stat cards, badges, modals, footer, responsive)
+- `src/assets/js/argon.js` (25 lines) — Sidebar toggle, overlay, mobile responsive behavior
+- Dependencies: Google Fonts (Open Sans), Font Awesome 6.5 CDN
+- No build tools, no npm — pure CSS
+
+### 24.2 Phase B — PHP includes
+- `src/includes/argon-header.php` — Parameterized header include:
+  - Sets `$page_title`, `$page_subtitle`, `$active_nav`, `$nav_type` before include
+  - Outputs DOCTYPE → head → sidebar (dynamic nav links based on user/admin) → topbar (username, avatar) → page header gradient → opens `<main id="content">`
+- `src/includes/argon-footer.php` — Closes content → footer with copyright → argon.js + app.js → closing tags
+
+### 24.3 Phase C — Page conversion (23 files, 2,126 lines Tailwind removed)
+
+**User dashboard (8 pages):**
+- `dashboard/index.php` — Stat cards (balance, interest, investments, referrals), quick actions, recent transactions table
+- `dashboard/investments.php` — Investments table with badges, create modal
+- `dashboard/deposits.php` — Crypto deposit flow with wallet address modal
+- `dashboard/withdrawals.php` — Withdrawal form with bank details modal
+- `dashboard/transactions.php` — Paginated transaction history table
+- `dashboard/referrals.php` — Referral link copy + referral list
+- `dashboard/profile.php` — Profile form + account info card
+- `dashboard/settings.php` — Change password form
+
+**Admin pages (8 pages):**
+- `admin/index.php` — Stat cards (users, deposits, withdrawals, balance), management links grid
+- `admin/users.php` — User search/filter, paginated table, detail modal, edit modal
+- `admin/deposits.php` — Deposit approval/rejection with reason modal
+- `admin/withdrawals.php` — Withdrawal approval/rejection with reason modal
+- `admin/investments.php` — All investments table with status filter
+- `admin/plans.php` — Investment plans display table
+- `admin/settings.php` — Key/value settings editor with inline edit modal
+- `admin/login.php` — Centered login card with red accent
+
+**Public pages (6 pages):**
+- `index.php` — Landing page with topbar, gradient hero, feature cards
+- `login.php` — Centered card form with CSRF
+- `register.php` — Centered card form with CSRF
+- `forgot-password.php` — Centered card form with CSRF
+- `reset-password.php` — Token-based password reset form with CSRF
+- `admin/login.php` — Centered card with red accent border
+
+### 24.4 Design token mapping
+
+| Old (Tailwind) | New (Argon) |
+|----------------|-------------|
+| `bg-blue-600 text-white px-4 py-2 rounded` | `background:var(--argon-primary); color:#fff; padding:.5rem 1rem; border-radius:.25rem` |
+| `bg-white rounded shadow p-6` | `.card` + `.card-body` |
+| `text-3xl font-bold` | `.card-header h6` or `.stat-value` |
+| `bg-green-100 text-green-800` badge | `.badge .b-success` |
+| `alert()` | SweetAlert2 popup (via `window.alert` override) |
+
+### 24.5 File manifest
+
+| Path | Action |
+|------|--------|
+| `src/assets/css/argon.css` | Created |
+| `src/assets/js/argon.js` | Created |
+| `src/includes/argon-header.php` | Created |
+| `src/includes/argon-footer.php` | Created |
+| `src/dashboard/index.php` | Rewritten |
+| `src/dashboard/investments.php` | Rewritten |
+| `src/dashboard/deposits.php` | Rewritten |
+| `src/dashboard/withdrawals.php` | Rewritten |
+| `src/dashboard/transactions.php` | Rewritten |
+| `src/dashboard/referrals.php` | Rewritten |
+| `src/dashboard/profile.php` | Rewritten |
+| `src/dashboard/settings.php` | Rewritten |
+| `src/admin/index.php` | Rewritten |
+| `src/admin/users.php` | Rewritten |
+| `src/admin/deposits.php` | Rewritten |
+| `src/admin/withdrawals.php` | Rewritten |
+| `src/admin/investments.php` | Rewritten |
+| `src/admin/plans.php` | Rewritten |
+| `src/admin/settings.php` | Rewritten |
+| `src/admin/login.php` | Rewritten |
+| `src/index.php` | Rewritten |
+| `src/login.php` | Rewritten |
+| `src/register.php` | Rewritten |
+| `src/forgot-password.php` | Rewritten |
+| `src/reset-password.php` | Rewritten |
+
+---
+
+*End of personal additions log for tag `CLAUDE-2026-05-18-ARGON-DASHBOARD`.*
