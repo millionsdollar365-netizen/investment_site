@@ -1,71 +1,36 @@
 <?php
-/**
- * PRIMEAXIS INVESTMENT PLATFORM
- * Admin Login Page
- */
-
 require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/admin-session.php';
 require_once __DIR__ . '/../includes/security.php';
-
 requireAdminLogout();
-?>
-<!DOCTYPE html>
+?><!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login - <?php echo SITE_NAME; ?></title>
+    <title>Admin Login — <?php echo SITE_NAME; ?></title>
     <meta name="csrf-token" content="<?php echo Security::getCsrfToken(); ?>">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/argon.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="/assets/js/app.js"></script>
 </head>
-<body class="bg-gray-50">
-    <div class="min-h-screen flex items-center justify-center">
-        <div class="max-w-md w-full bg-white rounded shadow p-8">
-            <h2 class="text-2xl font-bold text-center mb-2">Admin Portal</h2>
-            <p class="text-center text-gray-600 mb-6">Restricted Access Only</p>
-
-            <form id="adminLoginForm" class="space-y-4">
-                <div>
-                    <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
-                    <input type="text" id="username" name="username" required class="mt-1 w-full px-4 py-2 border rounded">
-                </div>
-
-                <div>
-                    <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                    <input type="password" id="password" name="password" required class="mt-1 w-full px-4 py-2 border rounded">
-                </div>
-
-                <button type="submit" class="w-full bg-red-600 text-white py-2 rounded font-semibold">Login</button>
+<body style="display:flex;align-items:center;justify-content:center">
+    <div class="card" style="width:100%;max-width:420px;margin:2rem;border-top:3px solid var(--argon-danger)">
+        <div class="card-header" style="justify-content:center"><h6>Admin Portal</h6></div>
+        <div class="card-body">
+            <p style="text-align:center;color:var(--argon-muted);font-size:.78rem;margin-bottom:1rem">Restricted Access Only</p>
+            <form id="adminLoginForm" style="display:flex;flex-direction:column;gap:.75rem">
+                <div><label style="font-size:.78rem;font-weight:600;color:var(--argon-dark);display:block;margin-bottom:.25rem">Username</label><input type="text" id="username" name="username" required style="width:100%;padding:.45rem .6rem;border:1px solid var(--argon-border);border-radius:.25rem;font-size:.82rem"></div>
+                <div><label style="font-size:.78rem;font-weight:600;color:var(--argon-dark);display:block;margin-bottom:.25rem">Password</label><input type="password" id="password" name="password" required style="width:100%;padding:.45rem .6rem;border:1px solid var(--argon-border);border-radius:.25rem;font-size:.82rem"></div>
+                <button type="submit" style="background:var(--argon-danger);color:#fff;border:none;padding:.55rem;border-radius:.25rem;cursor:pointer;font-weight:600;font-size:.85rem">Login</button>
             </form>
-
-            <p class="text-center mt-4 text-sm text-gray-600">
-                <a href="/" class="text-blue-600 hover:underline">Back to Home</a>
-            </p>
+            <p style="text-align:center;margin-top:.75rem"><a href="/" style="color:var(--argon-muted);font-size:.78rem">Back to Home</a></p>
         </div>
     </div>
-
-    <script>
-        document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const formData = new FormData(e.target);
-            formData.append('csrf_token', document.querySelector('meta[name="csrf-token"]').content);
-            const response = await fetch('/api/admin/login.php', {
-                method: 'POST',
-                body: formData
-            });
-            
-            const data = await response.json();
-            
-            if (data.success) {
-                window.location.href = '/admin/';
-            } else {
-                alert(data.message);
-            }
-        });
-    </script>
+<script>
+document.getElementById('adminLoginForm').addEventListener('submit',async(e)=>{e.preventDefault();const f=new FormData(e.target);f.append('csrf_token',document.querySelector('meta[name="csrf-token"]').content);const r=await fetch('/api/admin/login.php',{method:'POST',body:f});const d=await r.json();if(d.success){window.location.href='/admin/'}else{alert(d.message)}});
+</script>
 </body>
 </html>

@@ -1,69 +1,66 @@
 <?php
-/**
- * PRIMEAXIS INVESTMENT PLATFORM
- * Landing / Home Page
- */
-
 require_once __DIR__ . '/includes/config.php';
 require_once __DIR__ . '/includes/session.php';
-?>
-<!DOCTYPE html>
+?><!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo SITE_NAME; ?> - Investment Platform</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title><?php echo SITE_NAME; ?> — Investment Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/argon.css">
 </head>
-<body class="bg-gray-50">
-    <nav class="bg-white shadow">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center">
-                    <h1 class="text-2xl font-bold text-blue-600"><?php echo SITE_NAME; ?></h1>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <?php if (isLoggedIn()): ?>
-                        <a href="/dashboard/" class="text-gray-700 hover:text-gray-900">Dashboard</a>
-                        <form action="/api/auth/logout.php" method="POST" style="display:inline"><button type="submit" class="bg-red-600 text-white px-4 py-2 rounded">Logout</button></form>
-                    <?php else: ?>
-                        <a href="/login.php" class="text-gray-700 hover:text-gray-900">Login</a>
-                        <a href="/register.php" class="bg-blue-600 text-white px-4 py-2 rounded">Register</a>
-                    <?php endif; ?>
-                </div>
-            </div>
+<body style="display:block">
+    <header id="topbar" style="position:static">
+        <div class="topbar-left">
+            <div class="page-title"><?php echo SITE_NAME; ?></div>
         </div>
-    </nav>
-
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div class="text-center">
-            <h2 class="text-4xl font-bold text-gray-900 mb-4">Welcome to <?php echo SITE_NAME; ?></h2>
-            <p class="text-xl text-gray-600 mb-8">Secure investment platform with daily returns</p>
-            
-            <?php if (!isLoggedIn()): ?>
-                <div class="flex justify-center gap-4">
-                    <a href="/register.php" class="bg-blue-600 text-white px-8 py-3 rounded text-lg font-semibold">Get Started</a>
-                    <a href="/login.php" class="bg-gray-200 text-gray-800 px-8 py-3 rounded text-lg font-semibold">Sign In</a>
-                </div>
+        <div class="topbar-right">
+            <?php if (isLoggedIn()): ?>
+                <a href="/dashboard/" style="color:var(--argon-primary);text-decoration:none;font-weight:600;font-size:.82rem">Dashboard</a>
+                <form action="/api/auth/logout.php" method="POST" style="display:inline"><button type="submit" style="background:var(--argon-danger);color:#fff;border:none;padding:.4rem 1rem;border-radius:.25rem;cursor:pointer;font-weight:600;font-size:.75rem">Logout</button></form>
             <?php else: ?>
-                <a href="/dashboard/" class="bg-blue-600 text-white px-8 py-3 rounded text-lg font-semibold">Go to Dashboard</a>
+                <a href="/login.php" style="color:var(--argon-text);text-decoration:none;font-weight:600;font-size:.82rem">Login</a>
+                <a href="/register.php" style="background:var(--argon-primary);color:#fff;padding:.4rem 1rem;border-radius:.25rem;text-decoration:none;font-weight:600;font-size:.75rem">Register</a>
+            <?php endif; ?>
+        </div>
+    </header>
+
+    <div id="page-header" style="text-align:center;padding:4rem 1.5rem 6rem">
+        <h1 style="font-size:2rem">Welcome to <?php echo SITE_NAME; ?></h1>
+        <p style="font-size:1.1rem">Secure investment platform with daily returns</p>
+    </div>
+
+    <div id="content" style="max-width:900px;margin:0 auto">
+        <div style="text-align:center;margin-bottom:2rem">
+            <?php if (!isLoggedIn()): ?>
+                <a href="/register.php" style="background:var(--argon-primary);color:#fff;padding:.7rem 2rem;border-radius:.25rem;text-decoration:none;font-weight:600;font-size:.9rem;margin-right:.5rem">Get Started</a>
+                <a href="/login.php" style="background:var(--argon-light);color:var(--argon-dark);padding:.7rem 2rem;border-radius:.25rem;text-decoration:none;font-weight:600;font-size:.9rem;border:1px solid var(--argon-border)">Sign In</a>
+            <?php else: ?>
+                <a href="/dashboard/" style="background:var(--argon-primary);color:#fff;padding:.7rem 2rem;border-radius:.25rem;text-decoration:none;font-weight:600;font-size:.9rem">Go to Dashboard</a>
             <?php endif; ?>
         </div>
 
-        <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="bg-white p-6 rounded shadow">
-                <h3 class="text-xl font-bold mb-2">Secure</h3>
-                <p class="text-gray-600">Bank-level security for your investments</p>
+        <div class="stats-grid" style="margin-top:2rem">
+            <div class="stat-card" style="flex-direction:column;text-align:center;gap:.5rem">
+                <div class="stat-icon bg-primary" style="width:48px;height:48px;font-size:1.1rem"><i class="fas fa-shield-alt"></i></div>
+                <div class="stat-label">Secure</div>
+                <div style="font-size:.78rem;color:var(--argon-muted)">Bank-level security for your investments</div>
             </div>
-            <div class="bg-white p-6 rounded shadow">
-                <h3 class="text-xl font-bold mb-2">Daily Returns</h3>
-                <p class="text-gray-600">Earn daily ROI on your investments</p>
+            <div class="stat-card" style="flex-direction:column;text-align:center;gap:.5rem">
+                <div class="stat-icon bg-success" style="width:48px;height:48px;font-size:1.1rem"><i class="fas fa-calendar-check"></i></div>
+                <div class="stat-label">Daily Returns</div>
+                <div style="font-size:.78rem;color:var(--argon-muted)">Earn daily ROI on your investments</div>
             </div>
-            <div class="bg-white p-6 rounded shadow">
-                <h3 class="text-xl font-bold mb-2">Withdrawals</h3>
-                <p class="text-gray-600">Quick and easy withdrawal process</p>
+            <div class="stat-card" style="flex-direction:column;text-align:center;gap:.5rem">
+                <div class="stat-icon bg-warning" style="width:48px;height:48px;font-size:1.1rem"><i class="fas fa-wallet"></i></div>
+                <div class="stat-label">Withdrawals</div>
+                <div style="font-size:.78rem;color:var(--argon-muted)">Quick and easy withdrawal process</div>
             </div>
         </div>
     </div>
+
+    <footer style="text-align:center"><div class="foot-inner"><div>&copy; <?php echo date('Y'); ?> <?php echo SITE_NAME; ?></div></div></footer>
 </body>
 </html>
