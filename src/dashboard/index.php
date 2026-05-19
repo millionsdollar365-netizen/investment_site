@@ -11,103 +11,113 @@ require_once __DIR__ . '/../includes/auth.php';
 requireLogin();
 
 $user = getCurrentUser();
+
+// ── Argon header params ──
+$nav_type = 'user';
+$active_nav = 'dashboard';
+$page_title = 'Dashboard';
+$page_subtitle = 'Welcome back, ' . htmlspecialchars($user['first_name']) . '!';
+require_once __DIR__ . '/../includes/argon-header.php';
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - <?php echo SITE_NAME; ?></title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-50">
-    <nav class="bg-white shadow">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center">
-                    <h1 class="text-2xl font-bold text-blue-600"><?php echo SITE_NAME; ?></h1>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <span class="text-gray-700"><?php echo htmlspecialchars($user['first_name'] . ' ' . $user['last_name']); ?></span>
-                    <form action="/api/auth/logout.php" method="POST" style="display:inline"><button type="submit" class="bg-red-600 text-white px-4 py-2 rounded">Logout</button></form>
-                </div>
-            </div>
+
+<!-- STAT CARDS -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-body">
+            <div class="stat-label">Total Balance</div>
+            <div class="stat-value" id="statBalance">—</div>
         </div>
-    </nav>
-
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h2 class="text-3xl font-bold mb-8">Welcome, <?php echo htmlspecialchars($user['first_name']); ?>!</h2>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8" id="statsGrid">
-            <div class="bg-white p-6 rounded shadow">
-                <p class="text-gray-600">Total Balance</p>
-                <p class="text-3xl font-bold text-blue-600" id="statBalance">Loading...</p>
-            </div>
-            <div class="bg-white p-6 rounded shadow">
-                <p class="text-gray-600">Interest Balance</p>
-                <p class="text-3xl font-bold text-green-600" id="statInterest">Loading...</p>
-            </div>
-            <div class="bg-white p-6 rounded shadow">
-                <p class="text-gray-600">Active Investments</p>
-                <p class="text-3xl font-bold text-purple-600" id="statInvestments">Loading...</p>
-            </div>
+        <div class="stat-icon bg-primary"><i class="fas fa-dollar-sign"></i></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-body">
+            <div class="stat-label">Interest Earned</div>
+            <div class="stat-value" id="statInterest">—</div>
         </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="bg-white p-6 rounded shadow">
-                <h3 class="text-xl font-bold mb-4">Quick Actions</h3>
-                <div class="space-y-2">
-                    <a href="/dashboard/investments.php" class="block bg-blue-600 text-white px-4 py-2 rounded text-center">Invest Now</a>
-                    <a href="/dashboard/deposits.php" class="block bg-green-600 text-white px-4 py-2 rounded text-center">Make Deposit</a>
-                    <a href="/dashboard/withdrawals.php" class="block bg-yellow-600 text-white px-4 py-2 rounded text-center">Withdraw</a>
-                </div>
-            </div>
-
-            <div class="bg-white p-6 rounded shadow">
-                <h3 class="text-xl font-bold mb-4">Navigation</h3>
-                <div class="space-y-2">
-                    <a href="/dashboard/referrals.php" class="block text-blue-600 hover:underline">My Referrals</a>
-                    <a href="/dashboard/transactions.php" class="block text-blue-600 hover:underline">Transaction History</a>
-                    <a href="/dashboard/profile.php" class="block text-blue-600 hover:underline">Profile</a>
-                    <a href="/dashboard/settings.php" class="block text-blue-600 hover:underline">Settings</a>
-                </div>
-            </div>
+        <div class="stat-icon bg-success"><i class="fas fa-percent"></i></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-body">
+            <div class="stat-label">Active Investments</div>
+            <div class="stat-value" id="statInvestments">—</div>
         </div>
+        <div class="stat-icon bg-warning"><i class="fas fa-chart-line"></i></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-body">
+            <div class="stat-label">Referrals</div>
+            <div class="stat-value" id="statReferrals">—</div>
+        </div>
+        <div class="stat-icon bg-danger"><i class="fas fa-users"></i></div>
+    </div>
+</div>
 
-        <div class="bg-white p-6 rounded shadow mt-6">
-            <h3 class="text-xl font-bold mb-4">Recent Transactions</h3>
-            <div id="recentTransactions" class="text-gray-500">Loading...</div>
+<!-- QUICK ACTIONS + NAVIGATION -->
+<div class="duo">
+    <div class="card">
+        <div class="card-header"><h6>Quick Actions</h6></div>
+        <div class="card-body" style="display:flex;flex-direction:column;gap:.5rem">
+            <a href="/dashboard/investments.php" class="act-link"><i class="fas fa-chart-line"></i> Invest Now</a>
+            <a href="/dashboard/deposits.php" class="act-link"><i class="fas fa-coins"></i> Make Deposit</a>
+            <a href="/dashboard/withdrawals.php" class="act-link"><i class="fas fa-wallet"></i> Withdraw</a>
         </div>
     </div>
+    <div class="card">
+        <div class="card-header"><h6>Navigation</h6></div>
+        <div class="card-body" style="display:flex;flex-direction:column;gap:.5rem">
+            <a href="/dashboard/referrals.php" class="act-link"><i class="fas fa-users"></i> My Referrals</a>
+            <a href="/dashboard/transactions.php" class="act-link"><i class="fas fa-list"></i> Transaction History</a>
+            <a href="/dashboard/profile.php" class="act-link"><i class="fas fa-user-circle"></i> Profile</a>
+            <a href="/dashboard/settings.php" class="act-link"><i class="fas fa-cog"></i> Settings</a>
+        </div>
+    </div>
+</div>
 
-    <script>
-        async function loadDashboard() {
-            const res = await fetch('/api/user/dashboard.php');
-            const data = await res.json();
+<!-- RECENT TRANSACTIONS -->
+<div class="card tsec">
+    <div class="card-header"><h6>Recent Transactions</h6></div>
+    <div class="tscroll">
+        <table>
+            <thead>
+                <tr><th>Type</th><th>Description</th><th>Amount</th><th>Date</th></tr>
+            </thead>
+            <tbody id="recentTransactions">
+                <tr><td colspan="4" style="text-align:center;color:var(--argon-muted)">Loading...</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 
-            if (!data.success) return;
+<script>
+async function loadDashboard() {
+    const res = await fetch('/api/user/dashboard.php');
+    const data = await res.json();
+    if (!data.success) return;
 
-            const d = data.data;
-            document.getElementById('statBalance').textContent = '$' + parseFloat(d.balance).toFixed(2);
-            document.getElementById('statInterest').textContent = '$' + parseFloat(d.interest_balance).toFixed(2);
-            document.getElementById('statInvestments').textContent = d.active_investments;
+    const d = data.data;
+    document.getElementById('statBalance').textContent = '$' + parseFloat(d.balance).toFixed(2);
+    document.getElementById('statInterest').textContent = '$' + parseFloat(d.interest_balance).toFixed(2);
+    document.getElementById('statInvestments').textContent = d.active_investments;
+    document.getElementById('statReferrals').textContent = d.referral_count;
 
-            const txContainer = document.getElementById('recentTransactions');
-            if (!d.recent_transactions.length) {
-                txContainer.innerHTML = '<p class="text-gray-500">No transactions yet.</p>';
-            } else {
-                txContainer.innerHTML = d.recent_transactions.map(t =>
-                    `<div class="flex justify-between py-2 border-b">
-                        <span>${escHtml(t.type)} — ${escHtml(t.description || '')}</span>
-                        <span class="font-semibold">$${parseFloat(t.amount).toFixed(2)}</span>
-                    </div>`
-                ).join('');
-            }
-        }
+    const tx = document.getElementById('recentTransactions');
+    if (!d.recent_transactions.length) {
+        tx.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--argon-muted)">No transactions yet.</td></tr>';
+    } else {
+        tx.innerHTML = d.recent_transactions.map(t =>
+            `<tr>
+                <td><span class="badge ${t.type === 'deposit' ? 'b-success' : t.type === 'withdrawal' ? 'b-danger' : 'b-info'}">${escHtml(t.type)}</span></td>
+                <td>${escHtml(t.description || '—')}</td>
+                <td style="font-weight:600">$${parseFloat(t.amount).toFixed(2)}</td>
+                <td style="font-size:.75rem;color:var(--argon-muted)">${new Date(t.created_at).toLocaleDateString()}</td>
+            </tr>`
+        ).join('');
+    }
+}
 
-        function escHtml(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+function escHtml(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 
-        loadDashboard();
-    </script>
-</body>
-</html>
+loadDashboard();
+</script>
+
+<?php require_once __DIR__ . '/../includes/argon-footer.php'; ?>
