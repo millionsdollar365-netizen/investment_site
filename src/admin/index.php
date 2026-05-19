@@ -1,98 +1,32 @@
 <?php
-/**
- * PRIMEAXIS INVESTMENT PLATFORM
- * Admin Dashboard
- */
-
 require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/admin-session.php';
-
 requireAdminLogin();
-
 $admin = getCurrentAdmin();
+$nav_type = 'admin'; $active_nav = 'dashboard';
+$page_title = 'Admin Dashboard'; $page_subtitle = 'Platform overview and management';
+require_once __DIR__ . '/../includes/argon-header.php';
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - <?php echo SITE_NAME; ?></title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-50">
-    <nav class="bg-red-700 shadow">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center">
-                    <h1 class="text-2xl font-bold text-white"><?php echo SITE_NAME; ?> Admin</h1>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <a href="/admin/change-password.php" class="text-white hover:text-red-100 text-sm">Change Password</a>
-                    <span class="text-white"><?php echo htmlspecialchars($admin['username']); ?></span>
-                    <form action="/api/admin/logout.php" method="POST" style="display:inline"><button type="submit" class="bg-white text-red-600 px-4 py-2 rounded font-semibold">Logout</button></form>
-                </div>
-            </div>
-        </div>
-    </nav>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h2 class="text-3xl font-bold mb-8">Admin Dashboard</h2>
+<div class="stats-grid">
+    <div class="stat-card"><div class="stat-body"><div class="stat-label">Total Users</div><div class="stat-value" id="statTotalUsers">—</div><div class="stat-change" id="statActiveUsers"></div></div><div class="stat-icon bg-primary"><i class="fas fa-users"></i></div></div>
+    <div class="stat-card"><div class="stat-body"><div class="stat-label">Pending Deposits</div><div class="stat-value" id="statPendingDeposits">—</div><div class="stat-change" id="statPendingDepositsAmount"></div></div><div class="stat-icon bg-success"><i class="fas fa-coins"></i></div></div>
+    <div class="stat-card"><div class="stat-body"><div class="stat-label">Pending Withdrawals</div><div class="stat-value" id="statPendingWithdrawals">—</div><div class="stat-change" id="statPendingWithdrawalsAmount"></div></div><div class="stat-icon bg-warning"><i class="fas fa-wallet"></i></div></div>
+    <div class="stat-card"><div class="stat-body"><div class="stat-label">Total Balance</div><div class="stat-value" id="statTotalBalance">—</div><div class="stat-change">Invested: <span id="statTotalInvested">—</span></div></div><div class="stat-icon bg-danger"><i class="fas fa-dollar-sign"></i></div></div>
+</div>
 
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8" id="statsGrid">
-            <div class="bg-white p-6 rounded shadow">
-                <p class="text-gray-600">Total Users</p>
-                <p class="text-3xl font-bold" id="statTotalUsers">Loading...</p>
-                <p class="text-sm text-gray-500" id="statActiveUsers"></p>
-            </div>
-            <div class="bg-white p-6 rounded shadow">
-                <p class="text-gray-600">Pending Deposits</p>
-                <p class="text-3xl font-bold" id="statPendingDeposits">Loading...</p>
-                <p class="text-sm text-gray-500" id="statPendingDepositsAmount"></p>
-            </div>
-            <div class="bg-white p-6 rounded shadow">
-                <p class="text-gray-600">Pending Withdrawals</p>
-                <p class="text-3xl font-bold" id="statPendingWithdrawals">Loading...</p>
-                <p class="text-sm text-gray-500" id="statPendingWithdrawalsAmount"></p>
-            </div>
-            <div class="bg-white p-6 rounded shadow">
-                <p class="text-gray-600">Total Balance</p>
-                <p class="text-3xl font-bold" id="statTotalBalance">Loading...</p>
-                <p class="text-sm text-gray-500">Invested: <span id="statTotalInvested"></span></p>
-            </div>
-        </div>
+<div class="card"><div class="card-header"><h6>Management</h6></div>
+<div class="card-body"><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.75rem">
+    <a href="/admin/users.php" class="act-link" style="text-align:center;padding:.85rem;border-radius:.25rem;background:rgba(94,114,228,.08)"><i class="fas fa-users"></i> Manage Users</a>
+    <a href="/admin/deposits.php" class="act-link" style="text-align:center;padding:.85rem;border-radius:.25rem;background:rgba(45,206,137,.08)"><i class="fas fa-coins"></i> Deposits</a>
+    <a href="/admin/withdrawals.php" class="act-link" style="text-align:center;padding:.85rem;border-radius:.25rem;background:rgba(251,99,64,.08)"><i class="fas fa-wallet"></i> Withdrawals</a>
+    <a href="/admin/investments.php" class="act-link" style="text-align:center;padding:.85rem;border-radius:.25rem;background:rgba(130,94,228,.08)"><i class="fas fa-chart-line"></i> Investments</a>
+    <a href="/admin/plans.php" class="act-link" style="text-align:center;padding:.85rem;border-radius:.25rem;background:rgba(17,205,239,.08)"><i class="fas fa-layer-group"></i> Plans</a>
+    <a href="/admin/settings.php" class="act-link" style="text-align:center;padding:.85rem;border-radius:.25rem;background:rgba(136,152,170,.08)"><i class="fas fa-cog"></i> Settings</a>
+</div></div></div>
 
-        <div class="bg-white p-6 rounded shadow">
-            <h3 class="text-xl font-bold mb-4">Management</h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <a href="/admin/users.php" class="block bg-blue-600 text-white px-4 py-3 rounded text-center font-semibold">Manage Users</a>
-                <a href="/admin/deposits.php" class="block bg-green-600 text-white px-4 py-3 rounded text-center font-semibold">Deposits</a>
-                <a href="/admin/withdrawals.php" class="block bg-yellow-600 text-white px-4 py-3 rounded text-center font-semibold">Withdrawals</a>
-                <a href="/admin/investments.php" class="block bg-purple-600 text-white px-4 py-3 rounded text-center font-semibold">Investments</a>
-                <a href="/admin/plans.php" class="block bg-indigo-600 text-white px-4 py-3 rounded text-center font-semibold">Plans</a>
-                <a href="/admin/settings.php" class="block bg-gray-600 text-white px-4 py-3 rounded text-center font-semibold">Settings</a>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        async function loadDashboard() {
-            const res = await fetch('/api/admin/dashboard.php');
-            const data = await res.json();
-
-            if (!data.success) return;
-
-            const d = data.data;
-            document.getElementById('statTotalUsers').textContent = d.users.total;
-            document.getElementById('statActiveUsers').textContent = d.users.active + ' active';
-            document.getElementById('statPendingDeposits').textContent = d.deposits.pending_count;
-            document.getElementById('statPendingDepositsAmount').textContent = '$' + d.deposits.pending_amount.toFixed(2) + ' pending';
-            document.getElementById('statPendingWithdrawals').textContent = d.withdrawals.pending_count;
-            document.getElementById('statPendingWithdrawalsAmount').textContent = '$' + d.withdrawals.pending_amount.toFixed(2) + ' pending';
-            document.getElementById('statTotalBalance').textContent = '$' + d.balances.total.toFixed(2);
-            document.getElementById('statTotalInvested').textContent = '$' + d.investments.total_amount.toFixed(2);
-        }
-
-        loadDashboard();
-    </script>
-</body>
-</html>
+<script>
+async function loadDashboard(){const r=await fetch('/api/admin/dashboard.php');const d=await r.json();if(!d.success)return;const s=d.data;document.getElementById('statTotalUsers').textContent=s.users.total;document.getElementById('statActiveUsers').textContent=s.users.active+' active';document.getElementById('statPendingDeposits').textContent=s.deposits.pending_count;document.getElementById('statPendingDepositsAmount').textContent='$'+s.deposits.pending_amount.toFixed(2)+' pending';document.getElementById('statPendingWithdrawals').textContent=s.withdrawals.pending_count;document.getElementById('statPendingWithdrawalsAmount').textContent='$'+s.withdrawals.pending_amount.toFixed(2)+' pending';document.getElementById('statTotalBalance').textContent='$'+s.balances.total.toFixed(2);document.getElementById('statTotalInvested').textContent='$'+s.investments.total_amount.toFixed(2)}
+loadDashboard();
+</script>
+<?php require_once __DIR__ . '/../includes/argon-footer.php'; ?>
