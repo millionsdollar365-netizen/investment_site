@@ -44,13 +44,18 @@ require_once __DIR__ . '/../includes/argon-header.php';
             <form id="investForm" style="display:flex;flex-direction:column;gap:.75rem">
                 <div>
                     <label style="font-size:.78rem;font-weight:600;color:var(--argon-dark);display:block;margin-bottom:.25rem">Plan</label>
-                    <select id="plan_id" name="plan_id" required style="width:100%;padding:.45rem .6rem;border:1px solid var(--argon-border);border-radius:.25rem;font-size:.82rem">
+                    <select id="plan_id" name="plan_id" required onchange="onPlanChange()" style="width:100%;padding:.45rem .6rem;border:1px solid var(--argon-border);border-radius:.25rem;font-size:.82rem">
                         <option value="">Select a plan...</option>
                     </select>
+                    <div id="planDetails" style="display:none;margin-top:.5rem;padding:.6rem .75rem;background:rgba(94,114,228,.06);border-radius:.25rem;font-size:.75rem;color:var(--argon-text);line-height:1.6">
+                        <div><strong>ROI:</strong> <span id="pdRoi"></span> daily | <strong>Duration:</strong> <span id="pdDur"></span> days</div>
+                        <div><strong>Min:</strong> $<span id="pdMin"></span> | <strong>Max:</strong> <span id="pdMax"></span></div>
+                    </div>
                 </div>
                 <div>
                     <label style="font-size:.78rem;font-weight:600;color:var(--argon-dark);display:block;margin-bottom:.25rem">Amount ($)</label>
                     <input type="number" id="amount" name="amount" step="0.01" min="0.01" required style="width:100%;padding:.45rem .6rem;border:1px solid var(--argon-border);border-radius:.25rem;font-size:.82rem">
+                    <div id="amountHint" style="display:none;margin-top:.25rem;font-size:.72rem;color:var(--argon-muted)"></div>
                 </div>
                 <div style="display:flex;gap:.5rem;justify-content:flex-end;margin-top:.25rem">
                     <button type="button" onclick="hideCreateModal()" style="background:var(--argon-light);border:1px solid var(--argon-border);padding:.45rem 1.2rem;border-radius:.25rem;cursor:pointer;font-size:.82rem">Cancel</button>
@@ -92,20 +97,46 @@ async function loadInvestments() {
         </div>`;
 }
 
+let plansData = {};
+
 async function loadPlans() {
     const res = await fetch('/api/investments/plans.php');
     const data = await res.json();
     const select = document.getElementById('plan_id');
     if (data.success) {
+        select.innerHTML = '<option value="">Select a plan...</option>';
         data.data.plans.forEach(p => {
-            select.innerHTML += `<option value="${p.id}">${escHtml(p.name)} — ${p.daily_roi}% daily / ${p.duration_days} days (Min $${parseFloat(p.min_amount).toFixed(2)})</option>`;
+            plansData[p.id] = p;
+            select.innerHTML += `<option value="${p.id}">${escHtml(p.name)} — ${p.daily_roi}% daily / ${p.duration_days}d (Min $${parseFloat(p.min_amount).toFixed(2)})</option>`;
         });
     }
 }
 
+function onPlanChange() {
+    const pid = document.getElementById('plan_id').value;
+    const details = document.getElementById('planDetails');
+    const hint = document.getElementById('amountHint');
+    const amountInput = document.getElementById('amount');
+    if (!pid || !plansData[pid]) {
+        details.style.display = 'none';
+        hint.style.display = 'none';
+        return;
+    }
+    const p = plansData[pid];
+    document.getElementById('pdRoi').textContent = parseFloat(p.daily_roi).toFixed(2) + '%';
+    document.getElementById('pdDur').textContent = p.duration_days;
+    document.getElementById('pdMin').textContent = parseFloat(p.min_amount).toFixed(2);
+    document.getElementById('pdMax').textContent = p.max_amount ? '$' + parseFloat(p.max_amount).toFixed(2) : 'Unlimited';
+    details.style.display = 'block';
+    amountInput.min = parseFloat(p.min_amount);
+    if (p.max_amount) amountInput.max = parseFloat(p.max_amount);
+    hint.style.display = 'block';
+    hint.textContent = 'Min: $' + parseFloat(p.min_amount).toFixed(2) + (p.max_amount ? ' | Max: $' + parseFloat(p.max_amount).toFixed(2) : '');
+}
+
 function showCreateModal() {
     document.getElementById('createModal').style.display = 'flex';
-    if (!document.getElementById('plan_id').options.length) loadPlans();
+    if (document.getElementById('plan_id').options.length <= 1) loadPlans();
 }
 
 function hideCreateModal() {
