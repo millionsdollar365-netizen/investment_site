@@ -1,108 +1,21 @@
 <?php
-/**
- * PRIMEAXIS INVESTMENT PLATFORM
- * User Dashboard — Transaction History
- */
-
 require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/session.php';
 require_once __DIR__ . '/../includes/auth.php';
-
 requireLogin();
-
 $user = getCurrentUser();
+$nav_type = 'user'; $active_nav = 'transactions';
+$page_title = 'Transaction History'; $page_subtitle = 'All your account activity';
+require_once __DIR__ . '/../includes/argon-header.php';
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transactions - <?php echo SITE_NAME; ?></title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-50">
-    <nav class="bg-white shadow">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center">
-                    <h1 class="text-2xl font-bold text-blue-600"><?php echo SITE_NAME; ?></h1>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <a href="/dashboard/" class="text-gray-700 hover:text-gray-900">Dashboard</a>
-                    <span class="text-gray-700"><?php echo htmlspecialchars($user['first_name']); ?></span>
-                    <form action="/api/auth/logout.php" method="POST" style="display:inline"><button type="submit" class="bg-red-600 text-white px-4 py-2 rounded">Logout</button></form>
-                </div>
-            </div>
-        </div>
-    </nav>
+<div id="transactionsList" class="card tsec"><div class="tscroll"><table><thead><tr><th>Type</th><th>Amount</th><th>Balance Before</th><th>Balance After</th><th>Description</th><th>Date</th></tr></thead><tbody><tr><td colspan="6" style="text-align:center;color:var(--argon-muted)">Loading...</td></tr></tbody></table></div></div>
+<div id="pagination" style="display:flex;justify-content:center;gap:.5rem;margin-top:1rem"></div>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h2 class="text-3xl font-bold mb-8">Transaction History</h2>
-
-        <div id="transactionsList" class="bg-white rounded shadow overflow-hidden">
-            <div class="p-6 text-center text-gray-500">Loading...</div>
-        </div>
-
-        <div id="pagination" class="flex justify-center gap-2 mt-6"></div>
-    </div>
-
-    <script>
-        let currentPage = 1;
-
-        async function loadTransactions(page = 1) {
-            currentPage = page;
-            const res = await fetch(`/api/user/transactions.php?page=${page}&limit=20`);
-            const data = await res.json();
-            const container = document.getElementById('transactionsList');
-
-            if (!data.success || !data.data.transactions.length) {
-                container.innerHTML = '<div class="p-6 text-center text-gray-500">No transactions yet.</div>';
-                document.getElementById('pagination').innerHTML = '';
-                return;
-            }
-
-            container.innerHTML = `
-                <table class="w-full">
-                    <thead class="bg-gray-100">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Type</th>
-                            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Amount</th>
-                            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Balance Before</th>
-                            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Balance After</th>
-                            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Description</th>
-                            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${data.data.transactions.map(t => `
-                            <tr class="border-t">
-                                <td class="px-6 py-4"><span class="px-2 py-1 rounded text-sm font-semibold ${typeClass(t.type)}">${t.type}</span></td>
-                                <td class="px-6 py-4">$${parseFloat(t.amount).toFixed(2)}</td>
-                                <td class="px-6 py-4">$${parseFloat(t.old_balance || 0).toFixed(2)}</td>
-                                <td class="px-6 py-4">$${parseFloat(t.new_balance || 0).toFixed(2)}</td>
-                                <td class="px-6 py-4">${escHtml(t.description || '')}</td>
-                                <td class="px-6 py-4 text-sm">${t.created_at}</td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>`;
-
-            const totalPages = Math.ceil(data.data.total / data.data.limit);
-            let pagHtml = '';
-            for (let i = 1; i <= totalPages; i++) {
-                pagHtml += `<button onclick="loadTransactions(${i})" class="px-4 py-2 rounded ${i === currentPage ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'}">${i}</button>`;
-            }
-            document.getElementById('pagination').innerHTML = pagHtml;
-        }
-
-        function typeClass(type) {
-            const map = { deposit: 'bg-green-100 text-green-800', withdrawal: 'bg-red-100 text-red-800', investment: 'bg-purple-100 text-purple-800', profit: 'bg-blue-100 text-blue-800', referral: 'bg-yellow-100 text-yellow-800', adjustment: 'bg-gray-100 text-gray-800' };
-            return map[type] || 'bg-gray-100 text-gray-800';
-        }
-
-        function escHtml(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
-
-        loadTransactions();
-    </script>
-</body>
-</html>
+<script>
+let currentPage=1;
+async function loadTransactions(page=1){currentPage=page;const r=await fetch(`/api/user/transactions.php?page=${page}&limit=20`);const d=await r.json();const c=document.getElementById('transactionsList');if(!d.success||!d.data.transactions.length){c.innerHTML='<div class="tscroll"><table><tbody><tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--argon-muted)">No transactions yet.</td></tr></tbody></table></div>';document.getElementById('pagination').innerHTML='';return}c.innerHTML=`<div class="tscroll"><table><thead><tr><th>Type</th><th>Amount</th><th>Balance Before</th><th>Balance After</th><th>Description</th><th>Date</th></tr></thead><tbody>${d.data.transactions.map(t=>`<tr><td><span class="badge ${typeClass(t.type)}">${t.type}</span></td><td style="font-weight:600">$${parseFloat(t.amount).toFixed(2)}</td><td>$${parseFloat(t.old_balance||0).toFixed(2)}</td><td>$${parseFloat(t.new_balance||0).toFixed(2)}</td><td>${escHtml(t.description||'')}</td><td style="font-size:.75rem;color:var(--argon-muted)">${t.created_at}</td></tr>`).join('')}</tbody></table></div>`;const tp=Math.ceil(d.data.total/d.data.limit);let h='';for(let i=1;i<=tp;i++)h+=`<button onclick="loadTransactions(${i})" style="padding:.35rem .85rem;border-radius:.25rem;font-size:.82rem;border:1px solid var(--argon-border);cursor:pointer;${i===currentPage?'background:var(--argon-primary);color:#fff;border-color:var(--argon-primary)':'background:var(--argon-white);color:var(--argon-text)'}">${i}</button>`;document.getElementById('pagination').innerHTML=h}
+function typeClass(t){const m={deposit:'b-success',withdrawal:'b-danger',investment:'b-primary',profit:'b-info',referral:'b-warning',adjustment:'b-default'};return m[t]||'b-default'}
+function escHtml(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+loadTransactions();
+</script>
+<?php require_once __DIR__ . '/../includes/argon-footer.php'; ?>

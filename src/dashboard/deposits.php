@@ -1,223 +1,45 @@
 <?php
-/**
- * PRIMEAXIS INVESTMENT PLATFORM
- * User Dashboard — Deposits
- */
-
 require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/session.php';
 require_once __DIR__ . '/../includes/auth.php';
-
 requireLogin();
-
 $user = getCurrentUser();
+$nav_type = 'user'; $active_nav = 'deposits';
+$page_title = 'My Deposits'; $page_subtitle = 'Deposit cryptocurrency to your account';
+require_once __DIR__ . '/../includes/argon-header.php';
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Deposits - <?php echo SITE_NAME; ?></title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link rel="stylesheet" href="/assets/css/app.css">
-</head>
-<body class="bg-gray-50">
-    <nav class="bg-white shadow">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center">
-                    <h1 class="text-2xl font-bold text-blue-600"><?php echo SITE_NAME; ?></h1>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <a href="/dashboard/" class="text-gray-700 hover:text-gray-900">Dashboard</a>
-                    <span class="text-gray-700"><?php echo htmlspecialchars($user['first_name']); ?></span>
-                    <form action="/api/auth/logout.php" method="POST" style="display:inline">
-                        <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded">Logout</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </nav>
+<div style="display:flex;justify-content:flex-end;margin-bottom:1.25rem">
+    <button onclick="showCreateModal()" style="background:var(--argon-success);color:#fff;padding:.5rem 1.2rem;border-radius:.25rem;border:none;cursor:pointer;font-weight:600">+ New Deposit</button>
+</div>
+<div id="depositsList" class="card tsec"><div class="tscroll"><table><thead><tr><th>Amount</th><th>Crypto</th><th>Status</th><th>Date</th></tr></thead><tbody><tr><td colspan="4" style="text-align:center;color:var(--argon-muted)">Loading...</td></tr></tbody></table></div></div>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div class="flex justify-between items-center mb-8">
-            <h2 class="text-3xl font-bold">My Deposits</h2>
-            <button onclick="showCreateModal()" class="bg-green-600 text-white px-6 py-2 rounded font-semibold">New Deposit</button>
-        </div>
+<div id="createModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:center;justify-content:center">
+    <div class="card" style="max-width:460px;width:90%"><div class="card-header"><h6>New Deposit</h6></div>
+    <div class="card-body"><form id="depositForm" style="display:flex;flex-direction:column;gap:.75rem">
+        <div><label style="font-size:.78rem;font-weight:600;color:var(--argon-dark);display:block;margin-bottom:.25rem">Amount (USD)</label><input type="number" name="amount" step="0.01" min="0.01" required style="width:100%;padding:.45rem .6rem;border:1px solid var(--argon-border);border-radius:.25rem;font-size:.82rem"></div>
+        <div><label style="font-size:.78rem;font-weight:600;color:var(--argon-dark);display:block;margin-bottom:.25rem">Cryptocurrency</label><select name="payment_method" required style="width:100%;padding:.45rem .6rem;border:1px solid var(--argon-border);border-radius:.25rem;font-size:.82rem"><option value="">Select cryptocurrency...</option><option value="btc">Bitcoin (BTC)</option><option value="usdt">USDT (Tether)</option><option value="ethereum">Ethereum (ETH)</option></select></div>
+        <div style="display:flex;gap:.5rem;justify-content:flex-end;margin-top:.25rem"><button type="button" onclick="hideCreateModal()" style="background:var(--argon-light);border:1px solid var(--argon-border);padding:.45rem 1.2rem;border-radius:.25rem;cursor:pointer;font-size:.82rem">Cancel</button><button type="submit" style="background:var(--argon-primary);color:#fff;border:none;padding:.45rem 1.2rem;border-radius:.25rem;cursor:pointer;font-weight:600;font-size:.82rem">Continue</button></div>
+    </form></div></div></div>
 
-        <div id="depositsList" class="bg-white rounded shadow overflow-hidden">
-            <div class="p-6 text-center text-gray-500">Loading...</div>
-        </div>
-    </div>
+<div id="walletModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:210;align-items:center;justify-content:center">
+    <div class="card" style="max-width:460px;width:90%"><div class="card-header"><h6 style="color:var(--argon-success)"><i class="fas fa-check-circle"></i> Deposit Request Created</h6></div>
+    <div class="card-body" style="display:flex;flex-direction:column;gap:.75rem">
+        <div style="background:rgba(94,114,228,.1);border-left:4px solid var(--argon-primary);padding:.75rem;border-radius:.25rem"><p style="font-size:.75rem;color:var(--argon-muted);margin-bottom:.15rem">Please send exactly:</p><p style="font-size:1.25rem;font-weight:700;color:var(--argon-dark)" id="walletAmount">$0.00</p></div>
+        <div style="background:var(--argon-light);border:1px solid var(--argon-border);border-radius:.25rem;padding:.75rem"><p style="font-size:.7rem;color:var(--argon-muted);margin-bottom:.2rem;font-weight:600;text-transform:uppercase">Wallet Address</p><div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem"><code style="font-size:.72rem;word-break:break-all;color:var(--argon-dark)" id="walletAddress">Loading...</code><button onclick="copyWallet()" style="background:none;border:none;color:var(--argon-primary);cursor:pointer;font-weight:600;font-size:.75rem;flex-shrink:0"><i class="fas fa-copy"></i> Copy</button></div></div>
+        <div style="background:rgba(251,99,64,.1);border-left:4px solid var(--argon-warning);padding:.75rem;border-radius:.25rem"><p style="font-size:.75rem;color:var(--argon-text)"><strong>Important:</strong> Send exactly the amount shown. Your deposit will be credited once payment is confirmed.</p></div>
+        <div style="background:var(--argon-light);border-radius:.25rem;padding:.5rem .75rem"><p style="font-size:.7rem;color:var(--argon-muted)">Reference ID: <strong id="walletRef" style="color:var(--argon-dark)">-</strong></p></div>
+        <div style="display:flex;gap:.5rem;justify-content:flex-end"><button onclick="hideWalletModal()" style="background:var(--argon-light);border:1px solid var(--argon-border);padding:.45rem 1.2rem;border-radius:.25rem;cursor:pointer;font-size:.82rem">Done</button><button onclick="copyWallet()" style="background:var(--argon-primary);color:#fff;border:none;padding:.45rem 1.2rem;border-radius:.25rem;cursor:pointer;font-weight:600;font-size:.82rem"><i class="fas fa-copy"></i> Copy Address</button></div>
+    </div></div></div>
 
-    <!-- Create Deposit Modal -->
-    <div id="createModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center hidden z-40">
-        <div class="bg-white rounded shadow-lg p-8 max-w-md w-full mx-4">
-            <h3 class="text-2xl font-bold mb-4">New Deposit</h3>
-            <form id="depositForm" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Amount (USD)</label>
-                    <input type="number" name="amount" step="0.01" min="0.01" required 
-                           class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Cryptocurrency</label>
-                    <select name="payment_method" required 
-                            class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="">Select cryptocurrency...</option>
-                        <option value="btc">Bitcoin (BTC)</option>
-                        <option value="usdt">USDT (Tether)</option>
-                        <option value="ethereum">Ethereum (ETH)</option>
-                    </select>
-                </div>
-                <div class="flex gap-2">
-                    <button type="submit" class="flex-1 bg-blue-600 text-white py-2 rounded font-semibold hover:bg-blue-700">Continue</button>
-                    <button type="button" onclick="hideCreateModal()" class="flex-1 bg-gray-300 text-gray-800 py-2 rounded font-semibold hover:bg-gray-400">Cancel</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Wallet Address Modal -->
-    <div id="walletModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center hidden z-50">
-        <div class="bg-white rounded shadow-lg p-8 max-w-md w-full mx-4">
-            <h3 class="text-2xl font-bold mb-4 text-green-600">✓ Deposit Request Created</h3>
-            
-            <div class="space-y-4 mb-6">
-                <div class="bg-blue-50 border-l-4 border-blue-600 p-4">
-                    <p class="text-sm text-gray-600 mb-1">Please send exactly:</p>
-                    <p class="text-2xl font-bold text-gray-900" id="walletAmount">$0.00</p>
-                </div>
-
-                <div class="bg-gray-50 border border-gray-200 rounded p-4">
-                    <p class="text-xs text-gray-600 mb-2 uppercase font-semibold">Wallet Address</p>
-                    <div class="flex items-center justify-between">
-                        <code class="text-xs font-mono break-all text-gray-900" id="walletAddress">Loading...</code>
-                        <button type="button" onclick="copyWallet()" class="ml-2 text-blue-600 hover:text-blue-800 font-semibold text-sm flex-shrink-0">Copy</button>
-                    </div>
-                </div>
-
-                <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4">
-                    <p class="text-sm text-gray-700">
-                        <strong>Important:</strong> Send exactly the amount shown above. Your deposit will be credited once payment is confirmed.
-                    </p>
-                </div>
-
-                <div class="bg-gray-50 p-3 rounded">
-                    <p class="text-xs text-gray-600">Reference ID: <strong id="walletRef">-</strong></p>
-                </div>
-            </div>
-
-            <div class="flex gap-2">
-                <button type="button" onclick="hideWalletModal()" class="flex-1 bg-gray-300 text-gray-800 py-2 rounded font-semibold hover:bg-gray-400">Done</button>
-                <button type="button" onclick="copyWallet()" class="flex-1 bg-blue-600 text-white py-2 rounded font-semibold hover:bg-blue-700">Copy Address</button>
-            </div>
-        </div>
-    </div>
-
-    <script src="/assets/js/app.js"></script>
-    <script>
-        let currentWalletData = null;
-
-        async function loadDeposits() {
-            try {
-                const response = await apiCall('/api/deposits/list.php', 'GET');
-                const container = document.getElementById('depositsList');
-
-                if (!response.deposits || response.deposits.length === 0) {
-                    container.innerHTML = '<div class="p-6 text-center text-gray-500">No deposits yet.</div>';
-                    return;
-                }
-
-                const cryptoLabels = {
-                    'btc': 'Bitcoin',
-                    'usdt': 'USDT',
-                    'ethereum': 'Ethereum'
-                };
-
-                container.innerHTML = `
-                    <table class="w-full">
-                        <thead class="bg-gray-100">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Amount</th>
-                                <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Crypto</th>
-                                <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Status</th>
-                                <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${response.deposits.map(d => `
-                                <tr class="border-t hover:bg-gray-50">
-                                    <td class="px-6 py-4 font-semibold">$${parseFloat(d.amount).toFixed(2)}</td>
-                                    <td class="px-6 py-4">${cryptoLabels[d.payment_method] || d.payment_method}</td>
-                                    <td class="px-6 py-4">
-                                        <span class="px-2 py-1 rounded text-sm font-medium
-                                            ${d.status === 'approved' ? 'bg-green-100 text-green-800' : 
-                                              d.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
-                                              'bg-red-100 text-red-800'}">
-                                            ${d.status.charAt(0).toUpperCase() + d.status.slice(1)}
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4 text-sm text-gray-600">${new Date(d.created_at).toLocaleDateString()}</td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>`;
-            } catch (error) {
-                document.getElementById('depositsList').innerHTML = `<div class="p-6 text-center text-red-600">Error loading deposits: ${error}</div>`;
-            }
-        }
-
-        function showCreateModal() {
-            document.getElementById('createModal').classList.remove('hidden');
-        }
-
-        function hideCreateModal() {
-            document.getElementById('createModal').classList.add('hidden');
-            document.getElementById('depositForm').reset();
-        }
-
-        function showWalletModal(data) {
-            currentWalletData = data;
-            document.getElementById('walletAmount').textContent = '$' + parseFloat(data.amount).toFixed(2);
-            document.getElementById('walletAddress').textContent = data.wallet_address;
-            document.getElementById('walletRef').textContent = data.reference;
-            document.getElementById('walletModal').classList.remove('hidden');
-        }
-
-        function hideWalletModal() {
-            document.getElementById('walletModal').classList.add('hidden');
-            hideCreateModal();
-            loadDeposits();
-        }
-
-        function copyWallet() {
-            const address = document.getElementById('walletAddress').textContent;
-            navigator.clipboard.writeText(address).then(() => {
-                showAlert('Wallet address copied to clipboard!', 'success');
-            });
-        }
-
-        document.getElementById('depositForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const formData = new FormData(e.target);
-
-            try {
-                const result = await apiCall('/api/deposits/create.php', 'POST', formData);
-                if (result && result.success) {
-                    showWalletModal(result.data);
-                } else if (result) {
-                    showAlert(result.message, 'error');
-                }
-            } catch (error) {
-                showAlert(error, 'error');
-            }
-        });
-
-        // Load deposits on page load
-        loadDeposits();
-    </script>
-</body>
-</html>
+<script>
+let currentWalletData=null;
+async function loadDeposits(){try{const r=await apiCall('/api/deposits/list.php','GET');const c=document.getElementById('depositsList');if(!r.deposits||r.deposits.length===0){c.innerHTML='<div class="tscroll"><table><tbody><tr><td colspan="4" style="text-align:center;padding:2rem;color:var(--argon-muted)">No deposits yet.</td></tr></tbody></table></div>';return}const l={btc:'Bitcoin',usdt:'USDT',ethereum:'Ethereum'};c.innerHTML=`<div class="tscroll"><table><thead><tr><th>Amount</th><th>Crypto</th><th>Status</th><th>Date</th></tr></thead><tbody>${r.deposits.map(d=>`<tr><td style="font-weight:600">$${parseFloat(d.amount).toFixed(2)}</td><td>${l[d.payment_method]||d.payment_method}</td><td><span class="badge ${d.status==='approved'?'b-success':d.status==='pending'?'b-warning':'b-danger'}">${d.status.charAt(0).toUpperCase()+d.status.slice(1)}</span></td><td style="font-size:.75rem;color:var(--argon-muted)">${new Date(d.created_at).toLocaleDateString()}</td></tr>`).join('')}</tbody></table></div>`}catch(e){c.innerHTML=`<div style="text-align:center;padding:2rem;color:var(--argon-danger)">Error loading deposits: ${e}</div>`}}
+function showCreateModal(){document.getElementById('createModal').style.display='flex'}
+function hideCreateModal(){document.getElementById('createModal').style.display='none';document.getElementById('depositForm').reset()}
+function showWalletModal(data){currentWalletData=data;document.getElementById('walletAmount').textContent='$'+parseFloat(data.amount).toFixed(2);document.getElementById('walletAddress').textContent=data.wallet_address;document.getElementById('walletRef').textContent=data.reference;document.getElementById('walletModal').style.display='flex'}
+function hideWalletModal(){document.getElementById('walletModal').style.display='none';hideCreateModal();loadDeposits()}
+function copyWallet(){const a=document.getElementById('walletAddress').textContent;navigator.clipboard.writeText(a).then(()=>{showAlert('Wallet address copied!','success')})}
+document.getElementById('depositForm').addEventListener('submit',async(e)=>{e.preventDefault();const f=new FormData(e.target);try{const r=await apiCall('/api/deposits/create.php','POST',f);if(r&&r.success){showWalletModal(r.data)}else if(r){showAlert(r.message,'error')}}catch(e){showAlert(e,'error')}});
+loadDeposits();
+</script>
+<?php require_once __DIR__ . '/../includes/argon-footer.php'; ?>
