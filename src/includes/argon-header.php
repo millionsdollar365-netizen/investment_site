@@ -34,6 +34,7 @@ $user_nav = [
     ['slug' => 'investments',  'icon' => 'fa-chart-line', 'label' => 'Investments',  'url' => '/dashboard/investments.php'],
     ['slug' => 'deposits',     'icon' => 'fa-coins',      'label' => 'Deposits',     'url' => '/dashboard/deposits.php'],
     ['slug' => 'withdrawals',  'icon' => 'fa-wallet',     'label' => 'Withdrawals',  'url' => '/dashboard/withdrawals.php'],
+    ['slug' => 'earnings',     'icon' => 'fa-coins',      'label' => 'Earnings',     'url' => '/dashboard/earnings.php'],
     ['slug' => 'transactions', 'icon' => 'fa-list',       'label' => 'Transactions', 'url' => '/dashboard/transactions.php'],
     ['slug' => 'referrals',    'icon' => 'fa-users',      'label' => 'Referrals',    'url' => '/dashboard/referrals.php'],
     ['slug' => 'profile',      'icon' => 'fa-user-circle','label' => 'Profile',      'url' => '/dashboard/profile.php'],
