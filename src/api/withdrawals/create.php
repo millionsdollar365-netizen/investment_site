@@ -48,6 +48,8 @@ $user_balance = (float) $db->fetchOne(
     [$user_id]
 )['balance'];
 
+$old_balance = $user_balance;
+
 if ($amount > $user_balance) {
     error('Insufficient balance. Available: ' . formatCurrency($user_balance));
 }
@@ -65,6 +67,6 @@ $db->query(
 
 $withdrawal_id = $db->lastInsertId();
 
-createTransaction($user_id, 'withdrawal', $amount, 'Withdrawal to ' . $bank_name, $withdrawal_id, 'withdrawals');
+createTransaction($user_id, 'withdrawal', $amount, 'Withdrawal to ' . $bank_name, $withdrawal_id, 'withdrawals', $old_balance);
 
 success('Withdrawal request submitted', ['withdrawal_id' => $withdrawal_id]);

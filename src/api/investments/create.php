@@ -63,6 +63,8 @@ $daily_roi_amount = $amount * ((float) $plan['daily_roi'] / 100);
 $start_date = date('Y-m-d H:i:s');
 $end_date = date('Y-m-d H:i:s', strtotime("+{$plan['duration_days']} days"));
 
+$old_balance = getUserBalance($user_id);
+
 $db->query(
     "UPDATE users SET balance = balance - ? WHERE id = ?",
     [$amount, $user_id]
@@ -76,6 +78,6 @@ $db->query(
 
 $investment_id = $db->lastInsertId();
 
-createTransaction($user_id, 'investment', $amount, 'Investment in ' . $plan['name'], $investment_id, 'investments');
+createTransaction($user_id, 'investment', $amount, 'Investment in ' . $plan['name'], $investment_id, 'investments', $old_balance);
 
 success('Investment created', ['investment_id' => $investment_id]);

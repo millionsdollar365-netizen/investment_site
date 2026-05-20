@@ -27,12 +27,11 @@ $pending_deposits_amount = (float) $db->fetchOne("SELECT COALESCE(SUM(amount), 0
 $pending_withdrawals = (int) $db->fetchOne("SELECT COUNT(*) as count FROM withdrawals WHERE status = 'pending'")['count'];
 $pending_withdrawals_amount = (float) $db->fetchOne("SELECT COALESCE(SUM(amount), 0) as total FROM withdrawals WHERE status = 'pending'")['total'];
 $total_balance = (float) $db->fetchOne("SELECT COALESCE(SUM(balance), 0) as total FROM users")['total'];
-$total_interest = (float) $db->fetchOne("SELECT COALESCE(SUM(interest_balance), 0) as total FROM users")['total'];
 
 success('Dashboard stats', [
     'users' => ['total' => $total_users, 'active' => $active_users],
     'investments' => ['total_amount' => $total_invested, 'active_count' => $active_investments],
     'deposits' => ['pending_count' => $pending_deposits, 'pending_amount' => $pending_deposits_amount],
     'withdrawals' => ['pending_count' => $pending_withdrawals, 'pending_amount' => $pending_withdrawals_amount],
-    'balances' => ['total' => $total_balance, 'total_interest' => $total_interest],
+    'balances' => ['total' => $total_balance],
 ]);

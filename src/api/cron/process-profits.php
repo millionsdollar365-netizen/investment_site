@@ -34,12 +34,14 @@ foreach ($investments as $inv) {
         [$inv['daily_roi'], $inv['id']]
     );
 
+    $old_balance = getUserBalance($inv['user_id']);
+
     $db->query(
-        "UPDATE users SET interest_balance = interest_balance + ? WHERE id = ?",
+        "UPDATE users SET balance = balance + ? WHERE id = ?",
         [$inv['daily_roi'], $inv['user_id']]
     );
 
-    createTransaction($inv['user_id'], 'profit', $inv['daily_roi'], 'Daily ROI — ' . $inv['plan_name'], $inv['id'], 'investments');
+    createTransaction($inv['user_id'], 'profit', $inv['daily_roi'], 'Daily ROI — ' . $inv['plan_name'], $inv['id'], 'investments', $old_balance);
 
     $processed++;
     $total_profit += $inv['daily_roi'];

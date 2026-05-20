@@ -46,12 +46,14 @@ $db->query(
     [$admin_id, $reason, $withdrawal_id]
 );
 
+$old_balance = getUserBalance($withdrawal['user_id']);
+
 $db->query(
     "UPDATE users SET balance = balance + ? WHERE id = ?",
     [$withdrawal['amount'], $withdrawal['user_id']]
 );
 
-createTransaction($withdrawal['user_id'], 'adjustment', $withdrawal['amount'], 'Withdrawal rejected — refund', $withdrawal_id, 'withdrawals');
+createTransaction($withdrawal['user_id'], 'adjustment', $withdrawal['amount'], 'Withdrawal rejected — refund', $withdrawal_id, 'withdrawals', $old_balance);
 
 auditLog('admin_reject_withdrawal', 'withdrawals', $withdrawal_id, ['status' => 'pending'], ['status' => 'rejected']);
 

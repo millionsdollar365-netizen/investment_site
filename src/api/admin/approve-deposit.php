@@ -41,12 +41,14 @@ $db->query(
     [$admin_id, $deposit_id]
 );
 
+$old_balance = getUserBalance($deposit['user_id']);
+
 $db->query(
     "UPDATE users SET balance = balance + ? WHERE id = ?",
     [$deposit['amount'], $deposit['user_id']]
 );
 
-createTransaction($deposit['user_id'], 'deposit', $deposit['amount'], 'Deposit approved', $deposit_id, 'deposits');
+createTransaction($deposit['user_id'], 'deposit', $deposit['amount'], 'Deposit approved', $deposit_id, 'deposits', $old_balance);
 
 auditLog('admin_approve_deposit', 'deposits', $deposit_id, ['status' => 'pending'], ['status' => 'approved']);
 

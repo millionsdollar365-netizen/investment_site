@@ -148,12 +148,15 @@ function auditLog($action, $entity_type = null, $entity_id = null, $old_values =
 /**
  * Create transaction record
  */
-function createTransaction($user_id, $type, $amount, $description = '', $reference_id = null, $reference_table = null) {
+function createTransaction($user_id, $type, $amount, $description = '', $reference_id = null, $reference_table = null, $old_balance = null) {
     $db = Database::getInstance();
-    
-    // Get old balance
-    $old_balance = getUserBalance($user_id);
-    
+
+    // Use provided old_balance or fetch current
+    if ($old_balance === null) {
+        $old_balance = getUserBalance($user_id);
+    }
+    $old_balance = (float) $old_balance;
+
     // Calculate new balance
     $new_balance = $old_balance;
     if (in_array($type, ['deposit', 'profit', 'referral'])) {

@@ -31,10 +31,10 @@ require_once __DIR__ . '/../includes/argon-header.php';
     </div>
     <div class="stat-card">
         <div class="stat-body">
-            <div class="stat-label">Interest Earned</div>
-            <div class="stat-value" id="statInterest">—</div>
+            <div class="stat-label">Total Invested</div>
+            <div class="stat-value" id="statInvested">—</div>
         </div>
-        <div class="stat-icon bg-success"><i class="fas fa-percent"></i></div>
+        <div class="stat-icon bg-success"><i class="fas fa-chart-line"></i></div>
     </div>
     <div class="stat-card">
         <div class="stat-body">
@@ -96,7 +96,7 @@ async function loadDashboard() {
 
     const d = data.data;
     document.getElementById('statBalance').textContent = '$' + parseFloat(d.balance).toFixed(2);
-    document.getElementById('statInterest').textContent = '$' + parseFloat(d.interest_balance).toFixed(2);
+    document.getElementById('statInvested').textContent = '$' + parseFloat(d.total_invested).toFixed(2);
     document.getElementById('statInvestments').textContent = d.active_investments;
     document.getElementById('statReferrals').textContent = d.referral_count;
 

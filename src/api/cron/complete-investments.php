@@ -35,12 +35,14 @@ foreach ($expired as $inv) {
     );
 
     $return_amount = $inv['amount'];
+    $old_balance = getUserBalance($inv['user_id']);
+
     $db->query(
         "UPDATE users SET balance = balance + ? WHERE id = ?",
         [$return_amount, $inv['user_id']]
     );
 
-    createTransaction($inv['user_id'], 'investment', $return_amount, 'Investment completed — principal returned', $inv['id'], 'investments');
+    createTransaction($inv['user_id'], 'investment', $return_amount, 'Investment completed — principal returned', $inv['id'], 'investments', $old_balance);
 
     $completed++;
     $total_returned += $return_amount;

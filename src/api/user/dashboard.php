@@ -21,7 +21,7 @@ if (!isSessionValid()) {
 $user_id = getCurrentUserId();
 $db = Database::getInstance();
 
-$user = $db->fetchOne("SELECT balance, interest_balance, referral_code FROM users WHERE id = ?", [$user_id]);
+$user = $db->fetchOne("SELECT balance, referral_code FROM users WHERE id = ?", [$user_id]);
 
 $active_investments = (int) $db->fetchOne(
     "SELECT COUNT(*) as count FROM investments WHERE user_id = ? AND status = 'active'",
@@ -55,7 +55,6 @@ $recent_transactions = $db->fetchAll(
 
 success('Dashboard data', [
     'balance' => (float) $user['balance'],
-    'interest_balance' => (float) $user['interest_balance'],
     'active_investments' => $active_investments,
     'total_invested' => $total_invested,
     'referral_code' => $user['referral_code'],
