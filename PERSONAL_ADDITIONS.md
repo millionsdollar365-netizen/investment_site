@@ -788,3 +788,87 @@ After deployment or local testing, verify:
 ---
 
 *End of personal additions log for tag `CLAUDE-2026-05-18-ARGON-DASHBOARD`.*
+
+---
+
+## 25. CLAUDE-2026-05-20-PLAN-CRUD
+
+**Tag:** `CLAUDE-2026-05-20-PLAN-CRUD`
+**Date:** May 20, 2026
+**Assistant:** Claude Opus 4.7
+
+### 25.1 Admin plan management
+- `api/admin/plans.php` — Extended with POST handler for create/update/toggle
+- `admin/plans.php` — Create/Edit modal with all plan fields, toggle status on click
+- Full server-side validation (name, min/max amounts, duration, ROI, status)
+
+### 25.2 Investment plan loading bug fixed
+- `dashboard/investments.php` — Plans dropdown never loaded because `options.length` check was always 1 (default `<option>`). Fixed to `<= 1`. Added live plan details display (ROI, duration, min/max) when selecting a plan. Auto-sets amount input min/max.
+
+---
+
+## 26. CLAUDE-2026-05-20-BALANCE-UNIFICATION
+
+**Tag:** `CLAUDE-2026-05-20-BALANCE-UNIFICATION`
+**Date:** May 20, 2026
+**Assistant:** Claude Opus 4.7
+
+### 26.1 Unified balance
+- Removed `interest_balance` from user dashboard API, admin dashboard API
+- All profit now goes directly to `balance` (in `process-profits.php`)
+- Dashboard frontend: Replaced "Interest Earned" stat with "Total Invested"
+
+### 26.2 Transaction old/new balance bug fixed
+- **Root cause:** `createTransaction()` called `getUserBalance()` AFTER the balance was already updated, so `old_balance` was the new value and `new_balance` was wrong
+- **Fix:** Added optional `$old_balance` parameter to `createTransaction()`. All 6 callers now capture balance BEFORE the update:
+  - `api/admin/approve-deposit.php`
+  - `api/cron/process-profits.php`
+  - `api/cron/complete-investments.php`
+  - `api/investments/create.php`
+  - `api/withdrawals/create.php`
+  - `api/admin/reject-withdrawal.php`
+
+### 26.3 Deposits loading bug fixed
+- `dashboard/deposits.php` — `loadDeposits()` used `r.deposits` (undefined — data was at `r.data.deposits`)
+- Fixed by switching to direct `fetch` pattern (matching withdrawals/transactions)
+
+### 26.4 File manifest
+
+| Path | Action |
+|------|--------|
+| `src/api/admin/dashboard.php` | Modified (remove total_interest) |
+| `src/api/user/dashboard.php` | Modified (remove interest_balance) |
+| `src/api/cron/process-profits.php` | Modified (balance not interest_balance, fix old_balance) |
+| `src/api/cron/complete-investments.php` | Modified (fix old_balance) |
+| `src/api/investments/create.php` | Modified (fix old_balance) |
+| `src/api/withdrawals/create.php` | Modified (fix old_balance) |
+| `src/api/admin/approve-deposit.php` | Modified (fix old_balance) |
+| `src/api/admin/reject-withdrawal.php` | Modified (fix old_balance) |
+| `src/includes/functions.php` | Modified (add $old_balance param to createTransaction) |
+| `src/dashboard/index.php` | Modified (replace interest stat with total invested) |
+| `src/dashboard/deposits.php` | Modified (fix data path, switch to direct fetch) |
+
+---
+
+## 27. CLAUDE-2026-05-20-EARNINGS-PAGE
+
+**Tag:** `CLAUDE-2026-05-20-EARNINGS-PAGE`
+**Date:** May 20, 2026
+**Assistant:** Claude Opus 4.7
+
+### 27.1 New earnings tracker
+- `api/user/earnings.php` — Returns total profit earned + list of profit transactions with plan names
+- `dashboard/earnings.php` — Stat cards (total earned, count) + detailed table (date, plan, amount)
+- `includes/argon-header.php` — Added "Earnings" link to user sidebar nav
+
+### 27.2 File manifest
+
+| Path | Action |
+|------|--------|
+| `src/api/user/earnings.php` | Created |
+| `src/dashboard/earnings.php` | Created |
+| `src/includes/argon-header.php` | Modified (add earnings nav link) |
+
+---
+
+*End of personal additions log for tag `CLAUDE-2026-05-20-EARNINGS-PAGE`.*

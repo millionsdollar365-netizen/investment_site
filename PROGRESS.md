@@ -170,6 +170,12 @@
 | 10 | May 18 | 9 | Argon Dashboard Phase A+B — CSS/JS assets + PHP header/footer includes | ✅ |
 | 11 | May 18 | 9 | Argon Dashboard Phase C — convert all 23 pages from Tailwind to Argon | ✅ |
 | 12 | May 18 | 9 | Public pages Argon conversion — index, login, register, forgot/reset | ✅ |
+| 13 | May 20 | 9 | Admin plan CRUD (create/edit/toggle) + investment plan loading fix | ✅ |
+| 14 | May 20 | 9 | Balance unification (remove interest_balance, single balance) | ✅ |
+| 15 | May 20 | 9 | Fix transaction old/new balance tracking (6 callers) | ✅ |
+| 16 | May 20 | 9 | Fix deposits page loading + switch to direct fetch pattern | ✅ |
+| 17 | May 20 | 9 | Earnings page — profit/interest tracker for users | ✅ |
+| 18 | May 20 | 9 | Fix logout (sidebar GET → POST form) | ✅ |
 
 ---
 
@@ -212,7 +218,7 @@
 
 <!-- Claude | 2026-05-18 | Footer updated for Phase 9 - Site LIVE, production issues tracked -->
 
-**Last Updated:** May 18, 2026 — Argon Dashboard UI complete, **SITE LIVE IN PRODUCTION**<br>
-**Current Focus:** Phase 9 — Fix remaining production issues + configure wallets/email/cron<br>
+**Last Updated:** May 20, 2026 — Balance unified, deposits fixed, earnings page added, plan CRUD complete<br>
+**Current Focus:** Phase 9 — Withdrawal improvements + remaining production issues<br>
 **Issues Tracked In:** [PRODUCTION_ISSUES.md](PRODUCTION_ISSUES.md)<br>
-**Changelog:** [PERSONAL_ADDITIONS.md §22-24](PERSONAL_ADDITIONS.md)
+**Changelog:** [PERSONAL_ADDITIONS.md §22-27](PERSONAL_ADDITIONS.md)
