@@ -82,9 +82,13 @@ $logout_url = $nav_type === 'admin' ? '/api/admin/logout.php' : '/api/auth/logou
             </a></li>
         <?php endforeach; ?>
         <hr class="sb-divider">
-        <li><a href="<?php echo $logout_url; ?>" class="nav-link" style="color:var(--argon-danger)">
-            <i class="fas fa-sign-out-alt"></i><span>Logout</span>
-        </a></li>
+        <li>
+            <form action="<?php echo $logout_url; ?>" method="POST" style="display:contents">
+                <button type="submit" class="nav-link" style="color:var(--argon-danger);background:none;border:none;cursor:pointer;width:100%;text-align:left;font-family:inherit">
+                    <i class="fas fa-sign-out-alt"></i><span>Logout</span>
+                </button>
+            </form>
+        </li>
     </ul>
 </nav>
 
