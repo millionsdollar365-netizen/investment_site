@@ -83,13 +83,20 @@ createTransaction($user_id, 'investment', $amount, 'Investment in ' . $plan['nam
 
 $user = $db->fetchOne("SELECT email, first_name FROM users WHERE id = ?", [$user_id]);
 if ($user) {
+    $daily = $amount * ((float) $plan['daily_roi'] / 100);
+    $total_return = $daily * $plan['duration_days'];
+    $total_payout = $amount + $total_return;
+
     Mail::sendInvestmentConfirmation($user['email'], $user['first_name'], [
-        'plan_name'      => $plan['name'],
-        'amount'         => '$' . number_format($amount, 2),
-        'daily_roi'      => $plan['daily_roi'],
-        'duration'       => $plan['duration_days'],
-        'end_date'       => date('M d, Y', strtotime($end_date)),
-        'transaction_id' => $investment_id,
+        'plan_name'       => $plan['name'],
+        'amount'          => '$' . number_format($amount, 2),
+        'daily_roi'       => $plan['daily_roi'],
+        'daily_amount'    => '$' . number_format($daily, 2),
+        'duration'        => $plan['duration_days'],
+        'end_date'        => date('M d, Y', strtotime($end_date)),
+        'expected_return' => '$' . number_format($total_return, 2),
+        'total_payout'    => '$' . number_format($total_payout, 2),
+        'transaction_id'  => $investment_id,
     ]);
 }
 

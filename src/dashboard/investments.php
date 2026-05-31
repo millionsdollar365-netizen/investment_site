@@ -151,6 +151,24 @@ document.getElementById('investForm').addEventListener('submit', async (e) => {
     if (data.success) {
         hideCreateModal();
         loadInvestments();
+        const plan = plansData[formData.get('plan_id')];
+        const amt = parseFloat(formData.get('amount'));
+        const daily = (amt * parseFloat(plan.daily_roi) / 100).toFixed(2);
+        const totalReturn = (daily * plan.duration_days).toFixed(2);
+        const totalPayout = (amt + parseFloat(totalReturn)).toFixed(2);
+        Swal.fire({
+            icon: 'success',
+            title: 'Investment Created!',
+            html: `<div style="text-align:left;font-size:.85rem;line-height:1.8">
+                <b>Plan:</b> ${escHtml(plan.name)}<br>
+                <b>Amount:</b> $${amt.toFixed(2)}<br>
+                <b>Daily ROI:</b> ${plan.daily_roi}% ($${daily}/day)<br>
+                <b>Duration:</b> ${plan.duration_days} days<br>
+                <b>Expected Return:</b> $${totalReturn}<br>
+                <b>Total Payout:</b> $${totalPayout}
+            </div>`,
+            confirmButtonColor: '#2dce89'
+        });
     } else {
         alert(data.message);
     }
