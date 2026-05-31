@@ -31,6 +31,12 @@ requireAdminLogout();
     </div>
 <script>
 document.getElementById('adminLoginForm').addEventListener('submit',async(e)=>{e.preventDefault();const f=new FormData(e.target);f.append('csrf_token',document.querySelector('meta[name="csrf-token"]').content);const r=await fetch('/api/admin/login.php',{method:'POST',body:f});const d=await r.json();if(d.success){window.location.href='/admin/'}else{alert(d.message)}});
+// Logout redirect alert
+const urlParams=new URLSearchParams(window.location.search);
+if(urlParams.get('logout')==='1'){
+    Swal.fire({icon:'success',title:'Logged Out',text:'You have been logged out successfully.',timer:2500,showConfirmButton:false});
+    window.history.replaceState({},document.title,window.location.pathname);
+}
 </script>
 </body>
 </html>

@@ -62,5 +62,13 @@ require_once __DIR__ . '/includes/session.php';
     </div>
 
     <footer style="text-align:center"><div class="foot-inner"><div>&copy; <?php echo date('Y'); ?> <?php echo SITE_NAME; ?></div></div></footer>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+const urlParams=new URLSearchParams(window.location.search);
+if(urlParams.get('logout')==='1'){
+    Swal.fire({icon:'success',title:'Logged Out',text:'You have been logged out successfully.',timer:2500,showConfirmButton:false});
+    window.history.replaceState({},document.title,window.location.pathname);
+}
+</script>
 </body>
 </html>

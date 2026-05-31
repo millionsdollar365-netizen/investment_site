@@ -1,7 +1,7 @@
 <?php
 /**
  * PRIMEAXIS INVESTMENT PLATFORM
- * API: Admin logout (POST only — clears session and redirects)
+ * API: Admin logout (POST only — clears session, redirects to admin login)
  */
 
 require_once __DIR__ . '/../../includes/config.php';
@@ -15,5 +15,5 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 logoutAdmin();
-header('Location: ' . rtrim(SITE_URL, '/') . '/admin/login.php', true, 302);
+header('Location: ' . rtrim(SITE_URL, '/') . '/admin/login.php?logout=1', true, 302);
 exit;
