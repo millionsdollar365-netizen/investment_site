@@ -1,167 +1,111 @@
 <?php
 /**
  * PRIMEAXIS INVESTMENT PLATFORM
- * Email Handler (PHPMailer Wrapper)
+ * Email Handler — Authenticated SMTP
+ *
+ * Uses PHP sockets for SMTP auth (no PHPMailer dependency).
+ * Falls back to PHP mail() if SMTP fails.
  */
 
 require_once __DIR__ . '/config.php';
 
 class Mail {
-    private static $instance = null;
-    private $mailer;
-    
-    private function __construct() {
-        // For now, using PHP mail() function
-        // In production, consider using PHPMailer library
-    }
-    
-    /**
-     * Get singleton instance
-     */
-    public static function getInstance() {
-        if (self::$instance === null) {
-            self::$instance = new Mail();
-        }
-        return self::$instance;
-    }
-    
-    /**
-     * Send email using SMTP
-     */
+
     public static function send($to, $subject, $body, $is_html = true) {
-        $headers = "MIME-Version: 1.0" . "\r\n";
-        $headers .= "Content-type: " . ($is_html ? "text/html" : "text/plain") . "; charset=UTF-8" . "\r\n";
-        $headers .= "From: " . MAIL_FROM_NAME . " <" . MAIL_FROM_EMAIL . ">" . "\r\n";
-        $headers .= "Reply-To: " . MAIL_FROM_EMAIL . "\r\n";
-        
-        return mail($to, $subject, $body, $headers);
+        $host   = defined('MAIL_HOST')     ? MAIL_HOST     : 'localhost';
+        $port   = defined('MAIL_PORT')     ? MAIL_PORT     : 587;
+        $user   = defined('MAIL_USERNAME') ? MAIL_USERNAME : '';
+        $pass   = defined('MAIL_PASSWORD') ? MAIL_PASSWORD : '';
+        $from   = defined('MAIL_FROM_EMAIL') ? MAIL_FROM_EMAIL : $user;
+        $from_n = defined('MAIL_FROM_NAME')  ? MAIL_FROM_NAME  : SITE_NAME;
+        $ctype  = $is_html ? 'text/html' : 'text/plain';
+
+        // Try SMTP first
+        try {
+            $errno = 0; $errstr = '';
+            $sock = @fsockopen($host, $port, $errno, $errstr, 15);
+            if (!$sock) throw new \Exception("Connect failed: $errstr");
+
+            self::expect($sock, '220');
+            fwrite($sock, "EHLO $host\r\n");           self::expect($sock, '250');
+            fwrite($sock, "STARTTLS\r\n");              self::expect($sock, '220');
+            stream_socket_enable_crypto($sock, true, STREAM_CRYPTO_METHOD_TLS_CLIENT);
+            fwrite($sock, "EHLO $host\r\n");           self::expect($sock, '250');
+            fwrite($sock, "AUTH LOGIN\r\n");            self::expect($sock, '334');
+            fwrite($sock, base64_encode($user)."\r\n"); self::expect($sock, '334');
+            fwrite($sock, base64_encode($pass)."\r\n"); self::expect($sock, '235');
+            fwrite($sock, "MAIL FROM:<$from>\r\n");     self::expect($sock, '250');
+            fwrite($sock, "RCPT TO:<$to>\r\n");         self::expect($sock, '250');
+            fwrite($sock, "DATA\r\n");                  self::expect($sock, '354');
+
+            $msg = "From: $from_n <$from>\r\n"
+                 . "To: $to\r\n"
+                 . "Subject: $subject\r\n"
+                 . "MIME-Version: 1.0\r\n"
+                 . "Content-type: $ctype; charset=UTF-8\r\n"
+                 . "\r\n"
+                 . "$body\r\n.\r\n";
+            fwrite($sock, $msg);
+            self::expect($sock, '250');
+            fwrite($sock, "QUIT\r\n");
+            fclose($sock);
+            return true;
+
+        } catch (\Throwable $e) {
+            error_log('SMTP failed (' . $e->getMessage() . ') — fallback to mail()');
+
+            $hdr  = "MIME-Version: 1.0\r\nContent-type: $ctype; charset=UTF-8\r\n";
+            $hdr .= "From: $from_n <$from>\r\nReply-To: $from\r\n";
+            return @mail($to, $subject, $body, $hdr);
+        }
     }
-    
-    /**
-     * Send registration confirmation email
-     */
-    public static function sendRegistrationConfirmation($email, $first_name, $verification_link) {
-        $subject = 'Welcome to ' . SITE_NAME;
-        
-        $body = "
-        <html>
-        <body>
-            <h2>Welcome, $first_name!</h2>
-            <p>Thank you for registering on " . SITE_NAME . "</p>
-            <p><a href='$verification_link'>Click here to verify your email</a></p>
-            <p>If you didn't create this account, please ignore this email.</p>
-            <br>
-            <p>Best regards,<br>" . SITE_NAME . "</p>
-        </body>
-        </html>
-        ";
-        
-        return self::send($email, $subject, $body, true);
+
+    private static function expect($sock, $code) {
+        $reply = '';
+        for ($i = 0; $i < 50; $i++) {
+            $line = fgets($sock, 515);
+            if ($line === false) break;
+            $reply .= $line;
+            if (isset($line[3]) && $line[3] === ' ') break;
+        }
+        $got = substr($reply, 0, 3);
+        if ($got !== $code) throw new \Exception("Expected $code, got $got — $reply");
+        return $reply;
     }
-    
-    /**
-     * Send password reset email
-     */
+
+    // ── Templates ──
+
+    public static function sendWelcome($email, $first_name) {
+        $subj = 'Welcome to ' . SITE_NAME;
+        $body = "<h2>Welcome, $first_name!</h2><p>Your account has been created.</p><p><a href='" . SITE_URL . "/login.php'>Login here</a></p><p>— " . SITE_NAME . "</p>";
+        return self::send($email, $subj, $body);
+    }
+
     public static function sendPasswordReset($email, $first_name, $reset_link) {
-        $subject = 'Password Reset Request - ' . SITE_NAME;
-        
-        $body = "
-        <html>
-        <body>
-            <h2>Password Reset Request</h2>
-            <p>Hi $first_name,</p>
-            <p>We received a request to reset your password.</p>
-            <p><a href='$reset_link'>Click here to reset your password</a></p>
-            <p>This link will expire in 30 minutes.</p>
-            <p>If you didn't request this, please ignore this email.</p>
-            <br>
-            <p>Best regards,<br>" . SITE_NAME . "</p>
-        </body>
-        </html>
-        ";
-        
-        return self::send($email, $subject, $body, true);
+        $subj = 'Password Reset — ' . SITE_NAME;
+        $body = "<h2>Password Reset</h2><p>Hi $first_name,</p><p>Click below to reset:</p><p><a href='$reset_link'>$reset_link</a></p><p>Expires in 30 min.</p><p>— " . SITE_NAME . "</p>";
+        return self::send($email, $subj, $body);
     }
-    
-    /**
-     * Send investment confirmation email
-     */
+
     public static function sendInvestmentConfirmation($email, $first_name, $amount, $plan_name, $duration) {
-        $subject = 'Investment Confirmation - ' . SITE_NAME;
-        
-        $body = "
-        <html>
-        <body>
-            <h2>Investment Confirmation</h2>
-            <p>Hi $first_name,</p>
-            <p>Your investment has been successfully created!</p>
-            <table border='1' cellpadding='10'>
-                <tr><td>Investment Plan</td><td>$plan_name</td></tr>
-                <tr><td>Amount</td><td>" . formatCurrency($amount) . "</td></tr>
-                <tr><td>Duration</td><td>$duration days</td></tr>
-                <tr><td>Status</td><td>Active</td></tr>
-            </table>
-            <p>Your investment will mature in $duration days.</p>
-            <br>
-            <p>Best regards,<br>" . SITE_NAME . "</p>
-        </body>
-        </html>
-        ";
-        
-        return self::send($email, $subject, $body, true);
+        $subj = 'Investment Confirmed — ' . SITE_NAME;
+        $body = "<h2>Investment Created</h2><p>Hi $first_name,</p><p>Plan: <strong>$plan_name</strong><br>Amount: <strong>" . formatCurrency($amount) . "</strong><br>Duration: <strong>$duration days</strong></p><p>— " . SITE_NAME . "</p>";
+        return self::send($email, $subj, $body);
     }
-    
-    /**
-     * Send deposit request confirmation
-     */
-    public static function sendDepositConfirmation($email, $first_name, $amount) {
-        $subject = 'Deposit Request Received - ' . SITE_NAME;
-        
-        $body = "
-        <html>
-        <body>
-            <h2>Deposit Request Received</h2>
-            <p>Hi $first_name,</p>
-            <p>We have received your deposit request for " . formatCurrency($amount) . "</p>
-            <p>Your deposit is pending approval from our team.</p>
-            <p>You will receive a notification once it has been approved.</p>
-            <br>
-            <p>Best regards,<br>" . SITE_NAME . "</p>
-        </body>
-        </html>
-        ";
-        
-        return self::send($email, $subject, $body, true);
+
+    public static function sendDepositApproved($email, $first_name, $amount) {
+        $subj = 'Deposit Approved — ' . SITE_NAME;
+        $body = "<h2>Deposit Approved</h2><p>Hi $first_name,</p><p>Your deposit of <strong>" . formatCurrency($amount) . "</strong> has been approved and credited.</p><p>— " . SITE_NAME . "</p>";
+        return self::send($email, $subj, $body);
     }
-    
-    /**
-     * Send withdrawal request confirmation
-     */
-    public static function sendWithdrawalConfirmation($email, $first_name, $amount) {
-        $subject = 'Withdrawal Request Received - ' . SITE_NAME;
-        
-        $body = "
-        <html>
-        <body>
-            <h2>Withdrawal Request Received</h2>
-            <p>Hi $first_name,</p>
-            <p>We have received your withdrawal request for " . formatCurrency($amount) . "</p>
-            <p>Your withdrawal is pending approval from our team.</p>
-            <p>You will receive a notification once it has been processed.</p>
-            <br>
-            <p>Best regards,<br>" . SITE_NAME . "</p>
-        </body>
-        </html>
-        ";
-        
-        return self::send($email, $subject, $body, true);
+
+    public static function sendWithdrawalProcessed($email, $first_name, $amount, $status) {
+        $subj = "Withdrawal $status — " . SITE_NAME;
+        $body = "<h2>Withdrawal $status</h2><p>Hi $first_name,</p><p>Your withdrawal of <strong>" . formatCurrency($amount) . "</strong> has been $status.</p><p>— " . SITE_NAME . "</p>";
+        return self::send($email, $subj, $body);
     }
-    
-    /**
-     * Send admin notification
-     */
+
     public static function sendAdminNotification($subject, $body) {
-        return self::send(ADMIN_EMAIL, "[ADMIN] $subject", $body, true);
+        return self::send(defined('ADMIN_EMAIL') ? ADMIN_EMAIL : $GLOBALS['_ENV']['ADMIN_EMAIL'] ?? '', "[ADMIN] $subject", $body);
     }
 }
-?>
