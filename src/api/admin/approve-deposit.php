@@ -8,6 +8,7 @@ require_once __DIR__ . '/../../includes/config.php';
 require_once __DIR__ . '/../../includes/response.php';
 require_once __DIR__ . '/../../includes/admin-session.php';
 require_once __DIR__ . '/../../includes/functions.php';
+require_once __DIR__ . '/../../includes/mail.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     error('Method not allowed', null, 405);
@@ -51,5 +52,15 @@ $db->query(
 createTransaction($deposit['user_id'], 'deposit', $deposit['amount'], 'Deposit approved', $deposit_id, 'deposits', $old_balance);
 
 auditLog('admin_approve_deposit', 'deposits', $deposit_id, ['status' => 'pending'], ['status' => 'approved']);
+
+$dep_user = $db->fetchOne("SELECT email, first_name FROM users WHERE id = ?", [$deposit['user_id']]);
+if ($dep_user) {
+    Mail::sendDepositApproved($dep_user['email'], $dep_user['first_name'], [
+        'amount'         => '$' . number_format($deposit['amount'], 2),
+        'payment_method' => strtoupper($deposit['payment_method']),
+        'transaction_ref'=> $deposit['transaction_ref'] ?? '—',
+        'deposit_id'     => $deposit_id,
+    ]);
+}
 
 success('Deposit approved');

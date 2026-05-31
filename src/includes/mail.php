@@ -1,30 +1,144 @@
 <?php
 /**
  * PRIMEAXIS INVESTMENT PLATFORM
- * Email Handler — Authenticated SMTP
+ * Email Handler — Authenticated SMTP + HTML templates
  *
- * Uses PHP sockets for SMTP auth (no PHPMailer dependency).
- * Falls back to PHP mail() if SMTP fails.
+ * Templates live in src/messages/ — edit them there, no PHP changes needed.
+ * Uses {{placeholder}} syntax. Conditional blocks: {{#key}}...{{/key}}
  */
 
 require_once __DIR__ . '/config.php';
 
 class Mail {
 
-    public static function send($to, $subject, $body, $is_html = true) {
-        $host   = defined('MAIL_HOST')     ? MAIL_HOST     : 'localhost';
-        $port   = defined('MAIL_PORT')     ? MAIL_PORT     : 587;
-        $user   = defined('MAIL_USERNAME') ? MAIL_USERNAME : '';
-        $pass   = defined('MAIL_PASSWORD') ? MAIL_PASSWORD : '';
-        $from   = defined('MAIL_FROM_EMAIL') ? MAIL_FROM_EMAIL : $user;
-        $from_n = defined('MAIL_FROM_NAME')  ? MAIL_FROM_NAME  : SITE_NAME;
-        $ctype  = $is_html ? 'text/html' : 'text/plain';
+    private static $tplDir = null;
 
-        // Try SMTP first
+    private static function tplDir() {
+        if (self::$tplDir === null) {
+            self::$tplDir = dirname(__DIR__) . '/messages/';
+        }
+        return self::$tplDir;
+    }
+
+    // ── Public API ──
+
+    public static function sendWelcome($email, $first_name) {
+        return self::render('welcome', [
+            'first_name' => $first_name,
+            'email'      => $email,
+        ], 'Welcome to ' . SITE_NAME, $email);
+    }
+
+    public static function sendPasswordReset($email, $first_name, $reset_link) {
+        return self::render('password-reset', [
+            'first_name' => $first_name,
+            'reset_link' => $reset_link,
+        ], 'Password Reset — ' . SITE_NAME, $email);
+    }
+
+    public static function sendInvestmentConfirmation($email, $first_name, $data) {
+        return self::render('investment-confirmation', array_merge($data, [
+            'first_name' => $first_name,
+        ]), 'Investment Confirmed — ' . SITE_NAME, $email);
+    }
+
+    public static function sendDepositApproved($email, $first_name, $data) {
+        return self::render('deposit-approved', array_merge($data, [
+            'first_name' => $first_name,
+        ]), 'Deposit Approved — ' . SITE_NAME, $email);
+    }
+
+    public static function sendWithdrawalUpdate($email, $first_name, $data) {
+        $status = $data['status'] ?? 'updated';
+        // Dynamic color/icon based on status
+        if ($status === 'approved') {
+            $data['header_color'] = '#2dce89,#2dcecc';
+            $data['status_bg']    = '#e8f5e9';
+            $data['status_icon']  = '&#x2705;';
+            $data['status_color'] = '#1aae6f';
+            $data['amount_color'] = '#f5365c';
+            $data['refunded']     = false;
+        } elseif ($status === 'rejected') {
+            $data['header_color'] = '#f5365c,#f56036';
+            $data['status_bg']    = '#fff5f5';
+            $data['status_icon']  = '&#x274C;';
+            $data['status_color'] = '#f5365c';
+            $data['amount_color'] = '#2dce89';
+            $data['refunded']     = true;
+        } else {
+            $data['header_color'] = '#fb6340,#fbb140';
+            $data['status_bg']    = '#fff8e1';
+            $data['status_icon']  = '&#x23F3;';
+            $data['status_color'] = '#c4541a';
+            $data['amount_color'] = '#f5365c';
+            $data['refunded']     = false;
+        }
+        return self::render('withdrawal-update', array_merge($data, [
+            'first_name' => $first_name,
+        ]), "Withdrawal $status — " . SITE_NAME, $email);
+    }
+
+    public static function sendAdminNotification($subject, $body, $action_url = '', $action_label = '') {
+        return self::render('admin-notification', [
+            'subject'      => $subject,
+            'body'         => $body,
+            'action_url'   => $action_url,
+            'action_label' => $action_label,
+            'timestamp'    => date('Y-m-d H:i:s T'),
+        ], "[ADMIN] $subject", ADMIN_EMAIL);
+    }
+
+    // ── Template engine ──
+
+    private static function render($template, $data, $subject, $to) {
+        $file = self::tplDir() . $template . '.html';
+        if (!file_exists($file)) {
+            error_log("Mail template missing: $file");
+            return false;
+        }
+        $html = file_get_contents($file);
+
+        // Global defaults
+        $data['site_name']   = SITE_NAME;
+        $data['site_url']    = rtrim(SITE_URL, '/');
+        $data['year']        = date('Y');
+
+        // Replace {{key}} placeholders
+        foreach ($data as $k => $v) {
+            if (is_bool($v)) continue; // handled by conditionals
+            $html = str_replace('{{' . $k . '}}', htmlspecialchars((string) $v, ENT_QUOTES, 'UTF-8'), $html);
+        }
+
+        // Handle {{{key}}} for raw HTML (no escaping)
+        if (isset($data['body'])) {
+            $html = str_replace('{{{body}}}', $data['body'], $html);
+        }
+
+        // Handle {{#key}}...{{/key}} conditional blocks
+        $html = preg_replace_callback('/\{\{#(\w+)\}\}(.*?)\{\{\/\1\}\}/s', function ($m) use ($data) {
+            return !empty($data[$m[1]]) ? $m[2] : '';
+        }, $html);
+
+        // Clean unresolved placeholders
+        $html = preg_replace('/\{\{[\#\/]?\w+\}\}/', '', $html);
+
+        return self::transmit($to, $subject, $html);
+    }
+
+    // ── SMTP transport ──
+
+    private static function transmit($to, $subject, $html) {
+        $host = defined('MAIL_HOST') ? MAIL_HOST : 'localhost';
+        $port = defined('MAIL_PORT') ? (int) MAIL_PORT : 587;
+        $user = defined('MAIL_USERNAME') ? MAIL_USERNAME : '';
+        $pass = defined('MAIL_PASSWORD') ? MAIL_PASSWORD : '';
+        $from = defined('MAIL_FROM_EMAIL') ? MAIL_FROM_EMAIL : $user;
+        $from_n = defined('MAIL_FROM_NAME') ? MAIL_FROM_NAME : SITE_NAME;
+
         try {
             $errno = 0; $errstr = '';
             $sock = @fsockopen($host, $port, $errno, $errstr, 15);
-            if (!$sock) throw new \Exception("Connect failed: $errstr");
+            if (!$sock) throw new \Exception("Connect: $errstr");
 
             self::expect($sock, '220');
             fwrite($sock, "EHLO $host\r\n");           self::expect($sock, '250');
@@ -42,9 +156,9 @@ class Mail {
                  . "To: $to\r\n"
                  . "Subject: $subject\r\n"
                  . "MIME-Version: 1.0\r\n"
-                 . "Content-type: $ctype; charset=UTF-8\r\n"
+                 . "Content-type: text/html; charset=UTF-8\r\n"
                  . "\r\n"
-                 . "$body\r\n.\r\n";
+                 . "$html\r\n.\r\n";
             fwrite($sock, $msg);
             self::expect($sock, '250');
             fwrite($sock, "QUIT\r\n");
@@ -52,11 +166,10 @@ class Mail {
             return true;
 
         } catch (\Throwable $e) {
-            error_log('SMTP failed (' . $e->getMessage() . ') — fallback to mail()');
-
-            $hdr  = "MIME-Version: 1.0\r\nContent-type: $ctype; charset=UTF-8\r\n";
+            error_log('SMTP: ' . $e->getMessage() . ' — fallback mail()');
+            $hdr  = "MIME-Version: 1.0\r\nContent-type: text/html; charset=UTF-8\r\n";
             $hdr .= "From: $from_n <$from>\r\nReply-To: $from\r\n";
-            return @mail($to, $subject, $body, $hdr);
+            return @mail($to, $subject, $html, $hdr);
         }
     }
 
@@ -71,41 +184,5 @@ class Mail {
         $got = substr($reply, 0, 3);
         if ($got !== $code) throw new \Exception("Expected $code, got $got — $reply");
         return $reply;
-    }
-
-    // ── Templates ──
-
-    public static function sendWelcome($email, $first_name) {
-        $subj = 'Welcome to ' . SITE_NAME;
-        $body = "<h2>Welcome, $first_name!</h2><p>Your account has been created.</p><p><a href='" . SITE_URL . "/login.php'>Login here</a></p><p>— " . SITE_NAME . "</p>";
-        return self::send($email, $subj, $body);
-    }
-
-    public static function sendPasswordReset($email, $first_name, $reset_link) {
-        $subj = 'Password Reset — ' . SITE_NAME;
-        $body = "<h2>Password Reset</h2><p>Hi $first_name,</p><p>Click below to reset:</p><p><a href='$reset_link'>$reset_link</a></p><p>Expires in 30 min.</p><p>— " . SITE_NAME . "</p>";
-        return self::send($email, $subj, $body);
-    }
-
-    public static function sendInvestmentConfirmation($email, $first_name, $amount, $plan_name, $duration) {
-        $subj = 'Investment Confirmed — ' . SITE_NAME;
-        $body = "<h2>Investment Created</h2><p>Hi $first_name,</p><p>Plan: <strong>$plan_name</strong><br>Amount: <strong>" . formatCurrency($amount) . "</strong><br>Duration: <strong>$duration days</strong></p><p>— " . SITE_NAME . "</p>";
-        return self::send($email, $subj, $body);
-    }
-
-    public static function sendDepositApproved($email, $first_name, $amount) {
-        $subj = 'Deposit Approved — ' . SITE_NAME;
-        $body = "<h2>Deposit Approved</h2><p>Hi $first_name,</p><p>Your deposit of <strong>" . formatCurrency($amount) . "</strong> has been approved and credited.</p><p>— " . SITE_NAME . "</p>";
-        return self::send($email, $subj, $body);
-    }
-
-    public static function sendWithdrawalProcessed($email, $first_name, $amount, $status) {
-        $subj = "Withdrawal $status — " . SITE_NAME;
-        $body = "<h2>Withdrawal $status</h2><p>Hi $first_name,</p><p>Your withdrawal of <strong>" . formatCurrency($amount) . "</strong> has been $status.</p><p>— " . SITE_NAME . "</p>";
-        return self::send($email, $subj, $body);
-    }
-
-    public static function sendAdminNotification($subject, $body) {
-        return self::send(defined('ADMIN_EMAIL') ? ADMIN_EMAIL : $GLOBALS['_ENV']['ADMIN_EMAIL'] ?? '', "[ADMIN] $subject", $body);
     }
 }

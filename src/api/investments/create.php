@@ -10,6 +10,7 @@ require_once __DIR__ . '/../../includes/validation.php';
 require_once __DIR__ . '/../../includes/session.php';
 require_once __DIR__ . '/../../includes/auth.php';
 require_once __DIR__ . '/../../includes/functions.php';
+require_once __DIR__ . '/../../includes/mail.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     error('Method not allowed', null, 405);
@@ -79,5 +80,17 @@ $db->query(
 $investment_id = $db->lastInsertId();
 
 createTransaction($user_id, 'investment', $amount, 'Investment in ' . $plan['name'], $investment_id, 'investments', $old_balance);
+
+$user = $db->fetchOne("SELECT email, first_name FROM users WHERE id = ?", [$user_id]);
+if ($user) {
+    Mail::sendInvestmentConfirmation($user['email'], $user['first_name'], [
+        'plan_name'      => $plan['name'],
+        'amount'         => '$' . number_format($amount, 2),
+        'daily_roi'      => $plan['daily_roi'],
+        'duration'       => $plan['duration_days'],
+        'end_date'       => date('M d, Y', strtotime($end_date)),
+        'transaction_id' => $investment_id,
+    ]);
+}
 
 success('Investment created', ['investment_id' => $investment_id]);

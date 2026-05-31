@@ -8,6 +8,7 @@ require_once __DIR__ . '/../../includes/config.php';
 require_once __DIR__ . '/../../includes/response.php';
 require_once __DIR__ . '/../../includes/validation.php';
 require_once __DIR__ . '/../../includes/auth.php';
+require_once __DIR__ . '/../../includes/mail.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     error('Method not allowed', null, 405);
@@ -42,6 +43,7 @@ if ($referral_code !== null && !Validator::maxLength($referral_code, 32)) {
 $result = registerUser($first_name, $last_name, $email, $password, $referral_code);
 
 if (!empty($result['success'])) {
+    Mail::sendWelcome($email, $first_name);
     success($result['message'], ['user_id' => (int) $result['user_id']]);
 }
 
