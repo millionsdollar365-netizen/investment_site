@@ -61,7 +61,7 @@
         .btn-lg { padding: .8rem 2rem; font-size: .95rem; }
         .hamburger { display: none; background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; z-index: 2001; }
         @media (max-width: 768px) {
-            .nav-links { display: none; position: fixed; inset: 0; background: rgba(15,23,42,.99); backdrop-filter: blur(24px); flex-direction: column; justify-content: center; gap: 1.5rem; z-index: 9999; overflow-y: auto; padding: 5rem 2rem; }
+            .nav-links { display: none; position: fixed; inset: 0; background: rgba(15,23,42,.99); backdrop-filter: blur(24px); flex-direction: column; justify-content: flex-start; gap: 1.5rem; z-index: 9999; overflow-y: auto; padding: 6rem 2rem 3rem; }
             .nav-links.open { display: flex; }
             .hamburger { display: block; position: relative; z-index: 10000; }
             .nav-links .btn-gold { display: inline-block; text-align: center; animation: none; }
