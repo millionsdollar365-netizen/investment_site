@@ -57,6 +57,7 @@ define('MAIL_FROM_NAME', $_ENV['MAIL_FROM_NAME'] ?? 'Primeaxis Investment');
 define('JWT_SECRET', $_ENV['JWT_SECRET'] ?? 'your-secret-key-change-in-production');
 define('SESSION_TIMEOUT', (int)($_ENV['SESSION_TIMEOUT'] ?? 3600));
 define('PASSWORD_RESET_TIMEOUT', (int)($_ENV['PASSWORD_RESET_TIMEOUT'] ?? 1800));
+define('CRON_SECRET', $_ENV['CRON_SECRET'] ?? 'change-me-to-something-secure');
 define('SESSION_NAME', 'PRIMEAXIS_SESSION');
 
 // ============================================

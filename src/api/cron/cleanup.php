@@ -10,8 +10,16 @@
 require_once __DIR__ . '/../../includes/config.php';
 require_once __DIR__ . '/../../includes/response.php';
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    error('Method not allowed', null, 405);
+// Check execution authority: allow if CLI or if HTTP POST with valid CRON_SECRET token
+$is_cli = (php_sapi_name() === 'cli');
+if (!$is_cli) {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        error('Method not allowed', null, 405);
+    }
+    $token = $_GET['secret'] ?? $_POST['secret'] ?? '';
+    if (empty(CRON_SECRET) || !hash_equals(CRON_SECRET, $token)) {
+        error('Unauthorized', null, 401);
+    }
 }
 
 $db = Database::getInstance();

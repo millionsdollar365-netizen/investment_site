@@ -78,6 +78,18 @@ class Mail {
         ]), "Withdrawal $status — " . SITE_NAME, $email);
     }
 
+    public static function sendRoiPayout($email, $first_name, $data) {
+        return self::render('roi-payout', array_merge($data, [
+            'first_name' => $first_name,
+        ]), 'Daily ROI Credited — ' . SITE_NAME, $email);
+    }
+
+    public static function sendInvestmentCompleted($email, $first_name, $data) {
+        return self::render('investment-completed', array_merge($data, [
+            'first_name' => $first_name,
+        ]), 'Investment Term Completed — ' . SITE_NAME, $email);
+    }
+
     public static function sendAdminNotification($subject, $body, $action_url = '', $action_label = '') {
         return self::render('admin-notification', [
             'subject'      => $subject,
