@@ -59,7 +59,7 @@
         .btn-outline { border: 2px solid rgba(255,255,255,.15); color: #fff; background: transparent; }
         .btn-outline:hover { border-color: var(--gold); color: var(--gold); background: rgba(245,158,11,.05); }
         .btn-lg { padding: .8rem 2rem; font-size: .95rem; }
-        .hamburger { display: none; background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; z-index: 2001; }
+        .hamburger { display: none; background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; z-index: 10001; }
         .mobile-overlay { display:none;position:fixed;inset:0;background:rgba(15,23,42,.99);backdrop-filter:blur(24px);flex-direction:column;justify-content:center;align-items:center;gap:1.5rem;z-index:9999;overflow:hidden;padding:2rem; }
         .mobile-overlay.open { display:flex; }
         .mobile-link { color:var(--muted);text-decoration:none;font-size:1.2rem;font-weight:500;transition:color .2s; }
