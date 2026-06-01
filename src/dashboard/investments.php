@@ -20,7 +20,7 @@ require_once __DIR__ . '/../includes/argon-header.php';
 ?>
 
 <div style="display:flex;justify-content:flex-end;margin-bottom:1.25rem">
-    <button onclick="showCreateModal()" class="act-link" style="background:var(--argon-primary);color:#fff;padding:.5rem 1.2rem;border-radius:.25rem;border:none;cursor:pointer;font-weight:600">+ New Investment</button>
+    <a href="/dashboard/plans.php" class="act-link" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#0f172a;padding:.5rem 1.2rem;border-radius:.25rem;text-decoration:none;font-weight:700">+ New Investment</a>
 </div>
 
 <div id="investmentsList" class="card tsec">
