@@ -42,6 +42,16 @@ require_once __DIR__ . '/../includes/argon-header.php';
         </form>
     </div></div>
 
+    <div class="card"><div class="card-header"><h6>Payment Wallets</h6></div>
+    <div class="card-body">
+        <form id="walletsForm" style="display:flex;flex-direction:column;gap:.75rem">
+            <div><label style="font-size:.78rem;font-weight:600;color:var(--argon-dark);display:block;margin-bottom:.25rem"><i class="fab fa-bitcoin" style="color:#f7931a"></i> Bitcoin (BTC) Wallet</label><input type="text" name="wallet_btc" value="<?php echo htmlspecialchars($user['wallet_btc'] ?? ''); ?>" placeholder="Your BTC wallet address" style="width:100%;padding:.45rem .6rem;border:1px solid var(--argon-border);border-radius:.25rem;font-size:.82rem"></div>
+            <div><label style="font-size:.78rem;font-weight:600;color:var(--argon-dark);display:block;margin-bottom:.25rem"><i class="fas fa-dollar-sign" style="color:#26a17b"></i> USDT (Tether) Wallet</label><input type="text" name="wallet_usdt" value="<?php echo htmlspecialchars($user['wallet_usdt'] ?? ''); ?>" placeholder="Your USDT wallet address" style="width:100%;padding:.45rem .6rem;border:1px solid var(--argon-border);border-radius:.25rem;font-size:.82rem"></div>
+            <div><label style="font-size:.78rem;font-weight:600;color:var(--argon-dark);display:block;margin-bottom:.25rem"><i class="fab fa-ethereum" style="color:#627eea"></i> Ethereum (ETH) Wallet</label><input type="text" name="wallet_ethereum" value="<?php echo htmlspecialchars($user['wallet_ethereum'] ?? ''); ?>" placeholder="Your ETH wallet address" style="width:100%;padding:.45rem .6rem;border:1px solid var(--argon-border);border-radius:.25rem;font-size:.82rem"></div>
+            <div><button type="submit" style="background:var(--argon-primary);color:#fff;border:none;padding:.5rem 1.5rem;border-radius:.25rem;cursor:pointer;font-weight:600">Save Wallets</button></div>
+        </form>
+    </div></div>
+
     <div class="card"><div class="card-header"><h6>Account Info</h6></div>
     <div class="card-body"><div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;font-size:.82rem">
         <div><span style="color:var(--argon-muted)">Referral Code:</span> <strong><?php echo htmlspecialchars($user['referral_code']); ?></strong></div>
@@ -83,6 +93,13 @@ document.getElementById('profileForm').addEventListener('submit',async(e)=>{
     }else{
         Swal.fire({icon:'error',title:'Error',text:d.message});
     }
+});
+document.getElementById('walletsForm').addEventListener('submit',async(e)=>{
+    e.preventDefault();
+    const f=new FormData(e.target);
+    const r=await fetch('/api/user/update-profile.php',{method:'POST',body:f});
+    const d=await r.json();
+    Swal.fire({icon:d.success?'success':'error',title:d.success?'Saved':'Error',text:d.message,timer:d.success?2000:undefined,showConfirmButton:!d.success});
 });
 </script>
 <?php require_once __DIR__ . '/../includes/argon-footer.php'; ?>

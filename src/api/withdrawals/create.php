@@ -1,7 +1,6 @@
 <?php
 /**
- * PRIMEAXIS INVESTMENT PLATFORM
- * API: Create withdrawal request (JSON)
+ * API: Create withdrawal request — coin + wallet address (JSON)
  */
 
 require_once __DIR__ . '/../../includes/config.php';
@@ -23,29 +22,24 @@ $user_id = getCurrentUserId();
 $db = Database::getInstance();
 
 $amount = (float) ($_POST['amount'] ?? 0);
-$bank_name = trim($_POST['bank_name'] ?? '');
-$account_number = trim($_POST['account_number'] ?? '');
-$account_holder_name = trim($_POST['account_holder_name'] ?? '');
+$coin = strtolower(trim($_POST['coin'] ?? ''));
+$wallet_address = trim($_POST['wallet_address'] ?? '');
 
 if (!Validator::positive($amount)) {
     error('Amount must be a positive number');
 }
 
-if (!Validator::required($bank_name)) {
-    error('Bank name is required');
+$valid_coins = ['btc', 'usdt', 'ethereum'];
+if (!in_array($coin, $valid_coins)) {
+    error('Please select a valid cryptocurrency');
 }
 
-if (!Validator::required($account_number)) {
-    error('Account number is required');
-}
-
-if (!Validator::required($account_holder_name)) {
-    error('Account holder name is required');
+if (!Validator::required($wallet_address)) {
+    error('Wallet address is required. Set it in your Profile → Payment Wallets.');
 }
 
 $user_balance = (float) $db->fetchOne(
-    "SELECT balance FROM users WHERE id = ?",
-    [$user_id]
+    "SELECT balance FROM users WHERE id = ?", [$user_id]
 )['balance'];
 
 $old_balance = $user_balance;
@@ -54,19 +48,16 @@ if ($amount > $user_balance) {
     error('Insufficient balance. Available: ' . formatCurrency($user_balance));
 }
 
-$db->query(
-    "UPDATE users SET balance = balance - ? WHERE id = ?",
-    [$amount, $user_id]
-);
+$db->query("UPDATE users SET balance = balance - ? WHERE id = ?", [$amount, $user_id]);
 
 $db->query(
-    "INSERT INTO withdrawals (user_id, amount, bank_name, account_number, account_holder_name, status)
-     VALUES (?, ?, ?, ?, ?, 'pending')",
-    [$user_id, $amount, $bank_name, $account_number, $account_holder_name]
+    "INSERT INTO withdrawals (user_id, amount, coin, wallet_address, status) VALUES (?, ?, ?, ?, 'pending')",
+    [$user_id, $amount, $coin, $wallet_address]
 );
 
 $withdrawal_id = $db->lastInsertId();
 
-createTransaction($user_id, 'withdrawal', $amount, 'Withdrawal to ' . $bank_name, $withdrawal_id, 'withdrawals', $old_balance);
+$coin_labels = ['btc' => 'Bitcoin', 'usdt' => 'USDT', 'ethereum' => 'Ethereum'];
+createTransaction($user_id, 'withdrawal', $amount, 'Withdrawal to ' . $wallet_address . ' (' . $coin_labels[$coin] . ')', $withdrawal_id, 'withdrawals', $old_balance);
 
 success('Withdrawal request submitted', ['withdrawal_id' => $withdrawal_id]);

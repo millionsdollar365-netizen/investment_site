@@ -21,7 +21,7 @@ $user_id = getCurrentUserId();
 $db = Database::getInstance();
 
 $withdrawals = $db->fetchAll(
-    "SELECT id, amount, bank_name, account_number, account_holder_name, status, rejection_reason, created_at, approval_date, completed_date
+    "SELECT id, amount, coin, wallet_address, status, rejection_reason, created_at, approval_date, completed_date
      FROM withdrawals WHERE user_id = ? ORDER BY created_at DESC",
     [$user_id]
 );
