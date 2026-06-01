@@ -22,8 +22,10 @@ require_once __DIR__ . '/../includes/argon-header.php';
                 <?php endif; ?>
             </div>
             <div>
-                <label for="avatarInput" style="background:var(--argon-light);border:1px solid var(--argon-border);padding:.4rem 1rem;border-radius:.25rem;cursor:pointer;font-size:.78rem;font-weight:600;color:var(--argon-text)">Change Photo</label>
-                <input type="file" id="avatarInput" name="avatar" accept="image/jpeg,image/png" style="display:none" onchange="previewAvatar()">
+                <label for="avatarInput" id="avatarLabel" style="background:var(--argon-light);border:1px solid var(--argon-border);padding:.4rem 1rem;border-radius:.25rem;cursor:pointer;font-size:.78rem;font-weight:600;color:var(--argon-text)">
+                    <?php echo empty($user['avatar']) ? 'Upload Profile Picture' : 'Change Photo'; ?>
+                </label>
+                <input type="file" id="avatarInput" name="avatar" accept="image/jpeg,image/png" style="display:none" onchange="uploadAvatar()">
                 <div style="font-size:.7rem;color:var(--argon-muted);margin-top:.25rem">JPG or PNG, max 2MB</div>
             </div>
         </div>
@@ -49,24 +51,38 @@ require_once __DIR__ . '/../includes/argon-header.php';
     </div></div></div>
 </div>
 <script>
-function previewAvatar(){
+async function uploadAvatar(){
     const file=document.getElementById('avatarInput').files[0];
     if(!file)return;
+    // Preview immediately
     const reader=new FileReader();
     reader.onload=function(e){
         document.getElementById('avatarPreview').innerHTML='<img src="'+e.target.result+'" style="width:100%;height:100%;object-fit:cover">';
     };
     reader.readAsDataURL(file);
+    // Upload
+    const f=new FormData();
+    f.append('avatar',file);
+    const r=await fetch('/api/user/update-profile.php',{method:'POST',body:f});
+    const d=await r.json();
+    if(d.success){
+        document.getElementById('avatarInput').value='';
+        document.getElementById('avatarLabel').textContent='Change Photo';
+        Swal.fire({icon:'success',title:'Done!',text:'Profile picture updated successfully.',timer:2000,showConfirmButton:false});
+    }else{
+        Swal.fire({icon:'error',title:'Error',text:d.message});
+    }
 }
 document.getElementById('profileForm').addEventListener('submit',async(e)=>{
     e.preventDefault();
     const f=new FormData(e.target);
-    const avatarFile=document.getElementById('avatarInput').files[0];
-    if(avatarFile)f.append('avatar',avatarFile);
     const r=await fetch('/api/user/update-profile.php',{method:'POST',body:f});
     const d=await r.json();
-    alert(d.message);
-    if(d.success)document.getElementById('avatarInput').value='';
+    if(d.success){
+        Swal.fire({icon:'success',title:'Saved',text:'Profile updated successfully.',timer:2000,showConfirmButton:false});
+    }else{
+        Swal.fire({icon:'error',title:'Error',text:d.message});
+    }
 });
 </script>
 <?php require_once __DIR__ . '/../includes/argon-footer.php'; ?>
