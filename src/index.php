@@ -190,41 +190,7 @@
 </head>
 <body>
 
-<!-- Nav -->
-<nav class="nav" id="nav">
-    <div class="container nav-inner">
-        <a href="/" class="nav-logo"><img src="/assets/img/logo.svg" alt="<?php echo SITE_NAME; ?>" style="height:46px"></a>
-        <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><i class="fas fa-bars" id="menuIcon"></i></button>
-        <ul class="nav-links" id="navLinks">
-            <li><a href="#">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#features">Benefits</a></li>
-            <li><a href="#how">How It Works</a></li>
-            <li><a href="#faq">FAQ</a></li>
-            <?php if (isLoggedIn()): ?>
-                <li><a href="/dashboard/" class="btn btn-gold">Dashboard</a></li>
-            <?php else: ?>
-                <li><a href="/login.php">Login</a></li>
-                <li><a href="/register.php" class="btn btn-gold">Get Started</a></li>
-            <?php endif; ?>
-        </ul>
-    </div>
-</nav>
-
-<!-- Mobile Menu Overlay (outside nav to avoid backdrop-filter stacking context) -->
-<div class="mobile-overlay" id="mobileOverlay">
-    <a href="#" class="mobile-link">Home</a>
-    <a href="#about" class="mobile-link">About</a>
-    <a href="#features" class="mobile-link">Benefits</a>
-    <a href="#how" class="mobile-link">How It Works</a>
-    <a href="#faq" class="mobile-link">FAQ</a>
-    <?php if (isLoggedIn()): ?>
-        <a href="/dashboard/" class="btn btn-gold" style="display:inline-block;text-align:center;animation:none;font-size:1.15rem;padding:.8rem 0;margin-top:.5rem">Dashboard</a>
-    <?php else: ?>
-        <a href="/login.php" class="mobile-link">Login</a>
-        <a href="/register.php" class="btn btn-gold" style="display:inline-block;text-align:center;animation:none;font-size:1.15rem;padding:.8rem 0;margin-top:.5rem">Get Started</a>
-    <?php endif; ?>
-</div>
+<?php require_once __DIR__ . '/includes/public-header.php'; ?>
 
 <!-- Hero -->
 <section class="hero">
@@ -364,26 +330,7 @@
 window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('scrolled',window.scrollY>50));
 document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(a.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth'})}));
 setTimeout(()=>{const p=new URLSearchParams(window.location.search);if(p.get('logout')==='1'){showToast('You have successfully signed out.','success');window.history.replaceState({},document.title,window.location.pathname)};},300);
-function toggleMobileMenu(){
-    const ov=document.getElementById('mobileOverlay');
-    const icon=document.getElementById('menuIcon');
-    ov.classList.toggle('open');
-    if(ov.classList.contains('open')){
-        icon.className='fas fa-times';
-        document.body.style.overflow='hidden';
-    }else{
-        icon.className='fas fa-bars';
-        document.body.style.overflow='';
-    }
-}
-// Close overlay when clicking any link inside it
-document.addEventListener('DOMContentLoaded',()=>{
-    document.querySelectorAll('#mobileOverlay a').forEach(a=>a.addEventListener('click',()=>{
-        document.getElementById('mobileOverlay').classList.remove('open');
-        document.getElementById('menuIcon').className='fas fa-bars';
-        document.body.style.overflow='';
-    }));
-});
+// Nav & mobile menu handled by includes/public-header.php
 </script>
 </body>
 </html>

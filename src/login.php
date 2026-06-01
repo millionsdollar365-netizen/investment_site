@@ -45,8 +45,8 @@ requireLogout();
     </style>
 </head>
 <body>
-    <div class="back-home"><a href="/"><i class="fas fa-arrow-left"></i> Back to Home</a></div>
-    <div class="login-card">
+    <?php require_once __DIR__ . '/includes/public-header.php'; ?>
+    <div class="login-card" style="margin-top:5rem">
         <div class="logo"><img src="/assets/img/logo.svg" alt="<?php echo SITE_NAME; ?>"></div>
         <h2>Welcome Back</h2>
         <p class="subtitle">Login to access your dashboard</p>

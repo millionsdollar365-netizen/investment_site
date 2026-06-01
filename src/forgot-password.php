@@ -41,8 +41,8 @@ requireLogout();
     </style>
 </head>
 <body>
-    <div class="back-home"><a href="/"><i class="fas fa-arrow-left"></i> Back to Home</a></div>
-    <div class="card">
+    <?php require_once __DIR__ . '/includes/public-header.php'; ?>
+    <div class="card" style="margin-top:5rem">
         <div class="logo"><img src="/assets/img/logo.svg" alt="<?php echo SITE_NAME; ?>"></div>
         <h2>Reset Your Password</h2>
         <p class="subtitle">Enter your email and we'll send you a reset link</p>
