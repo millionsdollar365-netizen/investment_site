@@ -48,6 +48,20 @@ function showAlert(message, type = 'info') {
     });
 }
 
+/**
+ * Show toast notification (non-blocking, auto-dismiss)
+ */
+function showToast(message, type = 'success') {
+    const bg = type === 'success' ? 'linear-gradient(135deg, #22c55e, #16a34a)' :
+               type === 'error' ? 'linear-gradient(135deg, #ef4444, #dc2626)' :
+               'linear-gradient(135deg, #3b82f6, #2563eb)';
+    if (typeof Toastify !== 'undefined') {
+        Toastify({ text: message, duration: 3500, close: true, gravity: 'top', position: 'right', stopOnFocus: true, style: { background: bg, borderRadius: '10px', fontFamily: 'Inter, sans-serif', fontWeight: 500, fontSize: '.9rem', padding: '12px 20px', boxShadow: '0 8px 25px rgba(0,0,0,.3)' } }).showToast();
+    } else {
+        showAlert(message, type);
+    }
+}
+
 // Override native alert() — neutral info icon (use showAlert() for typed alerts)
 window.alert = function(message) {
     Swal.fire({

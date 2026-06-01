@@ -118,6 +118,7 @@ async function loadDashboard() {
 function escHtml(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 
 loadDashboard();
+document.addEventListener('DOMContentLoaded',()=>{const p=new URLSearchParams(window.location.search);if(p.get('login')==='1'){showToast('You have successfully signed in.','success');window.history.replaceState({},document.title,window.location.pathname)}});
 </script>
 
 <?php require_once __DIR__ . '/../includes/argon-footer.php'; ?>

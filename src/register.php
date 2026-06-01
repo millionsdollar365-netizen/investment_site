@@ -61,7 +61,7 @@ requireLogout();
         <p class="links">Already have an account? <a href="/login.php">Login here</a></p>
     </div>
 <script>
-document.getElementById('registerForm').addEventListener('submit',async(e)=>{e.preventDefault();const f=new FormData(e.target);f.append('csrf_token',document.querySelector('meta[name="csrf-token"]').content);const r=await fetch('/api/auth/register.php',{method:'POST',body:f});const d=await r.json();if(d.success){showAlert('Registration successful! Welcome aboard.','success');setTimeout(()=>{window.location.href='/login.php'},1500)}else{showAlert(d.message,'error')}});
+document.getElementById('registerForm').addEventListener('submit',async(e)=>{e.preventDefault();const f=new FormData(e.target);f.append('csrf_token',document.querySelector('meta[name="csrf-token"]').content);const r=await fetch('/api/auth/register.php',{method:'POST',body:f});const d=await r.json();if(d.success){window.location.href='/login.php?registered=1'}else{showAlert(d.message,'error')}});
 </script>
 </body>
 </html>

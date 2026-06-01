@@ -14,7 +14,9 @@ requireLogout();
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js@1.12.0/src/toastify.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js@1.12.0"></script>
     <script src="/assets/js/app.js"></script>
     <style>
         :root { --bg: #0f172a; --gold: #fbbf24; --gold-light: rgba(251,191,36,.15); --text: #f1f5f9; --muted: #94a3b8; --card-bg: rgba(30,41,59,.8); --border: rgba(148,163,184,.12); --radius: 16px; }
@@ -56,7 +58,8 @@ requireLogout();
         <p class="links" style="margin-top:.5rem">Don't have an account? <a href="/register.php">Create one</a></p>
     </div>
 <script>
-document.getElementById('loginForm').addEventListener('submit',async(e)=>{e.preventDefault();const f=new FormData(e.target);f.append('csrf_token',document.querySelector('meta[name="csrf-token"]').content);const r=await fetch('/api/auth/login.php',{method:'POST',body:f});const d=await r.json();if(d.success){window.location.href='/dashboard/'}else{showAlert(d.message,'error')}});
+document.getElementById('loginForm').addEventListener('submit',async(e)=>{e.preventDefault();const f=new FormData(e.target);f.append('csrf_token',document.querySelector('meta[name="csrf-token"]').content);const r=await fetch('/api/auth/login.php',{method:'POST',body:f});const d=await r.json();if(d.success){window.location.href='/dashboard/?login=1'}else{showAlert(d.message,'error')}});
+document.addEventListener('DOMContentLoaded',()=>{const p=new URLSearchParams(window.location.search);if(p.get('registered')==='1'){showToast('Account created! You can now sign in.','success');window.history.replaceState({},document.title,window.location.pathname)}});
 </script>
 </body>
 </html>

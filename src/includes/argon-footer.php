@@ -18,6 +18,7 @@
 
 </div><!-- /#main -->
 
+<script src="https://cdn.jsdelivr.net/npm/toastify-js@1.12.0"></script>
 <script src="/assets/js/argon.js"></script>
 <script src="/assets/js/app.js"></script>
 </body>
