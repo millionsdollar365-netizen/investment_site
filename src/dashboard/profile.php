@@ -36,7 +36,7 @@ require_once __DIR__ . '/../includes/argon-header.php';
                 <div><label style="font-size:.78rem;font-weight:600;color:var(--argon-dark);display:block;margin-bottom:.25rem">Last Name</label><input type="text" name="last_name" required value="<?php echo htmlspecialchars($user['last_name']); ?>" style="width:100%;padding:.45rem .6rem;border:1px solid var(--argon-border);border-radius:.25rem;font-size:.82rem"></div>
             </div>
             <div><label style="font-size:.78rem;font-weight:600;color:var(--argon-dark);display:block;margin-bottom:.25rem">Email</label><input type="email" disabled value="<?php echo htmlspecialchars($user['email']); ?>" style="width:100%;padding:.45rem .6rem;border:1px solid var(--argon-border);border-radius:.25rem;font-size:.82rem;background:var(--argon-light)"></div>
-            <div><label style="font-size:.78rem;font-weight:600;color:var(--argon-dark);display:block;margin-bottom:.25rem">Phone</label><input type="text" name="phone" value="<?php echo htmlspecialchars($user['phone'] ?? ''); ?>" style="width:100%;padding:.45rem .6rem;border:1px solid var(--argon-border);border-radius:.25rem;font-size:.82rem"></div>
+            <div><label style="font-size:.78rem;font-weight:600;color:var(--argon-dark);display:block;margin-bottom:.25rem">Phone</label><input type="tel" id="profilePhone" name="phone" value="<?php echo htmlspecialchars($user['phone'] ?? ''); ?>" style="width:100%;padding:.45rem .6rem;border:1px solid var(--argon-border);border-radius:.25rem;font-size:.82rem"><input type="hidden" name="phone_code" id="profilePhoneCode" value="<?php echo htmlspecialchars($user['phone_code'] ?? ''); ?>"></div>
             <div><label style="font-size:.78rem;font-weight:600;color:var(--argon-dark);display:block;margin-bottom:.25rem">Country</label><input type="text" name="country" value="<?php echo htmlspecialchars($user['country'] ?? ''); ?>" style="width:100%;padding:.45rem .6rem;border:1px solid var(--argon-border);border-radius:.25rem;font-size:.82rem"></div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
                 <div><label style="font-size:.78rem;font-weight:600;color:var(--argon-dark);display:block;margin-bottom:.25rem">City</label><input type="text" name="city" value="<?php echo htmlspecialchars($user['city'] ?? ''); ?>" style="width:100%;padding:.45rem .6rem;border:1px solid var(--argon-border);border-radius:.25rem;font-size:.82rem"></div>
@@ -82,9 +82,11 @@ async function uploadAvatar(){
         Swal.fire({icon:'error',title:'Error',text:d.message});
     }
 }
+let profileIti;document.addEventListener('DOMContentLoaded',()=>{const inp=document.querySelector('#profilePhone');if(inp&&window.intlTelInput){profileIti=window.intlTelInput(inp,{initialCountry:'auto',geoIpLookup:cb=>{fetch('https://ipapi.co/json/').then(r=>r.json()).then(d=>cb(d.country_code||'US')).catch(()=>cb('US'))},utilsScript:'https://cdn.jsdelivr.net/npm/intl-tel-input@23/build/js/utils.js'});const code='<?php echo addslashes($user['phone_code'] ?? ''); ?>';if(code)try{profileIti.setCountry(code.replace('+',''))}catch(e){}}});
 document.getElementById('profileForm').addEventListener('submit',async(e)=>{
     e.preventDefault();
     const f=new FormData(e.target);
+    if(profileIti){document.getElementById('profilePhoneCode').value=profileIti.getSelectedCountryData().dialCode}
     const r=await fetch('/api/user/update-profile.php',{method:'POST',body:f});
     const d=await r.json();
     if(d.success){

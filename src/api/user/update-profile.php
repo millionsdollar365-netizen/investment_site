@@ -23,6 +23,7 @@ $db = Database::getInstance();
 $first_name = trim($_POST['first_name'] ?? '');
 $last_name = trim($_POST['last_name'] ?? '');
 $phone = trim($_POST['phone'] ?? '');
+$phone_code = trim($_POST['phone_code'] ?? '');
 $bio = trim($_POST['bio'] ?? '');
 
 $wallet_keys = ['wallet_btc', 'wallet_usdt', 'wallet_ethereum'];
@@ -73,8 +74,8 @@ if (!$is_wallet_or_avatar) {
 
     // Update text fields
     $db->query(
-        "UPDATE users SET first_name = ?, last_name = ?, phone = ?, bio = ?, country = ?, city = ?, state = ?, zip_code = ?, address = ? WHERE id = ?",
-        [$first_name, $last_name, $phone ?: null, $bio ?: null, $country, $city, $state, $zip_code, $address, $user_id]
+        "UPDATE users SET first_name = ?, last_name = ?, phone = ?, phone_code = ?, bio = ?, country = ?, city = ?, state = ?, zip_code = ?, address = ? WHERE id = ?",
+        [$first_name, $last_name, $phone ?: null, $phone_code ?: null, $bio ?: null, $country, $city, $state, $zip_code, $address, $user_id]
     );
 }
 
