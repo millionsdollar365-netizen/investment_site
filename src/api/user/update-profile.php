@@ -25,9 +25,11 @@ $last_name = trim($_POST['last_name'] ?? '');
 $phone = trim($_POST['phone'] ?? '');
 $bio = trim($_POST['bio'] ?? '');
 
-$is_avatar_only = empty($_POST) && !empty($_FILES['avatar']);
+$wallet_keys = ['wallet_btc', 'wallet_usdt', 'wallet_ethereum'];
+$has_wallet = (bool) array_intersect_key($_POST, array_flip($wallet_keys));
+$is_wallet_or_avatar = ($has_wallet || !empty($_FILES['avatar'])) && !isset($_POST['first_name']) && !isset($_POST['last_name']);
 
-if (!$is_avatar_only) {
+if (!$is_wallet_or_avatar) {
     if (!Validator::required($first_name) || !Validator::required($last_name)) {
         error('First name and last name are required');
     }
@@ -62,7 +64,7 @@ if (!empty($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
     }
 }
 
-if (!$is_avatar_only) {
+if (!$is_wallet_or_avatar) {
     // Update text fields
     $db->query(
         "UPDATE users SET first_name = ?, last_name = ?, phone = ?, bio = ? WHERE id = ?",

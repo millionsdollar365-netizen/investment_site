@@ -43,13 +43,10 @@ require_once __DIR__ . '/../includes/argon-header.php';
     </div></div>
 
     <div class="card"><div class="card-header"><h6>Payment Wallets</h6></div>
-    <div class="card-body">
-        <form id="walletsForm" style="display:flex;flex-direction:column;gap:.75rem">
-            <div><label style="font-size:.78rem;font-weight:600;color:var(--argon-dark);display:block;margin-bottom:.25rem"><i class="fab fa-bitcoin" style="color:#f7931a"></i> Bitcoin (BTC) Wallet</label><input type="text" name="wallet_btc" value="<?php echo htmlspecialchars($user['wallet_btc'] ?? ''); ?>" placeholder="Your BTC wallet address" style="width:100%;padding:.45rem .6rem;border:1px solid var(--argon-border);border-radius:.25rem;font-size:.82rem"></div>
-            <div><label style="font-size:.78rem;font-weight:600;color:var(--argon-dark);display:block;margin-bottom:.25rem"><i class="fas fa-dollar-sign" style="color:#26a17b"></i> USDT (Tether) Wallet</label><input type="text" name="wallet_usdt" value="<?php echo htmlspecialchars($user['wallet_usdt'] ?? ''); ?>" placeholder="Your USDT wallet address" style="width:100%;padding:.45rem .6rem;border:1px solid var(--argon-border);border-radius:.25rem;font-size:.82rem"></div>
-            <div><label style="font-size:.78rem;font-weight:600;color:var(--argon-dark);display:block;margin-bottom:.25rem"><i class="fab fa-ethereum" style="color:#627eea"></i> Ethereum (ETH) Wallet</label><input type="text" name="wallet_ethereum" value="<?php echo htmlspecialchars($user['wallet_ethereum'] ?? ''); ?>" placeholder="Your ETH wallet address" style="width:100%;padding:.45rem .6rem;border:1px solid var(--argon-border);border-radius:.25rem;font-size:.82rem"></div>
-            <div><button type="submit" style="background:var(--argon-primary);color:#fff;border:none;padding:.5rem 1.5rem;border-radius:.25rem;cursor:pointer;font-weight:600">Save Wallets</button></div>
-        </form>
+    <div class="card-body" style="display:flex;flex-direction:column;gap:.75rem">
+        <div><label style="font-size:.78rem;font-weight:600;color:var(--argon-dark);display:block;margin-bottom:.25rem"><i class="fab fa-bitcoin" style="color:#f7931a"></i> Bitcoin (BTC) Wallet</label><div style="display:flex;gap:.5rem"><input type="text" id="wallet_btc" name="wallet_btc" value="<?php echo htmlspecialchars($user['wallet_btc'] ?? ''); ?>" placeholder="Your BTC wallet address" style="flex:1;padding:.45rem .6rem;border:1px solid var(--argon-border);border-radius:.25rem;font-size:.82rem"><button onclick="saveWallet('wallet_btc')" style="background:var(--argon-primary);color:#fff;border:none;padding:.45rem 1rem;border-radius:.25rem;cursor:pointer;font-weight:600;font-size:.78rem;white-space:nowrap">Save BTC</button></div></div>
+        <div><label style="font-size:.78rem;font-weight:600;color:var(--argon-dark);display:block;margin-bottom:.25rem"><i class="fas fa-dollar-sign" style="color:#26a17b"></i> USDT (Tether) Wallet</label><div style="display:flex;gap:.5rem"><input type="text" id="wallet_usdt" name="wallet_usdt" value="<?php echo htmlspecialchars($user['wallet_usdt'] ?? ''); ?>" placeholder="Your USDT wallet address" style="flex:1;padding:.45rem .6rem;border:1px solid var(--argon-border);border-radius:.25rem;font-size:.82rem"><button onclick="saveWallet('wallet_usdt')" style="background:var(--argon-primary);color:#fff;border:none;padding:.45rem 1rem;border-radius:.25rem;cursor:pointer;font-weight:600;font-size:.78rem;white-space:nowrap">Save USDT</button></div></div>
+        <div><label style="font-size:.78rem;font-weight:600;color:var(--argon-dark);display:block;margin-bottom:.25rem"><i class="fab fa-ethereum" style="color:#627eea"></i> Ethereum (ETH) Wallet</label><div style="display:flex;gap:.5rem"><input type="text" id="wallet_ethereum" name="wallet_ethereum" value="<?php echo htmlspecialchars($user['wallet_ethereum'] ?? ''); ?>" placeholder="Your ETH wallet address" style="flex:1;padding:.45rem .6rem;border:1px solid var(--argon-border);border-radius:.25rem;font-size:.82rem"><button onclick="saveWallet('wallet_ethereum')" style="background:var(--argon-primary);color:#fff;border:none;padding:.45rem 1rem;border-radius:.25rem;cursor:pointer;font-weight:600;font-size:.78rem;white-space:nowrap">Save ETH</button></div></div>
     </div></div>
 
     <div class="card"><div class="card-header"><h6>Account Info</h6></div>
@@ -94,12 +91,13 @@ document.getElementById('profileForm').addEventListener('submit',async(e)=>{
         Swal.fire({icon:'error',title:'Error',text:d.message});
     }
 });
-document.getElementById('walletsForm').addEventListener('submit',async(e)=>{
-    e.preventDefault();
-    const f=new FormData(e.target);
+async function saveWallet(key){
+    const val=document.getElementById(key).value.trim();
+    const f=new FormData();
+    f.append(key,val);
     const r=await fetch('/api/user/update-profile.php',{method:'POST',body:f});
     const d=await r.json();
     Swal.fire({icon:d.success?'success':'error',title:d.success?'Saved':'Error',text:d.message,timer:d.success?2000:undefined,showConfirmButton:!d.success});
-});
+}
 </script>
 <?php require_once __DIR__ . '/../includes/argon-footer.php'; ?>
