@@ -59,7 +59,7 @@ requireLogout();
     </div>
 <script>
 document.getElementById('loginForm').addEventListener('submit',async(e)=>{e.preventDefault();const f=new FormData(e.target);f.append('csrf_token',document.querySelector('meta[name="csrf-token"]').content);const r=await fetch('/api/auth/login.php',{method:'POST',body:f});const d=await r.json();if(d.success){window.location.href='/dashboard/?login=1'}else{showAlert(d.message,'error')}});
-document.addEventListener('DOMContentLoaded',()=>{const p=new URLSearchParams(window.location.search);if(p.get('registered')==='1'){showToast('Account created! You can now sign in.','success');window.history.replaceState({},document.title,window.location.pathname)}});
+setTimeout(()=>{const p=new URLSearchParams(window.location.search);if(p.get('registered')==='1'){showToast('Account created! You can now sign in.','success');window.history.replaceState({},document.title,window.location.pathname)};},300);
 </script>
 </body>
 </html>

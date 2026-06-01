@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js@1.12.0/src/toastify.min.css">
     <script src="https://cdn.jsdelivr.net/npm/toastify-js@1.12.0"></script>
+    <script src="/assets/js/app.js"></script>
     <style>
         :root {
             --bg: #0f172a;
@@ -336,7 +337,7 @@
 <script>
 window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('scrolled',window.scrollY>50));
 document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(a.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth'})}));
-document.addEventListener('DOMContentLoaded',()=>{const p=new URLSearchParams(window.location.search);if(p.get('logout')==='1'){showToast('You have successfully signed out.','success');window.history.replaceState({},document.title,window.location.pathname)}});
+setTimeout(()=>{const p=new URLSearchParams(window.location.search);if(p.get('logout')==='1'){showToast('You have successfully signed out.','success');window.history.replaceState({},document.title,window.location.pathname)};},300);
 </script>
 </body>
 </html>
