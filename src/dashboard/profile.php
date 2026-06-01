@@ -4,22 +4,41 @@ require_once __DIR__ . '/../includes/session.php';
 require_once __DIR__ . '/../includes/auth.php';
 requireLogin();
 $user = getCurrentUser();
+$initials = strtoupper(substr($user['first_name'], 0, 1) . substr($user['last_name'], 0, 1));
 $nav_type = 'user'; $active_nav = 'profile';
 $page_title = 'Profile'; $page_subtitle = 'Manage your personal information';
 require_once __DIR__ . '/../includes/argon-header.php';
 ?>
 <div class="duo">
     <div class="card"><div class="card-header"><h6>Personal Information</h6></div>
-    <div class="card-body"><form id="profileForm" style="display:flex;flex-direction:column;gap:.75rem">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
-            <div><label style="font-size:.78rem;font-weight:600;color:var(--argon-dark);display:block;margin-bottom:.25rem">First Name</label><input type="text" name="first_name" required value="<?php echo htmlspecialchars($user['first_name']); ?>" style="width:100%;padding:.45rem .6rem;border:1px solid var(--argon-border);border-radius:.25rem;font-size:.82rem"></div>
-            <div><label style="font-size:.78rem;font-weight:600;color:var(--argon-dark);display:block;margin-bottom:.25rem">Last Name</label><input type="text" name="last_name" required value="<?php echo htmlspecialchars($user['last_name']); ?>" style="width:100%;padding:.45rem .6rem;border:1px solid var(--argon-border);border-radius:.25rem;font-size:.82rem"></div>
+    <div class="card-body">
+        <!-- Avatar -->
+        <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem">
+            <div id="avatarPreview" style="width:72px;height:72px;border-radius:50%;overflow:hidden;flex-shrink:0;background:linear-gradient(87deg,#5e72e4,#825ee4);display:flex;align-items:center;justify-content:center">
+                <?php if (!empty($user['avatar'])): ?>
+                    <img src="<?php echo htmlspecialchars($user['avatar']); ?>" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='<span style=color:#fff;font-size:1.3rem;font-weight:700><?php echo $initials; ?></span>'">
+                <?php else: ?>
+                    <span style="color:#fff;font-size:1.3rem;font-weight:700"><?php echo $initials; ?></span>
+                <?php endif; ?>
+            </div>
+            <div>
+                <label for="avatarInput" style="background:var(--argon-light);border:1px solid var(--argon-border);padding:.4rem 1rem;border-radius:.25rem;cursor:pointer;font-size:.78rem;font-weight:600;color:var(--argon-text)">Change Photo</label>
+                <input type="file" id="avatarInput" name="avatar" accept="image/jpeg,image/png" style="display:none" onchange="previewAvatar()">
+                <div style="font-size:.7rem;color:var(--argon-muted);margin-top:.25rem">JPG or PNG, max 2MB</div>
+            </div>
         </div>
-        <div><label style="font-size:.78rem;font-weight:600;color:var(--argon-dark);display:block;margin-bottom:.25rem">Email</label><input type="email" disabled value="<?php echo htmlspecialchars($user['email']); ?>" style="width:100%;padding:.45rem .6rem;border:1px solid var(--argon-border);border-radius:.25rem;font-size:.82rem;background:var(--argon-light)"></div>
-        <div><label style="font-size:.78rem;font-weight:600;color:var(--argon-dark);display:block;margin-bottom:.25rem">Phone</label><input type="text" name="phone" value="<?php echo htmlspecialchars($user['phone'] ?? ''); ?>" style="width:100%;padding:.45rem .6rem;border:1px solid var(--argon-border);border-radius:.25rem;font-size:.82rem"></div>
-        <div><label style="font-size:.78rem;font-weight:600;color:var(--argon-dark);display:block;margin-bottom:.25rem">Bio</label><textarea name="bio" rows="3" style="width:100%;padding:.45rem .6rem;border:1px solid var(--argon-border);border-radius:.25rem;font-size:.82rem"><?php echo htmlspecialchars($user['bio'] ?? ''); ?></textarea></div>
-        <div><button type="submit" style="background:var(--argon-primary);color:#fff;border:none;padding:.5rem 1.5rem;border-radius:.25rem;cursor:pointer;font-weight:600">Update Profile</button></div>
-    </form></div></div>
+
+        <form id="profileForm" style="display:flex;flex-direction:column;gap:.75rem">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
+                <div><label style="font-size:.78rem;font-weight:600;color:var(--argon-dark);display:block;margin-bottom:.25rem">First Name</label><input type="text" name="first_name" required value="<?php echo htmlspecialchars($user['first_name']); ?>" style="width:100%;padding:.45rem .6rem;border:1px solid var(--argon-border);border-radius:.25rem;font-size:.82rem"></div>
+                <div><label style="font-size:.78rem;font-weight:600;color:var(--argon-dark);display:block;margin-bottom:.25rem">Last Name</label><input type="text" name="last_name" required value="<?php echo htmlspecialchars($user['last_name']); ?>" style="width:100%;padding:.45rem .6rem;border:1px solid var(--argon-border);border-radius:.25rem;font-size:.82rem"></div>
+            </div>
+            <div><label style="font-size:.78rem;font-weight:600;color:var(--argon-dark);display:block;margin-bottom:.25rem">Email</label><input type="email" disabled value="<?php echo htmlspecialchars($user['email']); ?>" style="width:100%;padding:.45rem .6rem;border:1px solid var(--argon-border);border-radius:.25rem;font-size:.82rem;background:var(--argon-light)"></div>
+            <div><label style="font-size:.78rem;font-weight:600;color:var(--argon-dark);display:block;margin-bottom:.25rem">Phone</label><input type="text" name="phone" value="<?php echo htmlspecialchars($user['phone'] ?? ''); ?>" style="width:100%;padding:.45rem .6rem;border:1px solid var(--argon-border);border-radius:.25rem;font-size:.82rem"></div>
+            <div><label style="font-size:.78rem;font-weight:600;color:var(--argon-dark);display:block;margin-bottom:.25rem">Bio</label><textarea name="bio" rows="3" style="width:100%;padding:.45rem .6rem;border:1px solid var(--argon-border);border-radius:.25rem;font-size:.82rem"><?php echo htmlspecialchars($user['bio'] ?? ''); ?></textarea></div>
+            <div><button type="submit" style="background:var(--argon-primary);color:#fff;border:none;padding:.5rem 1.5rem;border-radius:.25rem;cursor:pointer;font-weight:600">Update Profile</button></div>
+        </form>
+    </div></div>
 
     <div class="card"><div class="card-header"><h6>Account Info</h6></div>
     <div class="card-body"><div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;font-size:.82rem">
@@ -30,6 +49,24 @@ require_once __DIR__ . '/../includes/argon-header.php';
     </div></div></div>
 </div>
 <script>
-document.getElementById('profileForm').addEventListener('submit',async(e)=>{e.preventDefault();const f=new FormData(e.target);const r=await fetch('/api/user/update-profile.php',{method:'POST',body:f});const d=await r.json();alert(d.message)});
+function previewAvatar(){
+    const file=document.getElementById('avatarInput').files[0];
+    if(!file)return;
+    const reader=new FileReader();
+    reader.onload=function(e){
+        document.getElementById('avatarPreview').innerHTML='<img src="'+e.target.result+'" style="width:100%;height:100%;object-fit:cover">';
+    };
+    reader.readAsDataURL(file);
+}
+document.getElementById('profileForm').addEventListener('submit',async(e)=>{
+    e.preventDefault();
+    const f=new FormData(e.target);
+    const avatarFile=document.getElementById('avatarInput').files[0];
+    if(avatarFile)f.append('avatar',avatarFile);
+    const r=await fetch('/api/user/update-profile.php',{method:'POST',body:f});
+    const d=await r.json();
+    alert(d.message);
+    if(d.success)document.getElementById('avatarInput').value='';
+});
 </script>
 <?php require_once __DIR__ . '/../includes/argon-footer.php'; ?>

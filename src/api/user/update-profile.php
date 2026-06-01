@@ -1,7 +1,6 @@
 <?php
 /**
- * PRIMEAXIS INVESTMENT PLATFORM
- * API: Update user profile (JSON)
+ * API: Update user profile — text fields + avatar upload (JSON)
  */
 
 require_once __DIR__ . '/../../includes/config.php';
@@ -34,10 +33,42 @@ if ($phone !== '' && !Validator::regex($phone, '/^\+?[0-9]{7,20}$/')) {
     error('Invalid phone number format');
 }
 
+// ── Avatar upload ──
+$avatar_path = null;
+if (!empty($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
+    $file = $_FILES['avatar'];
+    $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+    if (!in_array($ext, ['jpg', 'jpeg', 'png'])) {
+        error('Avatar must be JPG or PNG');
+    }
+    if ($file['size'] > 2 * 1024 * 1024) {
+        error('Avatar must be under 2MB');
+    }
+
+    $upload_dir = dirname(__DIR__, 2) . '/uploads/avatars/';
+    if (!is_dir($upload_dir)) mkdir($upload_dir, 0755, true);
+
+    $filename = 'user_' . $user_id . '.' . $ext;
+    $dest = $upload_dir . $filename;
+
+    // Remove old avatar (any extension)
+    foreach (glob($upload_dir . 'user_' . $user_id . '.*') as $old) unlink($old);
+
+    if (move_uploaded_file($file['tmp_name'], $dest)) {
+        $avatar_path = '/uploads/avatars/' . $filename;
+    }
+}
+
+// Update text fields
 $db->query(
     "UPDATE users SET first_name = ?, last_name = ?, phone = ?, bio = ? WHERE id = ?",
     [$first_name, $last_name, $phone ?: null, $bio ?: null, $user_id]
 );
+
+// Update avatar path if uploaded
+if ($avatar_path) {
+    $db->query("UPDATE users SET avatar = ? WHERE id = ?", [$avatar_path, $user_id]);
+}
 
 $user = getCurrentUser();
 success('Profile updated', ['user' => sanitizeUserForClient($user)]);

@@ -109,7 +109,14 @@ $logout_url = $nav_type === 'admin' ? '/api/admin/logout.php' : '/api/auth/logou
         </div>
         <div class="topbar-right">
             <span style="font-size:.82rem;color:var(--argon-text)"><?php echo $display_name; ?></span>
-            <div class="tb-avatar" title="<?php echo $display_name; ?>"><?php echo $initials; ?></div>
+            <?php $avatar = $nav_type === 'user' && isset($user) ? ($user['avatar'] ?? '') : ''; ?>
+            <div class="tb-avatar" title="<?php echo $display_name; ?>" style="overflow:hidden">
+                <?php if ($avatar): ?>
+                    <img src="<?php echo htmlspecialchars($avatar); ?>" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none';this.parentElement.textContent='<?php echo $initials; ?>'">
+                <?php else: ?>
+                    <?php echo $initials; ?>
+                <?php endif; ?>
+            </div>
         </div>
     </header>
 
