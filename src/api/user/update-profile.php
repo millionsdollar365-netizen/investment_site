@@ -25,12 +25,15 @@ $last_name = trim($_POST['last_name'] ?? '');
 $phone = trim($_POST['phone'] ?? '');
 $bio = trim($_POST['bio'] ?? '');
 
-if (!Validator::required($first_name) || !Validator::required($last_name)) {
-    error('First name and last name are required');
-}
+$is_avatar_only = empty($_POST) && !empty($_FILES['avatar']);
 
-if ($phone !== '' && !Validator::regex($phone, '/^\+?[0-9]{7,20}$/')) {
-    error('Invalid phone number format');
+if (!$is_avatar_only) {
+    if (!Validator::required($first_name) || !Validator::required($last_name)) {
+        error('First name and last name are required');
+    }
+    if ($phone !== '' && !Validator::regex($phone, '/^\+?[0-9]{7,20}$/')) {
+        error('Invalid phone number format');
+    }
 }
 
 // ── Avatar upload ──
@@ -59,11 +62,13 @@ if (!empty($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
     }
 }
 
-// Update text fields
-$db->query(
-    "UPDATE users SET first_name = ?, last_name = ?, phone = ?, bio = ? WHERE id = ?",
-    [$first_name, $last_name, $phone ?: null, $bio ?: null, $user_id]
-);
+if (!$is_avatar_only) {
+    // Update text fields
+    $db->query(
+        "UPDATE users SET first_name = ?, last_name = ?, phone = ?, bio = ? WHERE id = ?",
+        [$first_name, $last_name, $phone ?: null, $bio ?: null, $user_id]
+    );
+}
 
 // Update avatar path if uploaded
 if ($avatar_path) {
