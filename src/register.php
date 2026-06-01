@@ -65,6 +65,7 @@ requireLogout();
             <div class="form-group"><label>Phone Number</label><input type="tel" id="phone" name="phone" required></div>
             <input type="hidden" name="phone_code" id="phoneCode">
             <input type="hidden" name="country" id="countryCode">
+            <input type="hidden" name="referral_code" id="referralCode" value="<?php echo htmlspecialchars($_GET['ref'] ?? ''); ?>">
             <div class="form-group"><label>Password</label><input type="password" name="password" required placeholder="Min 8 characters" minlength="8"></div>
             <button type="submit" class="btn-gold">Create Account</button>
         </form>
