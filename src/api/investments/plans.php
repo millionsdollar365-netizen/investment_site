@@ -14,8 +14,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 $db = Database::getInstance();
 
 $plans = $db->fetchAll(
-    "SELECT id, name, description, min_amount, max_amount, duration_days, daily_roi, total_return
-     FROM investment_plans WHERE status = 'active' ORDER BY min_amount ASC"
+    "SELECT id, name, description, min_amount, max_amount, duration_days, daily_roi, total_return, sort_order, is_popular
+     FROM investment_plans WHERE status = 'active' ORDER BY sort_order ASC, min_amount ASC"
 );
 
 success('Investment plans', ['plans' => $plans]);

@@ -74,7 +74,7 @@ async function loadPlans(){
     if(!d.success||!d.data.plans.length){document.getElementById('plansGrid').innerHTML='<div class="pricing-card" style="grid-column:1/-1;text-align:center;padding:3rem"><p style="color:#8898aa">No investment plans available right now. Check back soon.</p></div>';return}
     d.data.plans.forEach(p=>plansData[p.id]=p);
     document.getElementById('plansGrid').innerHTML=d.data.plans.map((p,i)=>{
-        const isPopular=i===1;
+        const isPopular=p.is_popular==1;
         return `<div class="pricing-card${isPopular?' popular':''}">
             ${isPopular?'<div class="popular-badge">Most Popular</div>':''}
             <div class="pricing-header"><div class="plan-name">${escHtml(p.name)}</div><div class="plan-desc">${escHtml(p.description||'Investment plan')}</div></div>

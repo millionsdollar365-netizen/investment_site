@@ -45,6 +45,8 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $duration_days = (int) ($_POST['duration_days'] ?? 0);
         $daily_roi = (float) ($_POST['daily_roi'] ?? 0);
         $status = trim($_POST['status'] ?? 'active');
+        $sort_order = (int) ($_POST['sort_order'] ?? 0);
+        $is_popular = isset($_POST['is_popular']) ? 1 : 0;
 
         if (!Validator::required($name)) error('Plan name is required');
         if (!Validator::positive($min_amount)) error('Minimum amount must be a positive number');
@@ -54,9 +56,9 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!in_array($status, ['active', 'inactive'])) error('Invalid status');
 
         $db->query(
-            "INSERT INTO investment_plans (name, description, min_amount, max_amount, duration_days, daily_roi, status)
-             VALUES (?, ?, ?, ?, ?, ?, ?)",
-            [$name, $description, $min_amount, $max_amount, $duration_days, $daily_roi, $status]
+            "INSERT INTO investment_plans (name, description, min_amount, max_amount, duration_days, daily_roi, status, sort_order, is_popular)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            [$name, $description, $min_amount, $max_amount, $duration_days, $daily_roi, $status, $sort_order, $is_popular]
         );
 
         success('Plan created successfully', ['id' => $db->lastInsertId()]);
@@ -75,6 +77,8 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $duration_days = (int) ($_POST['duration_days'] ?? 0);
         $daily_roi = (float) ($_POST['daily_roi'] ?? 0);
         $status = trim($_POST['status'] ?? 'active');
+        $sort_order = (int) ($_POST['sort_order'] ?? 0);
+        $is_popular = isset($_POST['is_popular']) ? 1 : 0;
 
         if (!Validator::required($name)) error('Plan name is required');
         if (!Validator::positive($min_amount)) error('Minimum amount must be a positive number');
@@ -84,8 +88,8 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!in_array($status, ['active', 'inactive'])) error('Invalid status');
 
         $db->query(
-            "UPDATE investment_plans SET name=?, description=?, min_amount=?, max_amount=?, duration_days=?, daily_roi=?, status=? WHERE id=?",
-            [$name, $description, $min_amount, $max_amount, $duration_days, $daily_roi, $status, $plan_id]
+            "UPDATE investment_plans SET name=?, description=?, min_amount=?, max_amount=?, duration_days=?, daily_roi=?, status=?, sort_order=?, is_popular=? WHERE id=?",
+            [$name, $description, $min_amount, $max_amount, $duration_days, $daily_roi, $status, $sort_order, $is_popular, $plan_id]
         );
 
         success('Plan updated successfully');
