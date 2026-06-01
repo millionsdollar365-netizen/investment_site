@@ -3,249 +3,240 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title><?php echo SITE_NAME; ?> — Earn Daily Returns on Your Investments</title>
+    <title><?php echo SITE_NAME; ?> — Smart Crypto Investments</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta name="description" content="Secure investment platform with daily ROI. Invest in crypto-backed plans and earn passive income daily.">
+    <meta name="description" content="Modern investment platform. Earn daily returns on crypto-backed investment plans.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    <link href="/assets/investa/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-    <link href="/assets/investa/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/assets/investa/css/style.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        .header-logo { font-size: 1.75rem; font-weight: 700; color: #0d6efd; }
-        .header-logo i { margin-right: .5rem; }
-        .hero-overlay { background: linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,.7)); position:absolute; inset:0; }
-        .cta-btn { padding: .8rem 2.2rem; font-weight: 600; border-radius: 50px; font-size: 1rem; transition: all .3s; }
-        .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(13,110,253,.3); }
-        .stat-item { text-align: center; padding: 2rem 0; }
-        .stat-item h3 { font-size: 2.5rem; font-weight: 700; color: #0d6efd; }
-        .stat-item p { color: #6c757d; margin: 0; }
-        .investa-navbar { background: rgba(255,255,255,.97) !important; backdrop-filter: blur(10px); }
-        .investa-navbar .nav-link { font-weight: 500; color: #333 !important; margin: 0 .25rem; padding: .5rem 1rem !important; border-radius: 4px; }
-        .investa-navbar .nav-link:hover { background: #f0f4ff; color: #0d6efd !important; }
-        @media (max-width: 991px) {
-            .investa-navbar .nav-link { padding: .75rem 1rem !important; }
-            .stat-item h3 { font-size: 1.8rem; }
+        :root {
+            --bg: #0a0f1e;
+            --bg2: #111827;
+            --accent: #22d3ee;
+            --accent2: #a78bfa;
+            --text: #e2e8f0;
+            --muted: #94a3b8;
+            --card-bg: rgba(255,255,255,.04);
+            --glass: rgba(255,255,255,.06);
+            --border: rgba(255,255,255,.08);
+            --radius: 16px;
         }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+
+        /* Nav */
+        .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1rem 0; transition: all .3s; }
+        .nav.scrolled { background: rgba(10,15,30,.92); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); }
+        .nav-inner { display: flex; align-items: center; justify-content: space-between; }
+        .nav-logo { font-size: 1.35rem; font-weight: 800; color: #fff; text-decoration: none; display: flex; align-items: center; gap: .5rem; }
+        .nav-logo span { background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
+        .nav-links a { color: var(--muted); text-decoration: none; font-size: .9rem; font-weight: 500; transition: color .2s; }
+        .nav-links a:hover { color: #fff; }
+        .btn { display: inline-block; padding: .65rem 1.6rem; border-radius: 50px; font-weight: 600; font-size: .9rem; text-decoration: none; transition: all .3s; cursor: pointer; border: none; }
+        .btn-primary { background: linear-gradient(135deg, var(--accent), #06b6d4); color: #000; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(34,211,238,.3); }
+        .btn-outline { border: 2px solid rgba(255,255,255,.2); color: #fff; background: transparent; }
+        .btn-outline:hover { border-color: #fff; background: rgba(255,255,255,.05); }
+        .btn-lg { padding: .85rem 2.2rem; font-size: 1rem; }
+        .hamburger { display: none; background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; }
+        @media (max-width: 768px) {
+            .nav-links { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: var(--bg2); flex-direction: column; justify-content: center; gap: 2rem; z-index: 99; }
+            .nav-links.open { display: flex; }
+            .hamburger { display: block; position: relative; z-index: 100; }
+        }
+
+        /* Hero */
+        .hero { min-height: 100vh; display: flex; align-items: center; position: relative; padding: 8rem 0 4rem; overflow: hidden; }
+        .hero::before {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle at 30% 50%, rgba(34,211,238,.12) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 30%, rgba(167,139,250,.08) 0%, transparent 50%);
+            animation: drift 20s linear infinite;
+        }
+        @keyframes drift { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .hero-content { position: relative; z-index: 1; max-width: 700px; }
+        .hero-badge { display: inline-block; padding: .35rem 1rem; border-radius: 50px; background: var(--glass); border: 1px solid var(--border); font-size: .8rem; color: var(--accent); font-weight: 500; margin-bottom: 1.5rem; }
+        .hero h1 { font-size: clamp(2.2rem, 6vw, 3.8rem); font-weight: 900; line-height: 1.15; margin-bottom: 1.25rem; }
+        .hero h1 span { background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero p { font-size: 1.15rem; color: var(--muted); max-width: 540px; margin-bottom: 2rem; }
+        .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+        /* Stats */
+        .stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 1.5rem; margin: -3rem auto 5rem; position: relative; z-index: 2; }
+        .stat-card { background: var(--glass); backdrop-filter: blur(20px); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; text-align: center; }
+        .stat-card h3 { font-size: 1.8rem; font-weight: 800; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .stat-card p { font-size: .78rem; color: var(--muted); margin-top: .25rem; text-transform: uppercase; letter-spacing: .05em; }
+        @media (max-width: 768px) { .stats { grid-template-columns: 1fr 1fr; } }
+
+        /* Section */
+        .section { padding: 6rem 0; }
+        .section-header { text-align: center; max-width: 600px; margin: 0 auto 4rem; }
+        .section-header h2 { font-size: 2.2rem; font-weight: 800; margin-bottom: .75rem; }
+        .section-header p { color: var(--muted); font-size: 1rem; }
+
+        /* Cards */
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; }
+        .glass-card { background: var(--card-bg); backdrop-filter: blur(20px); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; transition: all .3s; }
+        .glass-card:hover { transform: translateY(-4px); border-color: rgba(34,211,238,.3); box-shadow: 0 12px 40px rgba(0,0,0,.3); }
+        .glass-card .icon { width: 56px; height: 56px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 1.25rem; }
+        .glass-card h4 { font-size: 1.1rem; font-weight: 700; margin-bottom: .5rem; }
+        .glass-card p { font-size: .88rem; color: var(--muted); line-height: 1.7; }
+
+        /* Steps */
+        .steps { display: grid; grid-template-columns: repeat(3,1fr); gap: 2rem; }
+        .step { text-align: center; padding: 2rem; position: relative; }
+        .step-num { width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 800; color: #000; margin: 0 auto 1.25rem; }
+        .step h4 { font-weight: 700; margin-bottom: .5rem; }
+        .step p { font-size: .88rem; color: var(--muted); }
+        @media (max-width: 768px) { .steps { grid-template-columns: 1fr; } }
+
+        /* Testimonials */
+        .testimonials { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; }
+        .testimonial { background: var(--glass); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; }
+        .testimonial .stars { color: #fbbf24; margin-bottom: 1rem; font-size: .9rem; }
+        .testimonial p { font-size: .9rem; color: var(--muted); font-style: italic; line-height: 1.7; margin-bottom: 1.25rem; }
+        .testimonial .author { display: flex; align-items: center; gap: .75rem; }
+        .testimonial .avatar { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: .9rem; color: #000; }
+        .testimonial .name { font-weight: 600; font-size: .9rem; }
+        .testimonial .role { font-size: .75rem; color: var(--muted); }
+        @media (max-width: 768px) { .testimonials { grid-template-columns: 1fr; } }
+
+        /* CTA */
+        .cta { background: linear-gradient(135deg, rgba(34,211,238,.08), rgba(167,139,250,.08)); border: 1px solid var(--border); border-radius: 24px; padding: 4rem 2rem; text-align: center; }
+        .cta h2 { font-size: 2.2rem; font-weight: 800; margin-bottom: .75rem; }
+        .cta p { color: var(--muted); margin-bottom: 2rem; font-size: 1.05rem; }
+
+        /* Footer */
+        .footer { border-top: 1px solid var(--border); padding: 3rem 0; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 3rem; }
+        .footer h5 { font-weight: 700; margin-bottom: 1rem; font-size: .95rem; }
+        .footer a { display: block; color: var(--muted); text-decoration: none; font-size: .85rem; margin-bottom: .5rem; transition: color .2s; }
+        .footer a:hover { color: #fff; }
+        .footer-bottom { text-align: center; padding-top: 2rem; margin-top: 2rem; border-top: 1px solid var(--border); color: var(--muted); font-size: .8rem; }
+        @media (max-width: 768px) { .footer-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
-<!-- Navbar -->
-<div class="container-fluid sticky-top px-0">
-    <nav class="navbar navbar-expand-lg investa-navbar py-3 px-4 shadow-sm">
-        <a href="/" class="navbar-brand header-logo"><i class="fas fa-chart-line" style="color:#0d6efd"></i> <?php echo SITE_NAME; ?></a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarCollapse">
-            <div class="navbar-nav ms-auto align-items-center gap-2">
-                <a href="/" class="nav-item nav-link active">Home</a>
-                <a href="#about" class="nav-item nav-link">About</a>
-                <a href="#services" class="nav-item nav-link">Services</a>
-                <a href="#plans" class="nav-item nav-link">Plans</a>
-                <?php if (isLoggedIn()): ?>
-                    <a href="/dashboard/" class="btn btn-primary cta-btn ms-2">Dashboard</a>
-                <?php else: ?>
-                    <a href="/login.php" class="nav-item nav-link">Login</a>
-                    <a href="/register.php" class="btn btn-primary cta-btn ms-2">Get Started</a>
-                <?php endif; ?>
-            </div>
-        </div>
-    </nav>
-</div>
+<!-- Nav -->
+<nav class="nav" id="nav">
+    <div class="container nav-inner">
+        <a href="/" class="nav-logo"><i class="fas fa-cubes"></i> <span><?php echo SITE_NAME; ?></span></a>
+        <button class="hamburger" id="hamburger" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#" onclick="toggleMenu()">Home</a></li>
+            <li><a href="#features" onclick="toggleMenu()">Features</a></li>
+            <li><a href="#how" onclick="toggleMenu()">How It Works</a></li>
+            <li><a href="#testimonials" onclick="toggleMenu()">Reviews</a></li>
+            <?php if (isLoggedIn()): ?>
+                <li><a href="/dashboard/" class="btn btn-primary">Dashboard</a></li>
+            <?php else: ?>
+                <li><a href="/login.php">Login</a></li>
+                <li><a href="/register.php" class="btn btn-primary">Get Started</a></li>
+            <?php endif; ?>
+        </ul>
+    </div>
+</nav>
 
 <!-- Hero -->
-<div class="container-fluid bg-dark py-5 mb-5" style="background: linear-gradient(135deg, #0d1b3e 0%, #1a3a6b 50%, #0d6efd 100%); position: relative; min-height: 85vh; display: flex; align-items: center;">
-    <div class="hero-overlay"></div>
-    <div class="container position-relative text-center text-white" style="z-index:1">
-        <p class="text-uppercase mb-3 wow fadeInUp" style="letter-spacing:.15em;font-size:.9rem;opacity:.8" data-wow-delay="0.1s">Secure & Transparent Investment Platform</p>
-        <h1 class="display-3 fw-bold mb-4 wow fadeInUp" data-wow-delay="0.3s">Earn Daily Returns on<br>Your Investments</h1>
-        <p class="lead mb-5 mx-auto wow fadeInUp" style="max-width:650px;opacity:.85" data-wow-delay="0.5s">Invest in carefully structured plans and receive daily ROI credited directly to your balance. Start small, grow big.</p>
-        <div class="d-flex justify-content-center gap-3 flex-wrap wow fadeInUp" data-wow-delay="0.7s">
-            <a href="/register.php" class="btn btn-primary cta-btn btn-lg">Get Started Now</a>
-            <a href="#services" class="btn btn-outline-light cta-btn btn-lg">Learn More</a>
+<section class="hero">
+    <div class="container hero-content">
+        <div class="hero-badge"><i class="fas fa-bolt"></i> Trusted by thousands worldwide</div>
+        <h1>Grow Your Wealth with <span>Daily Returns</span></h1>
+        <p>Invest in crypto-backed plans, earn daily ROI automatically, and withdraw anytime. Simple, transparent, profitable.</p>
+        <div class="hero-actions">
+            <a href="/register.php" class="btn btn-primary btn-lg">Start Investing Now</a>
+            <a href="#features" class="btn btn-outline btn-lg">See Features</a>
         </div>
     </div>
-</div>
+</section>
 
-<!-- Stats Bar -->
-<div class="container" style="margin-top:-5rem;position:relative;z-index:2">
-    <div class="row g-4 bg-white rounded-4 shadow-lg p-4">
-        <div class="col-6 col-md-3 stat-item"><h3 class="counter" data-target="5000">0</h3><p>Active Investors</p></div>
-        <div class="col-6 col-md-3 stat-item"><h3 class="counter" data-target="2500000">0</h3><p>Total Invested</p></div>
-        <div class="col-6 col-md-3 stat-item"><h3 class="counter" data-target="890000">0</h3><p>Profits Paid</p></div>
-        <div class="col-6 col-md-3 stat-item"><h3>24/7</h3><p>Support</p></div>
+<div class="container">
+    <div class="stats">
+        <div class="stat-card"><h3>12K+</h3><p>Active Investors</p></div>
+        <div class="stat-card"><h3>$2.5M</h3><p>Total Invested</p></div>
+        <div class="stat-card"><h3>$890K</h3><p>Profits Paid</p></div>
+        <div class="stat-card"><h3>99.9%</h3><p>Uptime</p></div>
     </div>
 </div>
 
-<!-- About -->
-<div id="about" class="container py-5 my-5">
-    <div class="row g-5 align-items-center">
-        <div class="col-lg-6 wow fadeInLeft"><img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop" alt="About" class="img-fluid rounded-4 shadow"></div>
-        <div class="col-lg-6 wow fadeInRight">
-            <h6 class="text-primary text-uppercase fw-bold mb-2">About Us</h6>
-            <h2 class="display-6 fw-bold mb-4">We Help You Build Financial Freedom</h2>
-            <p class="text-muted mb-3"><?php echo SITE_NAME; ?> is a trusted investment platform providing secure, transparent, and profitable investment opportunities. Our automated system ensures daily returns are credited on time, every time.</p>
-            <div class="d-flex gap-3 mt-4">
-                <div><i class="fas fa-check-circle text-primary me-2"></i> Secure & Encrypted</div>
-                <div><i class="fas fa-check-circle text-primary me-2"></i> Daily Payouts</div>
-                <div><i class="fas fa-check-circle text-primary me-2"></i> 24/7 Support</div>
-            </div>
-            <a href="/register.php" class="btn btn-primary cta-btn mt-4">Start Investing</a>
-        </div>
-    </div>
-</div>
-
-<!-- Services -->
-<div id="services" class="container-fluid py-5" style="background:#f8f9fa">
+<!-- Features -->
+<section class="section" id="features">
     <div class="container">
-        <div class="text-center mx-auto mb-5 wow fadeInUp" style="max-width:600px">
-            <h6 class="text-primary text-uppercase fw-bold">Our Services</h6>
-            <h2 class="display-6 fw-bold">What We Offer</h2>
-        </div>
-        <div class="row g-4">
-            <div class="col-md-6 col-lg-3 wow fadeInUp" data-wow-delay="0.1s">
-                <div class="bg-white p-4 rounded-4 shadow-sm text-center h-100">
-                    <div class="bg-primary bg-gradient rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width:70px;height:70px"><i class="fas fa-chart-line text-white fa-2x"></i></div>
-                    <h5 class="fw-bold">Investment Plans</h5>
-                    <p class="text-muted small">Choose from multiple plans with competitive daily ROI rates and flexible durations.</p>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-3 wow fadeInUp" data-wow-delay="0.3s">
-                <div class="bg-white p-4 rounded-4 shadow-sm text-center h-100">
-                    <div class="bg-success bg-gradient rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width:70px;height:70px"><i class="fas fa-coins text-white fa-2x"></i></div>
-                    <h5 class="fw-bold">Daily Profits</h5>
-                    <p class="text-muted small">Earn daily returns credited directly to your balance. Watch your money grow.</p>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-3 wow fadeInUp" data-wow-delay="0.5s">
-                <div class="bg-white p-4 rounded-4 shadow-sm text-center h-100">
-                    <div class="bg-warning bg-gradient rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width:70px;height:70px"><i class="fas fa-shield-alt text-white fa-2x"></i></div>
-                    <h5 class="fw-bold">Secure Storage</h5>
-                    <p class="text-muted small">Bank-level encryption and security protocols protect your funds 24/7.</p>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-3 wow fadeInUp" data-wow-delay="0.7s">
-                <div class="bg-white p-4 rounded-4 shadow-sm text-center h-100">
-                    <div class="bg-danger bg-gradient rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width:70px;height:70px"><i class="fas fa-headset text-white fa-2x"></i></div>
-                    <h5 class="fw-bold">24/7 Support</h5>
-                    <p class="text-muted small">Our support team is available around the clock to assist with any questions.</p>
-                </div>
-            </div>
+        <div class="section-header"><h2>Why Invest With Us</h2><p>We provide a secure, automated platform designed for consistent returns.</p></div>
+        <div class="card-grid">
+            <div class="glass-card"><div class="icon" style="background:rgba(34,211,238,.15);color:var(--accent)"><i class="fas fa-chart-line"></i></div><h4>Daily ROI</h4><p>Earn returns every single day. Your profits are automatically credited to your balance at regular intervals.</p></div>
+            <div class="glass-card"><div class="icon" style="background:rgba(167,139,250,.15);color:var(--accent2)"><i class="fas fa-lock"></i></div><h4>Bank-Grade Security</h4><p>256-bit encryption, cold storage, and real-time monitoring keep your assets protected 24/7.</p></div>
+            <div class="glass-card"><div class="icon" style="background:rgba(34,211,238,.15);color:var(--accent)"><i class="fas fa-wallet"></i></div><h4>Instant Withdrawals</h4><p>Withdraw your profits or principal anytime. BTC, USDT, and Ethereum supported with fast processing.</p></div>
+            <div class="glass-card"><div class="icon" style="background:rgba(167,139,250,.15);color:var(--accent2)"><i class="fas fa-users"></i></div><h4>Referral Program</h4><p>Earn commissions by referring friends. Get paid for every active investor you bring to the platform.</p></div>
         </div>
     </div>
-</div>
+</section>
 
 <!-- How It Works -->
-<div class="container py-5 my-5">
-    <div class="text-center mx-auto mb-5 wow fadeInUp" style="max-width:600px">
-        <h6 class="text-primary text-uppercase fw-bold">How It Works</h6>
-        <h2 class="display-6 fw-bold">3 Simple Steps</h2>
-    </div>
-    <div class="row g-4">
-        <div class="col-md-4 wow fadeInUp" data-wow-delay="0.1s">
-            <div class="text-center p-4">
-                <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width:80px;height:80px;font-size:1.8rem;font-weight:700">1</div>
-                <h5 class="fw-bold">Create Account</h5>
-                <p class="text-muted">Register in seconds. No paperwork, no hassle. Your account is ready instantly.</p>
-            </div>
-        </div>
-        <div class="col-md-4 wow fadeInUp" data-wow-delay="0.3s">
-            <div class="text-center p-4">
-                <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width:80px;height:80px;font-size:1.8rem;font-weight:700">2</div>
-                <h5 class="fw-bold">Make a Deposit</h5>
-                <p class="text-muted">Fund your account via BTC, USDT, or Ethereum. Choose an investment plan.</p>
-            </div>
-        </div>
-        <div class="col-md-4 wow fadeInUp" data-wow-delay="0.5s">
-            <div class="text-center p-4">
-                <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width:80px;height:80px;font-size:1.8rem;font-weight:700">3</div>
-                <h5 class="fw-bold">Earn Daily</h5>
-                <p class="text-muted">Sit back and watch your profits roll in daily. Withdraw anytime.</p>
-            </div>
+<section class="section" id="how" style="background:var(--glass)">
+    <div class="container">
+        <div class="section-header"><h2>Start in 3 Simple Steps</h2><p>Getting started takes less than 2 minutes.</p></div>
+        <div class="steps">
+            <div class="step"><div class="step-num">1</div><h4>Create Account</h4><p>Register with your email. No KYC required for basic accounts. Instant activation.</p></div>
+            <div class="step"><div class="step-num">2</div><h4>Deposit & Invest</h4><p>Fund your wallet via crypto. Choose an investment plan that matches your goals.</p></div>
+            <div class="step"><div class="step-num">3</div><h4>Earn Daily</h4><p>Watch your balance grow. Profits are credited daily. Withdraw anytime you want.</p></div>
         </div>
     </div>
-</div>
+</section>
 
 <!-- Testimonials -->
-<div class="container-fluid py-5" style="background:#f8f9fa">
+<section class="section" id="testimonials">
     <div class="container">
-        <div class="text-center mx-auto mb-5 wow fadeInUp" style="max-width:600px">
-            <h6 class="text-primary text-uppercase fw-bold">Testimonials</h6>
-            <h2 class="display-6 fw-bold">What Our Investors Say</h2>
-        </div>
-        <div class="row g-4">
-            <div class="col-md-4 wow fadeInUp" data-wow-delay="0.1s">
-                <div class="bg-white p-4 rounded-4 shadow-sm"><p class="text-muted fst-italic mb-3">"I have been investing with <?php echo SITE_NAME; ?> for 6 months. The daily returns are consistent and withdrawals are fast. Highly recommended."</p><div class="d-flex align-items-center gap-3"><div class="bg-primary rounded-circle text-white d-flex align-items-center justify-content-center" style="width:50px;height:50px;font-weight:700">JD</div><div><h6 class="mb-0 fw-bold">James D.</h6><small class="text-muted">Investor since 2025</small></div></div></div>
-            </div>
-            <div class="col-md-4 wow fadeInUp" data-wow-delay="0.3s">
-                <div class="bg-white p-4 rounded-4 shadow-sm"><p class="text-muted fst-italic mb-3">"The platform is incredibly easy to use. I started small and have grown my portfolio significantly. The support team is fantastic."</p><div class="d-flex align-items-center gap-3"><div class="bg-success rounded-circle text-white d-flex align-items-center justify-content-center" style="width:50px;height:50px;font-weight:700">MK</div><div><h6 class="mb-0 fw-bold">Maria K.</h6><small class="text-muted">Investor since 2024</small></div></div></div>
-            </div>
-            <div class="col-md-4 wow fadeInUp" data-wow-delay="0.5s">
-                <div class="bg-white p-4 rounded-4 shadow-sm"><p class="text-muted fst-italic mb-3">"Transparent, reliable, and profitable. What more could you ask for? The daily ROI model works exactly as advertised."</p><div class="d-flex align-items-center gap-3"><div class="bg-warning rounded-circle text-white d-flex align-items-center justify-content-center" style="width:50px;height:50px;font-weight:700">RL</div><div><h6 class="mb-0 fw-bold">Robert L.</h6><small class="text-muted">Investor since 2025</small></div></div></div>
-            </div>
+        <div class="section-header"><h2>What Investors Say</h2><p>Real feedback from our growing community.</p></div>
+        <div class="testimonials">
+            <div class="testimonial"><div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p>"The daily payout system is incredible. I started with $500 and have been earning consistently for 4 months now."</p><div class="author"><div class="avatar">AK</div><div><div class="name">Alex K.</div><div class="role">Investor since 2025</div></div></div></div>
+            <div class="testimonial"><div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p>"What sets them apart is transparency. I can track every transaction, every profit. No hidden fees, no surprises."</p><div class="author"><div class="avatar">SN</div><div><div class="name">Sarah N.</div><div class="role">Investor since 2024</div></div></div></div>
+            <div class="testimonial"><div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p>"The mobile experience is perfect. I check my earnings on my phone every morning. Withdrawals arrive same day."</p><div class="author"><div class="avatar">MT</div><div><div class="name">Michael T.</div><div class="role">Investor since 2025</div></div></div></div>
         </div>
     </div>
-</div>
+</section>
 
 <!-- CTA -->
-<div class="container-fluid py-5" style="background: linear-gradient(135deg, #0d1b3e 0%, #1a3a6b 50%, #0d6efd 100%);">
-    <div class="container text-center text-white py-4 wow fadeInUp">
-        <h2 class="display-5 fw-bold mb-3">Ready to Start Earning?</h2>
-        <p class="lead mb-4" style="opacity:.85">Join thousands of investors earning daily returns on their investments.</p>
-        <a href="/register.php" class="btn btn-light cta-btn btn-lg text-primary fw-bold">Create Free Account</a>
+<section class="section">
+    <div class="container">
+        <div class="cta">
+            <h2>Ready to Start Earning Daily?</h2>
+            <p>Join thousands of investors who are already growing their wealth with us.</p>
+            <a href="/register.php" class="btn btn-primary btn-lg">Create Your Free Account</a>
+        </div>
     </div>
-</div>
+</section>
 
 <!-- Footer -->
-<div class="container-fluid bg-dark text-white py-5">
+<footer class="footer">
     <div class="container">
-        <div class="row g-4">
-            <div class="col-lg-4">
-                <h4 class="fw-bold mb-3"><i class="fas fa-chart-line text-primary me-2"></i> <?php echo SITE_NAME; ?></h4>
-                <p class="opacity-75 small">Secure investment platform offering daily returns through diversified crypto-backed investment plans.</p>
-            </div>
-            <div class="col-lg-4">
-                <h5 class="fw-bold mb-3">Quick Links</h5>
-                <a href="/login.php" class="d-block text-white-50 mb-2 text-decoration-none">Login</a>
-                <a href="/register.php" class="d-block text-white-50 mb-2 text-decoration-none">Register</a>
-                <a href="#about" class="d-block text-white-50 mb-2 text-decoration-none">About</a>
-                <a href="#services" class="d-block text-white-50 mb-2 text-decoration-none">Services</a>
-            </div>
-            <div class="col-lg-4">
-                <h5 class="fw-bold mb-3">Contact</h5>
-                <p class="text-white-50 small mb-1"><i class="fas fa-envelope me-2"></i> support@primeaxisinv.com</p>
-                <p class="text-white-50 small mb-0"><i class="fas fa-clock me-2"></i> 24/7 Support Available</p>
-            </div>
+        <div class="footer-grid">
+            <div><h5><i class="fas fa-cubes"></i> <?php echo SITE_NAME; ?></h5><p style="color:var(--muted);font-size:.85rem">Secure crypto investment platform with daily ROI. Trusted by thousands worldwide.</p></div>
+            <div><h5>Quick Links</h5><a href="/login.php">Login</a><a href="/register.php">Register</a><a href="#features">Features</a></div>
+            <div><h5>Support</h5><a href="#">support@primeaxisinv.com</a><a href="#">24/7 Available</a><a href="#">FAQ</a></div>
         </div>
-        <hr class="my-4" style="border-color:rgba(255,255,255,.1)">
-        <p class="text-center text-white-50 small mb-0">&copy; <?php echo date('Y'); ?> <?php echo SITE_NAME; ?>. All rights reserved.</p>
+        <div class="footer-bottom">&copy; <?php echo date('Y'); ?> <?php echo SITE_NAME; ?>. All rights reserved.</div>
     </div>
-</div>
+</footer>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
 <script>
-new WOW().init();
-// Counter animation
-document.querySelectorAll('.counter').forEach(el=>{
-    const target=parseInt(el.dataset.target);
-    const duration=2000;
-    const step=target/(duration/16);
-    let current=0;
-    const update=()=>{
-        current+=step;
-        if(current<target){el.textContent=Math.floor(current).toLocaleString();requestAnimationFrame(update)}
-        else el.textContent=target.toLocaleString()
-    };
-    new IntersectionObserver((entries,obs)=>{if(entries[0].isIntersecting){update();obs.disconnect()}}).observe(el);
-});
+// Nav scroll
+window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('scrolled',window.scrollY>50));
+// Mobile menu
+function toggleMenu(){document.getElementById('navLinks').classList.toggle('open');}
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(a.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth'})}));
 </script>
 </body>
 </html>

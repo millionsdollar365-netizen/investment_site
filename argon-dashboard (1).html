@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Argon Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --argon-primary:#5e72e4;
+  --argon-primary-dark:#4259d4;
+  --argon-info:#11cdef;
+  --argon-success:#2dce89;
+  --argon-warning:#fb6340;
+  --argon-danger:#f5365c;
+  --argon-dark:#172b4d;
+  --argon-light:#f4f5f7;
+  --argon-white:#fff;
+  --argon-text:#525f7f;
+  --argon-muted:#8898aa;
+  --argon-border:#e9ecef;
+  --sidebar-width:250px;
+  --card-radius:0.375rem;
+  --shadow:0 0 2rem 0 rgba(136,152,170,.15);
+  --shadow-sm:0 1px 3px rgba(50,50,93,.15),0 1px 0 rgba(0,0,0,.02);
+  --pad:1.5rem;
+}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:'Open Sans',sans-serif;font-size:.875rem;
+  background:var(--argon-light);color:var(--argon-text);
+  display:flex;min-height:100vh;overflow-x:hidden;
+}
+
+/* ── OVERLAY ── */
+#overlay{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);
+  z-index:99;opacity:0;transition:opacity .25s;
+}
+#overlay.show{display:block;opacity:1}
+
+/* ── SIDEBAR ── */
+#sidebar{
+  width:var(--sidebar-width);min-height:100vh;
+  background:var(--argon-white);box-shadow:var(--shadow);
+  display:flex;flex-direction:column;
+  position:fixed;top:0;left:0;z-index:100;
+  transform:translateX(-100%);transition:transform .28s ease;
+  overflow-y:auto;overflow-x:hidden;
+}
+#sidebar.open{transform:translateX(0)}
+@media(min-width:768px){
+  #sidebar{transform:translateX(0)!important}
+  #overlay{display:none!important}
+}
+
+.sb-brand{
+  padding:1.4rem 1.4rem .9rem;display:flex;align-items:center;gap:.7rem;
+  border-bottom:1px solid var(--argon-border);flex-shrink:0;
+}
+.sb-brand-icon{
+  width:34px;height:34px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(87deg,#5e72e4,#825ee4);
+  display:flex;align-items:center;justify-content:center;color:#fff;font-size:.9rem;
+}
+.sb-brand-text{font-size:.8rem;font-weight:700;color:var(--argon-dark);letter-spacing:.04em;text-transform:uppercase}
+.sb-divider{margin:.5rem .9rem;border:none;border-top:1px solid var(--argon-border)}
+.sb-heading{
+  padding:.2rem .9rem;font-size:.6rem;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--argon-muted);font-weight:600;margin-top:.4rem;
+}
+.nav-list{list-style:none;padding:.25rem 0;flex:1}
+.nav-link{
+  display:flex;align-items:center;gap:.7rem;padding:.65rem 1.4rem;
+  color:var(--argon-text);text-decoration:none;font-size:.85rem;
+  border-radius:var(--card-radius);margin:.08rem .65rem;transition:all .15s;
+}
+.nav-link i{width:1.1rem;text-align:center;font-size:.85rem;color:var(--argon-muted);flex-shrink:0;transition:color .15s}
+.nav-link:hover,.nav-link.active{color:var(--argon-primary);background:rgba(94,114,228,.09)}
+.nav-link:hover i,.nav-link.active i{color:var(--argon-primary)}
+.sb-promo{
+  margin:.75rem .9rem 1rem;flex-shrink:0;
+  background:linear-gradient(87deg,#5e72e4,#825ee4);
+  border-radius:.4rem;padding:.9rem;text-align:center;
+}
+.sb-promo p{font-size:.72rem;font-weight:600;color:#fff;margin-bottom:.55rem}
+.sb-promo a{
+  display:block;background:#fff;color:var(--argon-primary);
+  font-size:.72rem;font-weight:700;padding:.32rem .9rem;
+  border-radius:.25rem;text-decoration:none;
+}
+
+/* ── MAIN ── */
+#main{flex:1;display:flex;flex-direction:column;min-width:0;min-height:100vh}
+@media(min-width:768px){#main{margin-left:var(--sidebar-width)}}
+
+/* ── TOPBAR ── */
+#topbar{
+  height:62px;background:var(--argon-white);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 var(--pad);box-shadow:var(--shadow-sm);
+  position:sticky;top:0;z-index:50;gap:.6rem;
+}
+.topbar-left{display:flex;align-items:center;gap:.65rem;min-width:0;flex:1}
+.hamburger{
+  background:none;border:none;cursor:pointer;padding:.35rem .4rem;
+  color:var(--argon-muted);font-size:1rem;flex-shrink:0;line-height:1;
+}
+@media(min-width:768px){.hamburger{display:none}}
+.breadcrumb-nav{font-size:.72rem;color:var(--argon-muted)}
+.breadcrumb-nav a{color:var(--argon-muted);text-decoration:none}
+.page-title{font-size:.85rem;font-weight:600;color:var(--argon-dark);white-space:nowrap}
+.topbar-right{display:flex;align-items:center;gap:.45rem;flex-shrink:0}
+.tb-search{
+  display:flex;align-items:center;background:var(--argon-light);
+  border-radius:2rem;padding:.32rem .85rem;gap:.4rem;
+}
+.tb-search input{
+  border:none;background:transparent;outline:none;
+  font-size:.78rem;color:var(--argon-text);width:120px;
+}
+.tb-search i{color:var(--argon-muted);font-size:.78rem;flex-shrink:0}
+@media(max-width:500px){.tb-search{display:none}}
+.tb-btn{
+  width:32px;height:32px;border-radius:50%;border:none;
+  background:var(--argon-light);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--argon-muted);position:relative;transition:all .15s;flex-shrink:0;
+}
+.tb-btn:hover{background:rgba(94,114,228,.1);color:var(--argon-primary)}
+.badge-dot{
+  position:absolute;top:3px;right:3px;width:7px;height:7px;
+  border-radius:50%;background:var(--argon-danger);border:2px solid #fff;
+}
+.tb-avatar{
+  width:32px;height:32px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(87deg,#5e72e4,#825ee4);
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:.65rem;font-weight:700;cursor:pointer;
+}
+
+/* ── PAGE HEADER ── */
+#page-header{
+  background:linear-gradient(87deg,#172b4d 0,#1a174d 100%);
+  padding:1.6rem var(--pad) 5.5rem;
+}
+#page-header h1{font-size:1.4rem;font-weight:600;color:#fff;margin-bottom:.15rem}
+#page-header p{font-size:.85rem;color:rgba(255,255,255,.6)}
+@media(max-width:479px){
+  #page-header{padding-bottom:4.5rem}
+  #page-header h1{font-size:1.2rem}
+}
+
+/* ── CONTENT ── */
+#content{padding:0 var(--pad) 2rem;margin-top:-4rem;flex:1}
+@media(max-width:479px){
+  :root{--pad:1rem}
+  #content{margin-top:-3.5rem}
+}
+
+/* ── STAT CARDS ── */
+.stats-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:1rem;margin-bottom:1.25rem;
+}
+@media(max-width:900px){.stats-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:360px){.stats-grid{grid-template-columns:1fr}}
+
+.stat-card{
+  background:var(--argon-white);border-radius:var(--card-radius);
+  box-shadow:var(--shadow);padding:.85rem 1.1rem;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:.6rem;min-width:0;overflow:hidden;
+}
+.stat-body{min-width:0;flex:1}
+.stat-label{font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--argon-muted);margin-bottom:.18rem}
+.stat-value{font-size:1.05rem;font-weight:600;color:var(--argon-dark);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.stat-change{font-size:.68rem;margin-top:.15rem;display:flex;align-items:center;gap:.2rem;flex-wrap:wrap;line-height:1.4}
+.stat-change.up{color:var(--argon-success)}
+.stat-change.down{color:var(--argon-danger)}
+.stat-since{color:var(--argon-muted)!important;font-weight:400}
+.stat-icon{
+  width:42px;height:42px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:.95rem;color:#fff;
+}
+.bg-danger{background:linear-gradient(87deg,#f5365c,#f56036)}
+.bg-warning{background:linear-gradient(87deg,#fb6340,#fbb140)}
+.bg-success{background:linear-gradient(87deg,#2dce89,#2dcecc)}
+.bg-primary{background:linear-gradient(87deg,#5e72e4,#825ee4)}
+
+/* ── CARD ── */
+.card{background:var(--argon-white);border-radius:var(--card-radius);box-shadow:var(--shadow);overflow:hidden}
+.card-header{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:.6rem;
+  padding:.85rem 1.25rem;border-bottom:1px solid var(--argon-border);flex-wrap:wrap;
+}
+.card-header h6{font-size:.85rem;font-weight:600;color:var(--argon-dark);margin:0}
+.card-body{padding:1.1rem 1.25rem}
+
+/* ── CHARTS ROW ── */
+.charts-row{display:grid;grid-template-columns:2fr 1fr;gap:1.1rem;margin-bottom:1.25rem}
+@media(max-width:680px){.charts-row{grid-template-columns:1fr}}
+.chart-wrap{position:relative;height:250px}
+@media(max-width:479px){.chart-wrap{height:190px}}
+
+/* ── TOGGLE BUTTONS ── */
+.toggle-group{display:flex;gap:.35rem;flex-shrink:0}
+.tog-btn{
+  font-size:.68rem;font-weight:600;padding:.24rem .65rem;border-radius:.25rem;
+  border:1px solid var(--argon-border);cursor:pointer;
+  background:transparent;color:var(--argon-muted);transition:all .15s;
+}
+.tog-btn.on{background:var(--argon-primary);color:#fff;border-color:var(--argon-primary)}
+
+/* ── TABLE WRAPPER ── */
+.tscroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tsec{margin-bottom:1.25rem}
+table{width:100%;border-collapse:collapse;font-size:.79rem}
+.tscroll table{min-width:380px}
+thead th{
+  font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;
+  color:var(--argon-muted);padding:.6rem 1.1rem;
+  border-bottom:1px solid var(--argon-border);text-align:left;white-space:nowrap;
+}
+tbody tr{border-bottom:1px solid var(--argon-border);transition:background .1s}
+tbody tr:hover{background:rgba(94,114,228,.035)}
+tbody tr:last-child{border-bottom:none}
+tbody td{padding:.6rem 1.1rem;color:var(--argon-text);vertical-align:middle}
+
+.td-proj{display:flex;align-items:center;gap:.55rem}
+.proj-icon{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.68rem;flex-shrink:0}
+.proj-name{font-weight:600;color:var(--argon-dark);font-size:.79rem;white-space:nowrap}
+
+.badge{font-size:.58rem;font-weight:600;padding:.18rem .42rem;border-radius:.25rem;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
+.b-success{background:rgba(45,206,137,.14);color:#1aae6f}
+.b-danger{background:rgba(245,54,92,.14);color:#f5365c}
+.b-warning{background:rgba(251,99,64,.14);color:#c4541a}
+.b-info{background:rgba(17,205,239,.14);color:#0da5c0}
+
+.bar-wrap{background:#e9ecef;border-radius:2rem;height:4px;overflow:hidden;min-width:70px}
+.bar{height:100%;border-radius:2rem;transition:width .6s}
+.s-success{background:linear-gradient(87deg,#2dce89,#2dcecc)}
+.s-danger{background:linear-gradient(87deg,#f5365c,#f56036)}
+.s-warning{background:linear-gradient(87deg,#fb6340,#fbb140)}
+.s-primary{background:linear-gradient(87deg,#5e72e4,#825ee4)}
+.s-info{background:linear-gradient(87deg,#11cdef,#1171ef)}
+
+.act-link{color:var(--argon-primary);text-decoration:none;font-size:.79rem;font-weight:600;white-space:nowrap}
+.act-link:hover{color:var(--argon-primary-dark)}
+
+/* ── 2-COL GRIDS ── */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem;margin-bottom:1.25rem}
+@media(max-width:680px){.duo{grid-template-columns:1fr}}
+
+/* ── DONUT LEGEND ── */
+.dlegend{display:flex;flex-direction:column;gap:.55rem;padding-top:.65rem}
+.dleg-row{display:flex;align-items:center;justify-content:space-between}
+.dleg-lbl{display:flex;align-items:center;gap:.45rem;font-size:.79rem;color:var(--argon-text)}
+.dleg-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.dleg-val{font-size:.79rem;font-weight:600;color:var(--argon-dark)}
+
+/* ── AVATAR GROUP ── */
+.av-group{display:flex}
+.av-group .av{width:24px;height:24px;margin-left:-5px;border:2px solid #fff;font-size:.5rem}
+.av-group .av:first-child{margin-left:0}
+
+/* ── MEMBERS ── */
+.av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.68rem;font-weight:700;flex-shrink:0}
+.mem-row{display:flex;align-items:center;justify-content:space-between;gap:.5rem;padding:.6rem 0;border-bottom:1px solid var(--argon-border)}
+.mem-row:last-child{border-bottom:none}
+.mem-info{display:flex;align-items:center;gap:.6rem;min-width:0;flex:1}
+.mem-name{font-weight:600;color:var(--argon-dark);font-size:.79rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mem-role{font-size:.7rem;color:var(--argon-muted)}
+.st-btn{
+  font-size:.63rem;font-weight:600;padding:.18rem .55rem;border-radius:.25rem;
+  border:1px solid;background:transparent;cursor:pointer;white-space:nowrap;flex-shrink:0;
+}
+
+/* ── TIMELINE ── */
+.timeline{padding:.1rem 0}
+.tl-item{display:flex;gap:.8rem;padding-bottom:1rem;position:relative}
+.tl-item:not(:last-child)::after{
+  content:'';position:absolute;left:16px;top:34px;bottom:0;
+  width:1px;background:var(--argon-border);
+}
+.tl-icon{
+  width:34px;height:34px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;color:#fff;font-size:.72rem;
+}
+.tl-body h6{font-size:.79rem;font-weight:600;color:var(--argon-dark);margin-bottom:.12rem}
+.tl-body p{font-size:.73rem;color:var(--argon-muted);line-height:1.4;margin-bottom:.1rem}
+.tl-body time{font-size:.68rem;color:var(--argon-muted)}
+
+/* ── FOOTER ── */
+footer{padding:1.1rem var(--pad);border-top:1px solid var(--argon-border);font-size:.73rem;color:var(--argon-muted)}
+.foot-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.6rem}
+.foot-links{display:flex;flex-wrap:wrap;gap:.5rem 1.1rem}
+footer a{color:var(--argon-primary);text-decoration:none}
+</style>
+</head>
+<body>
+
+<div id="overlay" onclick="closeSB()"></div>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="sb-brand">
+    <div class="sb-brand-icon"><i class="fas fa-layer-group"></i></div>
+    <span class="sb-brand-text">Argon Dashboard</span>
+  </div>
+  <ul class="nav-list">
+    <li class="sb-heading">Dashboards</li>
+    <li><a href="#" class="nav-link active"><i class="fas fa-tv"></i><span>Dashboard</span></a></li>
+    <hr class="sb-divider"/>
+    <li class="sb-heading">Examples</li>
+    <li><a href="#" class="nav-link"><i class="fas fa-user-circle"></i><span>User Profile</span></a></li>
+    <li><a href="#" class="nav-link"><i class="fas fa-table"></i><span>Tables</span></a></li>
+    <li><a href="#" class="nav-link"><i class="fas fa-map"></i><span>Maps</span></a></li>
+    <hr class="sb-divider"/>
+    <li class="sb-heading">Documentation</li>
+    <li><a href="#" class="nav-link"><i class="fas fa-file-alt"></i><span>Getting Started</span></a></li>
+    <li><a href="#" class="nav-link"><i class="fas fa-palette"></i><span>Foundation</span></a></li>
+    <li><a href="#" class="nav-link"><i class="fas fa-puzzle-piece"></i><span>Components</span></a></li>
+    <li><a href="#" class="nav-link"><i class="fas fa-chart-line"></i><span>Plugins</span></a></li>
+    <li><a href="#" class="nav-link"><i class="fas fa-calendar-alt"></i><span>Calendar</span></a></li>
+  </ul>
+  <div class="sb-promo">
+    <p>Need help? Check our docs</p>
+    <a href="#">Documentation</a>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div id="main">
+
+  <!-- TOPBAR -->
+  <header id="topbar">
+    <div class="topbar-left">
+      <button class="hamburger" aria-label="Toggle menu" onclick="toggleSB()">
+        <i class="fas fa-bars"></i>
+      </button>
+      <div>
+        <div class="breadcrumb-nav"><a href="#">Pages</a> / Dashboard</div>
+        <div class="page-title">Dashboard</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="tb-search">
+        <i class="fas fa-search"></i>
+        <input type="search" placeholder="Search" aria-label="Search"/>
+      </div>
+      <button class="tb-btn" aria-label="Notifications">
+        <i class="fas fa-bell"></i>
+        <span class="badge-dot"></span>
+      </button>
+      <button class="tb-btn" aria-label="Settings"><i class="fas fa-cog"></i></button>
+      <div class="tb-avatar" role="button" tabindex="0" aria-label="User menu">JD</div>
+    </div>
+  </header>
+
+  <!-- PAGE HEADER -->
+  <div id="page-header">
+    <h1>Hello, Jesse</h1>
+    <p>Let's check your business statistics today.</p>
+  </div>
+
+  <!-- CONTENT -->
+  <main id="content">
+
+    <!-- STAT CARDS -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-body">
+          <div class="stat-label">Traffic</div>
+          <div class="stat-value">350,897</div>
+          <div class="stat-change up"><i class="fas fa-arrow-up"></i> 3.48% <span class="stat-since">Since last month</span></div>
+        </div>
+        <div class="stat-icon bg-danger"><i class="fas fa-chart-bar"></i></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-body">
+          <div class="stat-label">New Users</div>
+          <div class="stat-value">2,356</div>
+          <div class="stat-change down"><i class="fas fa-arrow-down"></i> 3.48% <span class="stat-since">Since last week</span></div>
+        </div>
+        <div class="stat-icon bg-warning"><i class="fas fa-chart-pie"></i></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-body">
+          <div class="stat-label">Sales</div>
+          <div class="stat-value">924</div>
+          <div class="stat-change up"><i class="fas fa-arrow-up"></i> 1.10% <span class="stat-since">Since yesterday</span></div>
+        </div>
+        <div class="stat-icon bg-success"><i class="fas fa-users"></i></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-body">
+          <div class="stat-label">Performance</div>
+          <div class="stat-value">49.65%</div>
+          <div class="stat-change up"><i class="fas fa-arrow-up"></i> 12% <span class="stat-since">Since last month</span></div>
+        </div>
+        <div class="stat-icon bg-primary"><i class="fas fa-percent"></i></div>
+      </div>
+    </div>
+
+    <!-- CHARTS ROW -->
+    <div class="charts-row">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h6>Sales value</h6>
+            <p style="font-size:.72rem;color:var(--argon-muted);margin-top:.15rem">
+              <span style="color:var(--argon-success);font-weight:600"><i class="fas fa-arrow-up"></i> 3.48%</span>
+              &nbsp;Since last month
+            </p>
+          </div>
+          <div class="toggle-group">
+            <button class="tog-btn on" id="btn-month" onclick="toggleChart('month')">Month</button>
+            <button class="tog-btn" id="btn-week" onclick="toggleChart('week')">Week</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="chart-wrap">
+            <canvas id="salesChart" role="img" aria-label="Monthly sales line chart.">Monthly sales data.</canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h6>Total orders</h6>
+            <p style="font-size:.72rem;color:var(--argon-muted);margin-top:.15rem">
+              <span style="color:var(--argon-danger);font-weight:600"><i class="fas fa-arrow-down"></i> 1.1%</span>
+              &nbsp;Since last week
+            </p>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="chart-wrap" style="height:170px">
+            <canvas id="ordersChart" role="img" aria-label="Donut chart: Referral 60%, Organic 28%, Direct 12%.">Referral 60%, Organic 28%, Direct 12%.</canvas>
+          </div>
+          <div class="dlegend">
+            <div class="dleg-row"><div class="dleg-lbl"><div class="dleg-dot" style="background:#5e72e4"></div>Referral</div><div class="dleg-val">60%</div></div>
+            <div class="dleg-row"><div class="dleg-lbl"><div class="dleg-dot" style="background:#2dce89"></div>Organic</div><div class="dleg-val">28%</div></div>
+            <div class="dleg-row"><div class="dleg-lbl"><div class="dleg-dot" style="background:#fb6340"></div>Direct</div><div class="dleg-val">12%</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE VISITS -->
+    <div class="tsec">
+      <div class="card">
+        <div class="card-header">
+          <h6>Page visits</h6>
+          <a href="#" class="act-link">See all</a>
+        </div>
+        <div class="tscroll">
+          <table>
+            <thead>
+              <tr><th>Page name</th><th>Visitors</th><th>Unique users</th><th>Bounce rate</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>/argon/</td><td>4,569</td><td>340</td><td><span style="color:var(--argon-danger)"><i class="fas fa-arrow-up" style="font-size:.55rem"></i> 46.53%</span></td></tr>
+              <tr><td>/argon/index.html</td><td>3,985</td><td>319</td><td><span style="color:var(--argon-success)"><i class="fas fa-arrow-down" style="font-size:.55rem"></i> 46.53%</span></td></tr>
+              <tr><td>/argon/charts.html</td><td>3,513</td><td>294</td><td><span style="color:var(--argon-danger)"><i class="fas fa-arrow-up" style="font-size:.55rem"></i> 36.49%</span></td></tr>
+              <tr><td>/argon/tables.html</td><td>2,050</td><td>147</td><td><span style="color:var(--argon-warning)"><i class="fas fa-arrow-up" style="font-size:.55rem"></i> 50.87%</span></td></tr>
+              <tr><td>/argon/profile.html</td><td>1,795</td><td>190</td><td><span style="color:var(--argon-success)"><i class="fas fa-arrow-down" style="font-size:.55rem"></i> 46.53%</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROJECTS + SOCIAL -->
+    <div class="duo">
+      <div class="card">
+        <div class="card-header">
+          <h6>Light table</h6>
+          <a href="#" class="act-link">See all</a>
+        </div>
+        <div class="tscroll">
+          <table style="min-width:500px">
+            <thead>
+              <tr><th>Project</th><th>Budget</th><th>Status</th><th>Users</th><th>Completion</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><div class="td-proj"><div class="proj-icon bg-primary"><i class="fab fa-angular"></i></div><span class="proj-name">Argon Design</span></div></td>
+                <td>$2,500</td>
+                <td><span class="badge b-danger">delayed</span></td>
+                <td><div class="av-group"><div class="av bg-danger">J</div><div class="av bg-primary">R</div><div class="av bg-success">A</div></div></td>
+                <td><div style="font-size:.68rem;font-weight:600;color:var(--argon-danger);margin-bottom:.15rem">60%</div><div class="bar-wrap"><div class="bar s-danger" style="width:60%"></div></div></td>
+              </tr>
+              <tr>
+                <td><div class="td-proj"><div class="proj-icon bg-warning"><i class="fab fa-react"></i></div><span class="proj-name">React MUI</span></div></td>
+                <td>$10,000</td>
+                <td><span class="badge b-success">on schedule</span></td>
+                <td><div class="av-group"><div class="av bg-warning">M</div><div class="av" style="background:linear-gradient(87deg,#11cdef,#1171ef)">T</div></div></td>
+                <td><div style="font-size:.68rem;font-weight:600;color:var(--argon-success);margin-bottom:.15rem">100%</div><div class="bar-wrap"><div class="bar s-success" style="width:100%"></div></div></td>
+              </tr>
+              <tr>
+                <td><div class="td-proj"><div class="proj-icon" style="background:linear-gradient(87deg,#11cdef,#1171ef)"><i class="fab fa-vuejs"></i></div><span class="proj-name">Vue Paper UI</span></div></td>
+                <td>$4,400</td>
+                <td><span class="badge b-info">in review</span></td>
+                <td><div class="av-group"><div class="av bg-success">P</div></div></td>
+                <td><div style="font-size:.68rem;font-weight:600;color:var(--argon-info);margin-bottom:.15rem">72%</div><div class="bar-wrap"><div class="bar s-info" style="width:72%"></div></div></td>
+              </tr>
+              <tr>
+                <td><div class="td-proj"><div class="proj-icon bg-success"><i class="fab fa-sketch"></i></div><span class="proj-name">Sketch Design</span></div></td>
+                <td>$6,500</td>
+                <td><span class="badge b-warning">on hold</span></td>
+                <td><div class="av-group"><div class="av bg-primary">K</div><div class="av bg-danger">L</div></div></td>
+                <td><div style="font-size:.68rem;font-weight:600;color:var(--argon-warning);margin-bottom:.15rem">90%</div><div class="bar-wrap"><div class="bar s-warning" style="width:90%"></div></div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h6>Social traffic</h6>
+          <a href="#" class="act-link">See all</a>
+        </div>
+        <div class="tscroll">
+          <table style="min-width:260px">
+            <thead>
+              <tr><th>Referral</th><th>Visitors</th><th style="min-width:90px"></th></tr>
+            </thead>
+            <tbody id="social-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEAM + TIMELINE -->
+    <div class="duo">
+      <div class="card">
+        <div class="card-header">
+          <h6>Team members</h6>
+          <a href="#" class="act-link">Add new</a>
+        </div>
+        <div class="card-body" style="padding-top:.4rem">
+          <div class="mem-row">
+            <div class="mem-info"><div class="av bg-danger">JD</div><div><div class="mem-name">John Michael</div><div class="mem-role">Manager</div></div></div>
+            <button class="st-btn" style="border-color:var(--argon-success);color:var(--argon-success)">Active</button>
+          </div>
+          <div class="mem-row">
+            <div class="mem-info"><div class="av bg-warning">AL</div><div><div class="mem-name">Alexa Liras</div><div class="mem-role">Developer</div></div></div>
+            <button class="st-btn" style="border-color:var(--argon-muted);color:var(--argon-muted)">Away</button>
+          </div>
+          <div class="mem-row">
+            <div class="mem-info"><div class="av bg-primary">LP</div><div><div class="mem-name">Laurent Perrier</div><div class="mem-role">Executive</div></div></div>
+            <button class="st-btn" style="border-color:var(--argon-danger);color:var(--argon-danger)">Busy</button>
+          </div>
+          <div class="mem-row">
+            <div class="mem-info"><div class="av bg-success">ML</div><div><div class="mem-name">Michael Lewis</div><div class="mem-role">Designer</div></div></div>
+            <button class="st-btn" style="border-color:var(--argon-success);color:var(--argon-success)">Active</button>
+          </div>
+          <div class="mem-row">
+            <div class="mem-info"><div class="av" style="background:linear-gradient(87deg,#11cdef,#1171ef)">RG</div><div><div class="mem-name">Richard Gran</div><div class="mem-role">Tester</div></div></div>
+            <button class="st-btn" style="border-color:var(--argon-muted);color:var(--argon-muted)">Away</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><h6>Activity feed</h6></div>
+        <div class="card-body">
+          <div class="timeline">
+            <div class="tl-item">
+              <div class="tl-icon bg-danger"><i class="fas fa-bell"></i></div>
+              <div class="tl-body"><h6>Call with Dave</h6><p>Attended a technical interview for a Front-End position at a startup.</p><time>2 hrs ago</time></div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-icon bg-warning"><i class="fas fa-html5"></i></div>
+              <div class="tl-body"><h6>Argon Design System</h6><p>A redesign of the Argon admin panel — mobile-first approach.</p><time>1 day ago</time></div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-icon bg-primary"><i class="fas fa-cart-plus"></i></div>
+              <div class="tl-body"><h6>New order placed #9820</h6><p>Placed a new order from New York City.</p><time>2 days ago</time></div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-icon bg-success"><i class="fab fa-twitter"></i></div>
+              <div class="tl-body"><h6>Social media post</h6><p>Your post got 75 new likes — well done!</p><time>3 days ago</time></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    <div class="foot-inner">
+      <div>© 2024 <a href="#">Argon Dashboard</a> by Creative Tim</div>
+      <div class="foot-links">
+        <a href="#">Creative Tim</a>
+        <a href="#">About Us</a>
+        <a href="#">Blog</a>
+        <a href="#">License</a>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+/* ── SIDEBAR ── */
+function toggleSB(){
+  const s=document.getElementById('sidebar');
+  const o=document.getElementById('overlay');
+  const open=s.classList.toggle('open');
+  if(open){o.classList.add('show');document.body.style.overflow='hidden'}
+  else{o.classList.remove('show');document.body.style.overflow=''}
+}
+function closeSB(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+  document.body.style.overflow='';
+}
+document.querySelectorAll('.nav-link').forEach(l=>{
+  l.addEventListener('click',()=>{
+    document.querySelectorAll('.nav-link').forEach(x=>x.classList.remove('active'));
+    l.classList.add('active');
+    if(window.innerWidth<768)closeSB();
+  });
+});
+window.addEventListener('resize',()=>{if(window.innerWidth>=768)closeSB()});
+
+/* ── SOCIAL TABLE ── */
+const social=[
+  {name:'Facebook',visitors:'1,480',pct:60,color:'#5e72e4'},
+  {name:'LinkedIn',visitors:'5,480',pct:70,color:'#fb6340'},
+  {name:'Twitter',visitors:'4,807',pct:80,color:'#2dce89'},
+  {name:'Instagram',visitors:'3,678',pct:75,color:'#11cdef'},
+  {name:'YouTube',visitors:'2,645',pct:50,color:'#f5365c'},
+];
+const stb=document.getElementById('social-tbody');
+social.forEach(d=>{
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td style="font-weight:600;color:var(--argon-dark)">${d.name}</td><td>${d.visitors}</td><td><div class="bar-wrap"><div class="bar" style="width:${d.pct}%;background:${d.color}"></div></div></td>`;
+  stb.appendChild(tr);
+});
+
+/* ── SALES CHART ── */
+const mLbls=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const wLbls=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const mData=[0,20000,10000,30000,15000,40000,20000,60000,30000,80000,50000,100000];
+const wData=[15000,22000,18000,35000,28000,48000,40000];
+
+const sc=new Chart(document.getElementById('salesChart'),{
+  type:'line',
+  data:{
+    labels:mLbls,
+    datasets:[{
+      label:'Sales',data:mData,
+      borderColor:'#5e72e4',borderWidth:2,
+      fill:true,backgroundColor:'rgba(94,114,228,.1)',
+      tension:.4,pointBackgroundColor:'#5e72e4',
+      pointRadius:3,pointHoverRadius:5,
+    }]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    interaction:{mode:'index',intersect:false},
+    plugins:{legend:{display:false}},
+    scales:{
+      x:{grid:{display:false},ticks:{font:{size:10},color:'#8898aa',maxRotation:0,autoSkip:true,maxTicksLimit:6}},
+      y:{grid:{color:'rgba(0,0,0,.05)'},ticks:{font:{size:10},color:'#8898aa',callback:v=>v>=1000?'$'+(v/1000)+'k':'$'+v}}
+    }
+  }
+});
+
+function toggleChart(m){
+  document.getElementById('btn-month').classList.toggle('on',m==='month');
+  document.getElementById('btn-week').classList.toggle('on',m==='week');
+  sc.data.labels=m==='month'?mLbls:wLbls;
+  sc.data.datasets[0].data=m==='month'?mData:wData;
+  sc.update();
+}
+
+/* ── ORDERS DONUT ── */
+new Chart(document.getElementById('ordersChart'),{
+  type:'doughnut',
+  data:{
+    labels:['Referral','Organic','Direct'],
+    datasets:[{data:[60,28,12],backgroundColor:['#5e72e4','#2dce89','#fb6340'],borderWidth:0,hoverOffset:4}]
+  },
+  options:{responsive:true,maintainAspectRatio:false,cutout:'75%',plugins:{legend:{display:false}}}
+});
+</script>
+</body>
+</html>
