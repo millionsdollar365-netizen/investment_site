@@ -32,6 +32,7 @@ if ($nav_type === 'admin' && isset($admin)) {
 $user_nav = [
     ['slug' => 'dashboard',    'icon' => 'fa-tv',         'label' => 'Dashboard',    'url' => '/dashboard/'],
     ['slug' => 'investments',  'icon' => 'fa-chart-line', 'label' => 'Investments',  'url' => '/dashboard/investments.php'],
+    ['slug' => 'plans',        'icon' => 'fa-layer-group','label' => 'Plans',        'url' => '/dashboard/plans.php'],
     ['slug' => 'deposits',     'icon' => 'fa-coins',      'label' => 'Deposits',     'url' => '/dashboard/deposits.php'],
     ['slug' => 'withdrawals',  'icon' => 'fa-wallet',     'label' => 'Withdrawals',  'url' => '/dashboard/withdrawals.php'],
     ['slug' => 'earnings',     'icon' => 'fa-coins',      'label' => 'Earnings',     'url' => '/dashboard/earnings.php'],
