@@ -52,11 +52,13 @@ function showAlert(message, type = 'info') {
  * Show toast notification (non-blocking, auto-dismiss)
  */
 function showToast(message, type = 'success') {
-    const bg = type === 'success' ? 'linear-gradient(135deg, #22c55e, #16a34a)' :
-               type === 'error' ? 'linear-gradient(135deg, #ef4444, #dc2626)' :
-               'linear-gradient(135deg, #3b82f6, #2563eb)';
-    if (typeof Toastify !== 'undefined') {
-        Toastify({ text: message, duration: 3500, close: true, gravity: 'top', position: 'right', stopOnFocus: true, style: { background: bg, borderRadius: '10px', fontFamily: 'Inter, sans-serif', fontWeight: 500, fontSize: '.9rem', padding: '12px 20px', boxShadow: '0 8px 25px rgba(0,0,0,.3)' } }).showToast();
+    const bg = type === 'success' ? '#22c55e' : type === 'error' ? '#ef4444' : '#3b82f6';
+    if (typeof Notyf !== 'undefined') {
+        const n = new Notyf({ position: { x: 'right', y: 'top' }, duration: 3500, ripple: true, dismissible: true, types: [{ type: 'success', background: '#22c55e', icon: false }, { type: 'error', background: '#ef4444', icon: false }] });
+        n.open({ type: type === 'success' ? 'success' : 'error', message: message });
+    } else if (typeof Toastify !== 'undefined') {
+        const grad = type === 'success' ? 'linear-gradient(135deg, #22c55e, #16a34a)' : type === 'error' ? 'linear-gradient(135deg, #ef4444, #dc2626)' : 'linear-gradient(135deg, #3b82f6, #2563eb)';
+        Toastify({ text: message, duration: 3500, close: true, gravity: 'top', position: 'right', stopOnFocus: true, style: { background: grad, borderRadius: '10px', fontFamily: 'Inter, sans-serif', fontWeight: 500, fontSize: '.9rem', padding: '12px 20px', boxShadow: '0 8px 25px rgba(0,0,0,.3)' } }).showToast();
     } else {
         showAlert(message, type);
     }
