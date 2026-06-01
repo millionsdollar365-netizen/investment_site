@@ -72,6 +72,20 @@ if (!$is_wallet_or_avatar) {
     );
 }
 
+// Update wallet fields if sent
+$wallet_updates = [];
+$wallet_params = [];
+foreach (['wallet_btc', 'wallet_usdt', 'wallet_ethereum'] as $wk) {
+    if (isset($_POST[$wk])) {
+        $wallet_updates[] = "$wk = ?";
+        $wallet_params[] = trim($_POST[$wk]);
+    }
+}
+if ($wallet_updates) {
+    $wallet_params[] = $user_id;
+    $db->query("UPDATE users SET " . implode(', ', $wallet_updates) . " WHERE id = ?", $wallet_params);
+}
+
 // Update avatar path if uploaded
 if ($avatar_path) {
     $db->query("UPDATE users SET avatar = ? WHERE id = ?", [$avatar_path, $user_id]);
