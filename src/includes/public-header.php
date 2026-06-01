@@ -6,7 +6,7 @@
  */
 ?>
 <style>
-.nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; padding: 1rem 0; transition: all .3s; }
+.nav { position: fixed; top: 0; left: 0; right: 0; z-index: 10000; padding: 1rem 0; transition: all .3s; }
 .nav.scrolled { background: rgba(15,23,42,.96); backdrop-filter: blur(24px); border-bottom: 1px solid rgba(148,163,184,.1); }
 .nav-inner { display: flex; align-items: center; justify-content: space-between; }
 .nav-logo { font-size: 1.55rem; font-weight: 900; color: #fff; text-decoration: none; display: flex; align-items: center; gap: .5rem; }
@@ -18,10 +18,10 @@
 .btn-gold { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #0f172a; font-weight: 700; animation: glow 2.5s ease-in-out infinite; }
 .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 8px 35px rgba(251,191,36,.5); }
 @keyframes glow { 0%,100% { box-shadow: 0 0 15px rgba(251,191,36,.3); } 50% { box-shadow: 0 0 30px rgba(251,191,36,.55); } }
-.hamburger { display: none; background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; z-index: 10001; }
-.mobile-overlay { display:none;position:fixed;inset:0;background:rgba(15,23,42,.99);backdrop-filter:blur(24px);flex-direction:column;justify-content:center;align-items:center;gap:1.5rem;z-index:9999;overflow:hidden;padding:2rem; }
+.hamburger { display: none; background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; z-index: 10001; position: relative; }
+.mobile-overlay { display:none;position:fixed;inset:0;background:rgba(15,23,42,.99);backdrop-filter:blur(24px);flex-direction:column;justify-content:center;align-items:flex-start;gap:1.5rem;z-index:9999;overflow:hidden;padding:2rem 2rem 2rem 2.5rem; }
 .mobile-overlay.open { display:flex; }
-.mobile-overlay .mobile-logo { margin-bottom: 1.5rem; }
+.mobile-overlay .mobile-logo { margin-bottom: 1.5rem; align-self: flex-start; }
 .mobile-link { color:#94a3b8;text-decoration:none;font-size:1.2rem;font-weight:500;transition:color .2s; }
 .mobile-link:hover { color:#fff; }
 .mobile-overlay .btn { width:auto;min-width:220px;text-align:center;font-size:1.05rem;padding:.75rem 2rem;margin-top:.25rem;display:inline-block; }
