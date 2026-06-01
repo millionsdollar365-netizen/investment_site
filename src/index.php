@@ -60,6 +60,11 @@
         .btn-outline:hover { border-color: var(--gold); color: var(--gold); background: rgba(245,158,11,.05); }
         .btn-lg { padding: .8rem 2rem; font-size: .95rem; }
         .hamburger { display: none; background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; z-index: 2001; }
+        .mobile-overlay { display:none;position:fixed;inset:0;background:rgba(15,23,42,.99);backdrop-filter:blur(24px);flex-direction:column;justify-content:center;align-items:center;gap:1.25rem;z-index:9999;overflow:hidden;padding:2rem; }
+        .mobile-overlay.open { display:flex; }
+        .mobile-link { color:var(--muted);text-decoration:none;font-size:1.15rem;font-weight:500;transition:color .2s; }
+        .mobile-link:hover { color:#fff; }
+        @media (min-width: 769px) { .mobile-overlay { display:none !important; } }
         @media (max-width: 768px) {
             .nav-links { display: none; position: fixed; inset: 0; background: rgba(15,23,42,.99); backdrop-filter: blur(24px); flex-direction: column; justify-content: center; gap: 1.25rem; z-index: 9999; overflow: hidden; padding: 2rem; }
             .nav-links.open { display: flex; }
@@ -205,6 +210,21 @@
     </div>
 </nav>
 
+<!-- Mobile Menu Overlay (outside nav to avoid backdrop-filter stacking context) -->
+<div class="mobile-overlay" id="mobileOverlay">
+    <a href="#" class="mobile-link">Home</a>
+    <a href="#about" class="mobile-link">About</a>
+    <a href="#features" class="mobile-link">Benefits</a>
+    <a href="#how" class="mobile-link">How It Works</a>
+    <a href="#faq" class="mobile-link">FAQ</a>
+    <?php if (isLoggedIn()): ?>
+        <a href="/dashboard/" class="btn btn-gold" style="display:inline-block;text-align:center;animation:none;font-size:1.15rem;padding:.8rem 0;margin-top:.5rem">Dashboard</a>
+    <?php else: ?>
+        <a href="/login.php" class="mobile-link">Login</a>
+        <a href="/register.php" class="btn btn-gold" style="display:inline-block;text-align:center;animation:none;font-size:1.15rem;padding:.8rem 0;margin-top:.5rem">Get Started</a>
+    <?php endif; ?>
+</div>
+
 <!-- Hero -->
 <section class="hero">
     <div class="container">
@@ -344,10 +364,10 @@ window.addEventListener('scroll',()=>document.getElementById('nav').classList.to
 document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(a.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth'})}));
 setTimeout(()=>{const p=new URLSearchParams(window.location.search);if(p.get('logout')==='1'){showToast('You have successfully signed out.','success');window.history.replaceState({},document.title,window.location.pathname)};},300);
 function toggleMobileMenu(){
-    const nl=document.getElementById('navLinks');
+    const ov=document.getElementById('mobileOverlay');
     const icon=document.getElementById('menuIcon');
-    nl.classList.toggle('open');
-    if(nl.classList.contains('open')){
+    ov.classList.toggle('open');
+    if(ov.classList.contains('open')){
         icon.className='fas fa-times';
         document.body.style.overflow='hidden';
     }else{
@@ -355,9 +375,9 @@ function toggleMobileMenu(){
         document.body.style.overflow='';
     }
 }
-// Close menu when clicking a link
-document.querySelectorAll('#navLinks a').forEach(a=>a.addEventListener('click',()=>{
-    document.getElementById('navLinks').classList.remove('open');
+// Close overlay when clicking any link inside it
+document.querySelectorAll('#mobileOverlay a').forEach(a=>a.addEventListener('click',()=>{
+    document.getElementById('mobileOverlay').classList.remove('open');
     document.getElementById('menuIcon').className='fas fa-bars';
     document.body.style.overflow='';
 }));
