@@ -179,7 +179,7 @@
 <!-- Nav -->
 <nav class="nav" id="nav">
     <div class="container nav-inner">
-        <a href="/" class="nav-logo"><i class="fas fa-gem" style="color:var(--gold)"></i> <span><?php echo SITE_NAME; ?></span></a>
+        <a href="/" class="nav-logo"><img src="/assets/img/logo.svg" alt="<?php echo SITE_NAME; ?>" style="height:38px"></a>
         <button class="hamburger" id="hamburger" onclick="document.getElementById('navLinks').classList.toggle('open')"><i class="fas fa-bars"></i></button>
         <ul class="nav-links" id="navLinks">
             <li><a href="#" onclick="document.getElementById('navLinks').classList.remove('open')">Home</a></li>
@@ -323,7 +323,7 @@
 <footer class="footer">
     <div class="container">
         <div class="footer-grid">
-            <div><h5><i class="fas fa-gem" style="color:var(--gold)"></i> <?php echo SITE_NAME; ?></h5><p class="text-muted" style="font-size:.85rem">Secure investment platform offering daily returns through crypto-backed plans. Trusted by thousands worldwide.</p></div>
+            <div><h5><img src="/assets/img/logo.svg" alt="<?php echo SITE_NAME; ?>" style="height:32px"></h5><p class="text-muted" style="font-size:.85rem">Secure investment platform offering daily returns through crypto-backed plans. Trusted by thousands worldwide.</p></div>
             <div><h5>Quick Links</h5><a href="/login.php">Login</a><a href="/register.php">Register</a><a href="#about">About</a><a href="#features">Benefits</a></div>
             <div><h5>Support</h5><a href="#">support@primeaxisinv.com</a><a href="#faq">FAQ</a><a href="#">Terms & Conditions</a></div>
         </div>
