@@ -61,10 +61,11 @@
         .btn-lg { padding: .8rem 2rem; font-size: .95rem; }
         .hamburger { display: none; background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; z-index: 2001; }
         @media (max-width: 768px) {
-            .nav-links { display: none; position: fixed; inset: 0; background: rgba(15,23,42,.99); backdrop-filter: blur(24px); flex-direction: column; justify-content: flex-start; gap: 1.5rem; z-index: 9999; overflow-y: auto; padding: 6rem 2rem 3rem; }
+            .nav-links { display: none; position: fixed; inset: 0; background: rgba(15,23,42,.99); backdrop-filter: blur(24px); flex-direction: column; justify-content: center; gap: 1.25rem; z-index: 9999; overflow: hidden; padding: 2rem; }
             .nav-links.open { display: flex; }
             .hamburger { display: block; position: relative; z-index: 10000; }
             .nav-links .btn-gold { display: inline-block; text-align: center; animation: none; }
+            .nav-links a { font-size: 1.15rem !important; }
         }
 
         /* Hero */
@@ -187,13 +188,13 @@
 <nav class="nav" id="nav">
     <div class="container nav-inner">
         <a href="/" class="nav-logo"><img src="/assets/img/logo.svg" alt="<?php echo SITE_NAME; ?>" style="height:46px"></a>
-        <button class="hamburger" id="hamburger" onclick="document.getElementById('navLinks').classList.toggle('open')"><i class="fas fa-bars"></i></button>
+        <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><i class="fas fa-bars" id="menuIcon"></i></button>
         <ul class="nav-links" id="navLinks">
-            <li><a href="#" onclick="document.getElementById('navLinks').classList.remove('open')">Home</a></li>
-            <li><a href="#about" onclick="document.getElementById('navLinks').classList.remove('open')">About</a></li>
-            <li><a href="#features" onclick="document.getElementById('navLinks').classList.remove('open')">Benefits</a></li>
-            <li><a href="#how" onclick="document.getElementById('navLinks').classList.remove('open')">How It Works</a></li>
-            <li><a href="#faq" onclick="document.getElementById('navLinks').classList.remove('open')">FAQ</a></li>
+            <li><a href="#">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#features">Benefits</a></li>
+            <li><a href="#how">How It Works</a></li>
+            <li><a href="#faq">FAQ</a></li>
             <?php if (isLoggedIn()): ?>
                 <li><a href="/dashboard/" class="btn btn-gold">Dashboard</a></li>
             <?php else: ?>
@@ -342,6 +343,24 @@
 window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('scrolled',window.scrollY>50));
 document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(a.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth'})}));
 setTimeout(()=>{const p=new URLSearchParams(window.location.search);if(p.get('logout')==='1'){showToast('You have successfully signed out.','success');window.history.replaceState({},document.title,window.location.pathname)};},300);
+function toggleMobileMenu(){
+    const nl=document.getElementById('navLinks');
+    const icon=document.getElementById('menuIcon');
+    nl.classList.toggle('open');
+    if(nl.classList.contains('open')){
+        icon.className='fas fa-times';
+        document.body.style.overflow='hidden';
+    }else{
+        icon.className='fas fa-bars';
+        document.body.style.overflow='';
+    }
+}
+// Close menu when clicking a link
+document.querySelectorAll('#navLinks a').forEach(a=>a.addEventListener('click',()=>{
+    document.getElementById('navLinks').classList.remove('open');
+    document.getElementById('menuIcon').className='fas fa-bars';
+    document.body.style.overflow='';
+}));
 </script>
 </body>
 </html>
