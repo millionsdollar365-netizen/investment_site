@@ -10,25 +10,25 @@ require_once __DIR__ . '/security.php';
 /**
  * Register new user
  */
-function registerUser($first_name, $last_name, $email, $password, $referral_code = null) {
+function registerUser($first_name, $last_name, $email, $password, $referral_code = null, $phone = null, $country = null, $phone_code = null) {
     $db = Database::getInstance();
-    
+
     // Check if email already exists
     $existing = $db->fetchOne(
         "SELECT id FROM users WHERE email = ?",
         [$email]
     );
-    
+
     if ($existing) {
         return [
             'success' => false,
             'message' => 'Email already registered'
         ];
     }
-    
+
     // Generate referral code for new user
     $user_referral_code = strtoupper(substr(md5($email . time()), 0, 8));
-    
+
     // Find referrer if referral code provided
     $referred_by = null;
     if ($referral_code) {
@@ -40,18 +40,21 @@ function registerUser($first_name, $last_name, $email, $password, $referral_code
             $referred_by = $referrer['id'];
         }
     }
-    
+
     try {
         $db->query(
-            "INSERT INTO users (first_name, last_name, email, password_hash, referral_code, referred_by)
-             VALUES (?, ?, ?, ?, ?, ?)",
+            "INSERT INTO users (first_name, last_name, email, password_hash, referral_code, referred_by, phone, country, phone_code)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
             [
                 $first_name,
                 $last_name,
                 $email,
                 Security::hashPassword($password),
                 $user_referral_code,
-                $referred_by
+                $referred_by,
+                $phone ?: null,
+                $country ?: null,
+                $phone_code ?: null
             ]
         );
         

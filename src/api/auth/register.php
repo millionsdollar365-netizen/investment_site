@@ -23,6 +23,9 @@ $email = strtolower(trim($_POST['email'] ?? ''));
 $password = $_POST['password'] ?? '';
 $referral_code = trim($_POST['referral_code'] ?? '');
 $referral_code = $referral_code !== '' ? $referral_code : null;
+$phone = trim($_POST['phone'] ?? '');
+$country = trim($_POST['country'] ?? '');
+$phone_code = trim($_POST['phone_code'] ?? '');
 
 if (!Validator::required($first_name) || !Validator::required($last_name)) {
     error('First name and last name are required');
@@ -40,7 +43,7 @@ if ($referral_code !== null && !Validator::maxLength($referral_code, 32)) {
     error('Invalid referral code');
 }
 
-$result = registerUser($first_name, $last_name, $email, $password, $referral_code);
+$result = registerUser($first_name, $last_name, $email, $password, $referral_code, $phone, $country, $phone_code);
 
 if (!empty($result['success'])) {
     Mail::sendWelcome($email, $first_name);

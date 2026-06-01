@@ -65,10 +65,16 @@ if (!empty($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
 }
 
 if (!$is_wallet_or_avatar) {
+    $country = isset($_POST['country']) ? trim($_POST['country']) : null;
+    $city = isset($_POST['city']) ? trim($_POST['city']) : null;
+    $state = isset($_POST['state']) ? trim($_POST['state']) : null;
+    $zip_code = isset($_POST['zip_code']) ? trim($_POST['zip_code']) : null;
+    $address = isset($_POST['address']) ? trim($_POST['address']) : null;
+
     // Update text fields
     $db->query(
-        "UPDATE users SET first_name = ?, last_name = ?, phone = ?, bio = ? WHERE id = ?",
-        [$first_name, $last_name, $phone ?: null, $bio ?: null, $user_id]
+        "UPDATE users SET first_name = ?, last_name = ?, phone = ?, bio = ?, country = ?, city = ?, state = ?, zip_code = ?, address = ? WHERE id = ?",
+        [$first_name, $last_name, $phone ?: null, $bio ?: null, $country, $city, $state, $zip_code, $address, $user_id]
     );
 }
 
