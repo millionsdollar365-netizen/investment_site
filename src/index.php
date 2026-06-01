@@ -44,23 +44,24 @@
         .text-center { text-align: center; }
 
         /* Nav */
-        .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1rem 0; transition: all .3s; }
-        .nav.scrolled { background: rgba(15,23,42,.94); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); }
+        .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; padding: 1rem 0; transition: all .3s; }
+        .nav.scrolled { background: rgba(15,23,42,.96); backdrop-filter: blur(24px); border-bottom: 1px solid var(--border); }
         .nav-inner { display: flex; align-items: center; justify-content: space-between; }
-        .nav-logo { font-size: 1.3rem; font-weight: 800; color: #fff; text-decoration: none; display: flex; align-items: center; gap: .5rem; }
+        .nav-logo { font-size: 1.55rem; font-weight: 900; color: #fff; text-decoration: none; display: flex; align-items: center; gap: .5rem; }
         .nav-logo span { color: var(--gold); }
         .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
         .nav-links a { color: var(--muted); text-decoration: none; font-size: .88rem; font-weight: 500; transition: color .2s; }
         .nav-links a:hover { color: #fff; }
         .btn { display: inline-block; padding: .6rem 1.5rem; border-radius: 50px; font-weight: 600; font-size: .88rem; text-decoration: none; transition: all .3s; cursor: pointer; border: none; }
-        .btn-gold { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #0f172a; font-weight: 700; }
-        .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(245,158,11,.3); }
+        .btn-gold { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #0f172a; font-weight: 700; animation: glow 2.5s ease-in-out infinite; }
+        .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 8px 35px rgba(251,191,36,.5); }
+        @keyframes glow { 0%,100% { box-shadow: 0 0 15px rgba(251,191,36,.3); } 50% { box-shadow: 0 0 30px rgba(251,191,36,.55); } }
         .btn-outline { border: 2px solid rgba(255,255,255,.15); color: #fff; background: transparent; }
         .btn-outline:hover { border-color: var(--gold); color: var(--gold); background: rgba(245,158,11,.05); }
         .btn-lg { padding: .8rem 2rem; font-size: .95rem; }
-        .hamburger { display: none; background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; z-index: 101; }
+        .hamburger { display: none; background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; z-index: 2001; }
         @media (max-width: 768px) {
-            .nav-links { display: none; position: fixed; inset: 0; background: var(--bg2); flex-direction: column; justify-content: center; gap: 2rem; z-index: 99; }
+            .nav-links { display: none; position: fixed; inset: 0; background: rgba(15,23,42,.98); backdrop-filter: blur(24px); flex-direction: column; justify-content: center; gap: 2rem; z-index: 2000; }
             .nav-links.open { display: flex; }
             .hamburger { display: block; }
         }
@@ -184,7 +185,7 @@
 <!-- Nav -->
 <nav class="nav" id="nav">
     <div class="container nav-inner">
-        <a href="/" class="nav-logo"><img src="/assets/img/logo.svg" alt="<?php echo SITE_NAME; ?>" style="height:38px"></a>
+        <a href="/" class="nav-logo"><img src="/assets/img/logo.svg" alt="<?php echo SITE_NAME; ?>" style="height:46px"></a>
         <button class="hamburger" id="hamburger" onclick="document.getElementById('navLinks').classList.toggle('open')"><i class="fas fa-bars"></i></button>
         <ul class="nav-links" id="navLinks">
             <li><a href="#" onclick="document.getElementById('navLinks').classList.remove('open')">Home</a></li>
@@ -211,7 +212,7 @@
             <p>Join a growing community of investors earning daily returns through secure, crypto-backed investment plans. Start small, grow consistently.</p>
             <div class="hero-actions">
                 <a href="/register.php" class="btn btn-gold btn-lg">Get Started</a>
-                <a href="#features" class="btn btn-outline btn-lg">Learn More</a>
+                <a href="/login.php" class="btn btn-outline btn-lg">Login</a>
             </div>
         </div>
         <div class="hero-visual">
