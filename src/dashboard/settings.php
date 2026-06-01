@@ -16,6 +16,6 @@ require_once __DIR__ . '/../includes/argon-header.php';
     <div><button type="submit" style="background:var(--argon-primary);color:#fff;border:none;padding:.5rem 1.5rem;border-radius:.25rem;cursor:pointer;font-weight:600">Change Password</button></div>
 </form></div></div>
 <script>
-document.getElementById('passwordForm').addEventListener('submit',async(e)=>{e.preventDefault();const f=new FormData(e.target);const r=await fetch('/api/user/change-password.php',{method:'POST',body:f});const d=await r.json();alert(d.message);if(d.success)e.target.reset()});
+document.getElementById('passwordForm').addEventListener('submit',async(e)=>{e.preventDefault();const f=new FormData(e.target);const r=await fetch('/api/user/change-password.php',{method:'POST',body:f});const d=await r.json();showAlert(d.message,d.success?'success':'error');if(d.success)e.target.reset()});
 </script>
 <?php require_once __DIR__ . '/../includes/argon-footer.php'; ?>

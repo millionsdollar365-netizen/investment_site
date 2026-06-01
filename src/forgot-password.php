@@ -28,7 +28,7 @@ requireLogout();
         </div>
     </div>
 <script>
-document.getElementById('forgotForm').addEventListener('submit',async(e)=>{e.preventDefault();const f=new FormData(e.target);f.append('csrf_token',document.querySelector('meta[name="csrf-token"]').content);const r=await fetch('/api/auth/forgot-password.php',{method:'POST',body:f});const d=await r.json();alert(d.message||(d.success?'Check your email.':'Something went wrong.'))});
+document.getElementById('forgotForm').addEventListener('submit',async(e)=>{e.preventDefault();const f=new FormData(e.target);f.append('csrf_token',document.querySelector('meta[name="csrf-token"]').content);const r=await fetch('/api/auth/forgot-password.php',{method:'POST',body:f});const d=await r.json();showAlert(d.message||(d.success?'Check your email — reset link sent!':'Something went wrong.'),d.success?'success':'error')});
 </script>
 </body>
 </html>

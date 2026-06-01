@@ -48,12 +48,12 @@ function showAlert(message, type = 'info') {
     });
 }
 
-// Override native alert() so ALL pages get SweetAlert2 popups
+// Override native alert() — neutral info icon (use showAlert() for typed alerts)
 window.alert = function(message) {
     Swal.fire({
-        icon: 'error',
+        icon: 'info',
         title: 'Notice',
-        text: message || 'An error occurred',
+        text: String(message || ''),
         confirmButtonColor: '#3b82f6'
     });
 };

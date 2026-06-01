@@ -170,7 +170,7 @@ document.getElementById('investForm').addEventListener('submit', async (e) => {
             confirmButtonColor: '#2dce89'
         });
     } else {
-        alert(data.message);
+        showAlert(data.message, 'error');
     }
 });
 

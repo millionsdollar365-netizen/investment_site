@@ -50,9 +50,9 @@ function showCreateModal(){document.getElementById('modalTitle').textContent='Cr
 function editPlan(id,name,desc,min,max,dur,roi,status){document.getElementById('modalTitle').textContent='Edit Plan #'+id;document.getElementById('planAction').value='update';document.getElementById('planId').value=id;document.getElementById('planName').value=name;document.getElementById('planDesc').value=desc;document.getElementById('planMin').value=min;document.getElementById('planMax').value=max||'';document.getElementById('planDuration').value=dur;document.getElementById('planRoi').value=roi;document.getElementById('planStatus').value=status;document.getElementById('planModal').style.display='flex'}
 function hidePlanModal(){document.getElementById('planModal').style.display='none'}
 
-async function togglePlan(id){const f=new FormData();f.set('action','toggle');f.set('id',id);const r=await fetch('/api/admin/plans.php',{method:'POST',body:f});const d=await r.json();if(d.success)loadPlans();else alert(d.message)}
+async function togglePlan(id){const f=new FormData();f.set('action','toggle');f.set('id',id);const r=await fetch('/api/admin/plans.php',{method:'POST',body:f});const d=await r.json();if(d.success)loadPlans();else showAlert(d.message,'error')}
 
-document.getElementById('planForm').addEventListener('submit',async(e)=>{e.preventDefault();const f=new FormData(e.target);const r=await fetch('/api/admin/plans.php',{method:'POST',body:f});const d=await r.json();if(d.success){hidePlanModal();loadPlans()}else{alert(d.message)}});
+document.getElementById('planForm').addEventListener('submit',async(e)=>{e.preventDefault();const f=new FormData(e.target);const r=await fetch('/api/admin/plans.php',{method:'POST',body:f});const d=await r.json();if(d.success){hidePlanModal();loadPlans()}else{showAlert(d.message,'error')}});
 
 function escHtml(s){const d=document.createElement('div');d.textContent=String(s);return d.innerHTML}
 loadPlans();

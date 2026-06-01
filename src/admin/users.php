@@ -28,7 +28,7 @@ async function viewUser(id){const r=await fetch(`/api/admin/user-detail.php?id=$
 function editUser(id,status,balance,interestBalance){document.getElementById('editUserId').value=id;document.getElementById('editStatus').value=status;document.getElementById('editBalance').value=balance;document.getElementById('editInterest').value=interestBalance;document.getElementById('editModal').style.display='flex'}
 function hideDetailModal(){document.getElementById('detailModal').style.display='none'}
 function hideEditModal(){document.getElementById('editModal').style.display='none'}
-document.getElementById('editForm').addEventListener('submit',async(e)=>{e.preventDefault();const f=new FormData(e.target);const r=await fetch('/api/admin/update-user.php',{method:'POST',body:f});const d=await r.json();alert(d.message);if(d.success){hideEditModal();loadUsers(currentPage)}});
+document.getElementById('editForm').addEventListener('submit',async(e)=>{e.preventDefault();const f=new FormData(e.target);const r=await fetch('/api/admin/update-user.php',{method:'POST',body:f});const d=await r.json();showAlert(d.message,d.success?'success':'error');if(d.success){hideEditModal();loadUsers(currentPage)}});
 function escHtml(s){const d=document.createElement('div');d.textContent=String(s);return d.innerHTML}
 loadUsers();
 </script>
