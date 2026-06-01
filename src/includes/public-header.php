@@ -53,7 +53,6 @@
 </nav>
 
 <div class="mobile-overlay" id="mobileOverlay">
-    <div class="mobile-logo"><img src="/assets/img/logo.svg" alt="<?php echo SITE_NAME; ?>" style="height:38px"></div>
     <a href="/" class="mobile-link">Home</a>
     <a href="/#about" class="mobile-link">About</a>
     <a href="/#features" class="mobile-link">Benefits</a>
