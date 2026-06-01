@@ -118,7 +118,9 @@ async function loadDashboard() {
 function escHtml(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 
 loadDashboard();
-setTimeout(()=>{const p=new URLSearchParams(window.location.search);if(p.get('login')==='1'){showToast('You have successfully signed in.','success');window.history.replaceState({},document.title,window.location.pathname)};},300);
 </script>
 
 <?php require_once __DIR__ . '/../includes/argon-footer.php'; ?>
+<script>
+setTimeout(()=>{const p=new URLSearchParams(window.location.search);if(p.get('login')==='1'){showToast('You have successfully signed in.','success');window.history.replaceState({},document.title,window.location.pathname)};},100);
+</script>
