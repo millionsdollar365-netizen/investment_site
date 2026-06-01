@@ -68,7 +68,7 @@ $admin = getCurrentAdmin();
 
     <div id="alert-container"></div>
 
-    <script src="/assets/js/app.js"></script>
+    <script src="/assets/js/app.js?v=2"></script>
     <script>
         document.getElementById('changePasswordForm').addEventListener('submit', function(e) {
             e.preventDefault();

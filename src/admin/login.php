@@ -14,7 +14,7 @@ requireAdminLogout();
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/assets/css/argon.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="/assets/js/app.js"></script>
+    <script src="/assets/js/app.js?v=2"></script>
 </head>
 <body style="display:flex;align-items:center;justify-content:center">
     <div class="card" style="width:100%;max-width:420px;margin:2rem;border-top:3px solid var(--argon-danger)">
