@@ -60,10 +60,11 @@
         .btn-outline:hover { border-color: var(--gold); color: var(--gold); background: rgba(245,158,11,.05); }
         .btn-lg { padding: .8rem 2rem; font-size: .95rem; }
         .hamburger { display: none; background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; z-index: 2001; }
-        .mobile-overlay { display:none;position:fixed;inset:0;background:rgba(15,23,42,.99);backdrop-filter:blur(24px);flex-direction:column;justify-content:center;align-items:center;gap:1.25rem;z-index:9999;overflow:hidden;padding:2rem; }
+        .mobile-overlay { display:none;position:fixed;inset:0;background:rgba(15,23,42,.99);backdrop-filter:blur(24px);flex-direction:column;justify-content:center;align-items:center;gap:1.5rem;z-index:9999;overflow:hidden;padding:2rem; }
         .mobile-overlay.open { display:flex; }
-        .mobile-link { color:var(--muted);text-decoration:none;font-size:1.15rem;font-weight:500;transition:color .2s; }
+        .mobile-link { color:var(--muted);text-decoration:none;font-size:1.2rem;font-weight:500;transition:color .2s; }
         .mobile-link:hover { color:#fff; }
+        .mobile-overlay .btn-gold { width:auto;min-width:220px;text-align:center;font-size:1.05rem;padding:.75rem 2rem;margin-top:.25rem; }
         @media (min-width: 769px) { .mobile-overlay { display:none !important; } }
         @media (max-width: 768px) {
             .nav-links { display: none; position: fixed; inset: 0; background: rgba(15,23,42,.99); backdrop-filter: blur(24px); flex-direction: column; justify-content: center; gap: 1.25rem; z-index: 9999; overflow: hidden; padding: 2rem; }
@@ -376,11 +377,13 @@ function toggleMobileMenu(){
     }
 }
 // Close overlay when clicking any link inside it
-document.querySelectorAll('#mobileOverlay a').forEach(a=>a.addEventListener('click',()=>{
-    document.getElementById('mobileOverlay').classList.remove('open');
-    document.getElementById('menuIcon').className='fas fa-bars';
-    document.body.style.overflow='';
-}));
+document.addEventListener('DOMContentLoaded',()=>{
+    document.querySelectorAll('#mobileOverlay a').forEach(a=>a.addEventListener('click',()=>{
+        document.getElementById('mobileOverlay').classList.remove('open');
+        document.getElementById('menuIcon').className='fas fa-bars';
+        document.body.style.overflow='';
+    }));
+});
 </script>
 </body>
 </html>
