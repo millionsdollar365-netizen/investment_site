@@ -1,9 +1,9 @@
 # PRIMEAXIS INVESTMENT — BUILD PROGRESS
 
 **Project Start:** May 14, 2026  
-**Status:** 🚀 LIVE IN PRODUCTION (May 18, 2026)  
-**Build Completion:** 71% (10/14 phases)  
-**Current Phase:** Phase 9 — Production Fixes & UI Upgrade (Argon Dashboard)
+**Status:** 🚀 LIVE IN PRODUCTION (Namecheap, June 1, 2026)  
+**Build Completion:** 80% (core features complete)  
+**Current Phase:** Phase 9 — Production Fixes & Feature Completion
 
 <!--
   Cursor attribution (debugging / iteration pin):
@@ -105,8 +105,10 @@
 
 ### ✅ PHASE 9: DEPLOYMENT & PRODUCTION — COMPLETE
 - [x] Site deployed to Hostinger via SSH/SCP (May 18)
-- [x] Database created, schema + migrations run
-- [x] Admin user created, .env configured
+- [x] Hostinger expired — migrated to Namecheap cPanel (May 31)
+- [x] Full redeploy: 107 files, database, .env, config, admin user
+- [x] Database created, schema + migrations run (5 migrations)
+- [x] Admin user created, .env configured with SMTP
 - [x] GitHub Actions workflow created (deploy-to-cpanel.yml)
 - [x] Cookie secure flag, CSRF, logout POST, bcrypt, IP binding fixes (34 files)
 - [x] Deployment guides: `MANUAL_CPANEL_DEPLOYMENT.md`, `GITHUB_ACTIONS_SETUP.md`
@@ -134,17 +136,25 @@
 
 ### ⏳ PHASE 13: UI/UX POLISH
 - [x] Argon Dashboard integration (all 23 pages)
-- [x] SweetAlert2 colored popups
+- [x] SweetAlert2 colored popups — green success, red error, consistent everywhere
+- [x] Alert consistency audit — 13 files, all showAlert() with proper types
+- [x] Profile picture upload with auto-save + initials fallback
+- [x] Investment success alert with breakdown (plan, ROI, expected return, total payout)
+- [x] Logout redirect with SweetAlert notification
 - [ ] Argon Dashboard dark mode
 - [ ] Loading skeletons
-- [ ] Additional UI refinements
 
-### ⏳ PHASE 14: FEATURES & ENHANCEMENTS
-- [ ] Crypto wallet address management in admin
-- [ ] Email/SMTP configuration
+### ✅ PHASE 14: FEATURES & ENHANCEMENTS — MOSTLY COMPLETE
+- [x] Crypto wallet management — BTC/USDT/ETH addresses in Settings
+- [x] Email/SMTP — authenticated SMTP + 6 HTML email templates (welcome, reset, investment, deposit, withdrawal, admin)
+- [x] Admin plan CRUD (create/edit/toggle investment plans)
+- [x] Earnings page — profit/interest tracker with total earned
+- [x] Crypto withdrawal — coin selection + wallet auto-fill from profile
+- [x] Balance unification — single balance, old/new tracking in all transactions
+- [x] Investment plan details — live ROI/duration/min-max display on select
+- [x] Direct fetch pattern — all dashboard pages use consistent data loading
 - [ ] KYC document upload
 - [ ] 2FA authentication
-- [ ] Referral commission tracking
 
 ---
 
@@ -176,31 +186,32 @@
 | 16 | May 20 | 9 | Fix deposits page loading + switch to direct fetch pattern | ✅ |
 | 17 | May 20 | 9 | Earnings page — profit/interest tracker for users | ✅ |
 | 18 | May 20 | 9 | Fix logout (sidebar GET → POST form) | ✅ |
+| 19 | May 20 | 13-14 | Email system — SMTP + 6 HTML templates + wire triggers | ✅ |
+| 20 | May 31 | 9 | Redeploy to Namecheap after Hostinger expired | ✅ |
+| 21 | May 31 | 14 | Alert consistency — 13 files, green success/red error everywhere | ✅ |
+| 22 | May 31 | 14 | Investment success alert + email with expected returns | ✅ |
+| 23 | May 31 | 13 | Profile picture — auto-upload avatar with initials fallback | ✅ |
+| 24 | May 31 | 14 | Crypto withdrawal — coin selection + wallet auto-fill | ✅ |
+| 25 | May 31 | 14 | Wallet settings — per-coin save buttons in Settings page | ✅ |
+| 26 | June 1 | — | Documentation update — PROGRESS.md, DEPLOYMENT.md current | ✅ |
 
 ---
 
 ## NOTES & BLOCKERS
 
-<!-- Cursor | Auto | 2026-05-14 | Notes expanded for auth iteration — PERSONAL_ADDITIONS.md §5 -->
-
 ### Completed
-- Phase 1: ✅ Repository structure initialized
-- Phase 2: ✅ Local development setup with core includes
-- Phase 3: ✅ Database schema, migrations, seeders, and backup/restore utilities
-- Phase 4 (auth): ✅ `src/api/auth/*` — register, login, logout, check-session, forgot/reset password
-- Phase 5 (auth shells): ✅ `forgot-password.php`, `reset-password.php`, login forgot-password link
-- Committed `src/includes/config.php` loads `config/config.php` or `config.example.php`, then `db.php` and `functions.php` (fixes missing DB bootstrap for `session.php` / dashboard helpers)
-- Phase 6 (all APIs): ✅ 27 files — `api/user/*` (6), `api/investments/*` (3), `api/deposits/*` (2), `api/withdrawals/*` (2), `api/admin/*` (11), `api/cron/*` (3)
-- Phase 7 (frontend): ✅ 8 user dashboard pages + 9 admin pages + 3 new admin API endpoints
+- Phases 1-9: ✅ All core infrastructure, APIs, frontend, deployment
+- Phases 12-14: ✅ Security, email, crypto wallets, earnings, plan CRUD
+- Hostinger → Namecheap migration: ✅ Full redeploy complete
 
-<!-- Claude | 2026-05-14 | Phase 7 admin pages — see PERSONAL_ADDITIONS.md §13 -->
-
-### Current Task (May 18, 2026)
-- 🚀 **LIVE** — Site deployed to Hostinger, domain: primeaxisinv.com
-- 🎨 **UI Upgraded** — Argon Dashboard on all 23 pages, SweetAlert2 colored popups
-- 🔐 **Security Hardened** — CSRF, bcrypt, cookie secure flag, POST-only logout
-- 📋 **Production issues** tracked in `PRODUCTION_ISSUES.md`
-- See **PERSONAL_ADDITIONS.md §22-24** for full changelog
+### Current State (June 1, 2026)
+- 🚀 **LIVE** — Site deployed to Namecheap, domain: primeaxisinv.com
+- 🎨 **UI** — Argon Dashboard on all 23 pages, SweetAlert2, profile pictures
+- 🔐 **Security** — CSRF, bcrypt, POST-only logout, SQL injection prevention
+- 📧 **Email** — Authenticated SMTP, 6 HTML templates, triggers wired
+- 💰 **Crypto** — BTC/USDT/ETH wallets, coin-based withdrawals
+- 📊 **Tracking** — Earnings page, transaction old/new balance logging
+- See **PERSONAL_ADDITIONS.md §22-28** for full changelog
 
 ### Deferred Issues
 - Error message leakage in `auth.php:77` (registerUser)
@@ -208,17 +219,13 @@
 - See memory: [[known-deferred-issues]]
 
 ### Next Steps
-1. Fix remaining production issues from `PRODUCTION_ISSUES.md`
-2. Configure wallet addresses in admin settings (BTC, USDT, ETH)
-3. Configure email/SMTP
-4. Setup cron jobs for profit processing
-5. Testing & security hardening
+1. Setup cron jobs for daily profit processing
+2. KYC document upload
+3. 2FA authentication
+4. Testing suite
 
 ---
 
-<!-- Claude | 2026-05-18 | Footer updated for Phase 9 - Site LIVE, production issues tracked -->
-
-**Last Updated:** May 20, 2026 — Balance unified, deposits fixed, earnings page added, plan CRUD complete<br>
-**Current Focus:** Phase 9 — Withdrawal improvements + remaining production issues<br>
-**Issues Tracked In:** [PRODUCTION_ISSUES.md](PRODUCTION_ISSUES.md)<br>
-**Changelog:** [PERSONAL_ADDITIONS.md §22-27](PERSONAL_ADDITIONS.md)
+**Last Updated:** June 1, 2026 — Namecheap migration complete, crypto wallets live, email system active<br>
+**Current Focus:** Feature completion — cron jobs, KYC, 2FA<br>
+**Changelog:** [PERSONAL_ADDITIONS.md §22-28](PERSONAL_ADDITIONS.md)
