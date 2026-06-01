@@ -123,8 +123,7 @@ async function submitInvest(){
     const f=new FormData();f.append('plan_id',currentPlan.id);f.append('amount',amt);
     const r=await fetch('/api/investments/create.php',{method:'POST',body:f});const d=await r.json();
     if(d.success){closeInvestModal();const daily=(amt*parseFloat(currentPlan.daily_roi)/100);const total=(daily*currentPlan.duration_days).toFixed(2);const payout=(amt+parseFloat(total)).toFixed(2);
-        showToast('Investment of $'+amt.toFixed(2)+' in '+currentPlan.name+' created successfully!','success');
-        Swal.fire({icon:'success',title:'Investment Created!',html:`<div style="text-align:left;font-size:.85rem;line-height:1.8"><b>Plan:</b> ${escHtml(currentPlan.name)}<br><b>Amount:</b> $${amt.toFixed(2)}<br><b>Daily:</b> $${daily.toFixed(2)}<br><b>Return:</b> $${total}<br><b>Payout:</b> $${payout}</div>`,confirmButtonColor:'#f59e0b'});
+        Swal.fire({icon:'success',title:'Investment Created!',html:`<div style="text-align:left;font-size:.85rem;line-height:1.8"><b>Plan:</b> ${escHtml(currentPlan.name)}<br><b>Amount:</b> $${amt.toFixed(2)}<br><b>Daily:</b> $${daily.toFixed(2)}<br><b>Return:</b> $${total}<br><b>Payout:</b> $${payout}</div>`,confirmButtonColor:'#f59e0b'}).then(()=>{showToast('Investment created — $'+amt.toFixed(2)+' in '+currentPlan.name,'success')});
     }else{showAlert(d.message,'error')}
 }
 function escHtml(s){const d=document.createElement('div');d.textContent=String(s);return d.innerHTML}
