@@ -43,7 +43,7 @@ requireLogout();
 <body>
     <?php require_once __DIR__ . '/includes/public-header.php'; ?>
     <div class="card" style="margin-top:5rem">
-        <div class="logo"><img src="/assets/img/logo.svg" alt="<?php echo SITE_NAME; ?>"></div>
+        <div class="logo"><img src="/assets/img/logo-v2.svg" alt="<?php echo SITE_NAME; ?>"></div>
         <h2>Reset Your Password</h2>
         <p class="subtitle">Enter your email and we'll send you a reset link</p>
         <form id="forgotForm"><div class="form-group"><label>Email Address</label><input type="email" id="email" name="email" required placeholder="you@example.com"></div><button type="submit" class="btn-gold">Send Reset Link</button></form>

@@ -92,7 +92,7 @@
 <body>
 
 <nav class="nav"><div class="container nav-inner">
-    <a href="/" class="nav-logo"><img src="/assets/img/logo.svg" alt="<?php echo SITE_NAME; ?>" style="height:34px;filter:brightness(10)"></a>
+    <a href="/" class="nav-logo"><img src="/assets/img/logo-v2.svg" alt="<?php echo SITE_NAME; ?>" style="height:34px;filter:brightness(10)"></a>
     <ul class="nav-links">
         <li><a href="#features">Features</a></li>
         <li><a href="#how">Process</a></li>

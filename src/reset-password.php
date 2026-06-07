@@ -44,7 +44,7 @@ $token = isset($_GET['token']) ? trim($_GET['token']) : '';
 <body>
     <?php require_once __DIR__ . '/includes/public-header.php'; ?>
     <div class="card" style="margin-top:5rem">
-        <div class="logo"><img src="/assets/img/logo.svg" alt="<?php echo SITE_NAME; ?>"></div>
+        <div class="logo"><img src="/assets/img/logo-v2.svg" alt="<?php echo SITE_NAME; ?>"></div>
         <h2>New Password</h2>
         <p class="subtitle"><?php echo $token ? 'Choose a strong password' : 'Invalid or missing reset link'; ?></p>
         <?php if ($token): ?>

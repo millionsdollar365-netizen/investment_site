@@ -75,7 +75,7 @@ $logout_url = $nav_type === 'admin' ? '/api/admin/logout.php' : '/api/auth/logou
 <!-- SIDEBAR -->
 <nav id="sidebar">
     <div class="sb-brand">
-        <img src="/assets/img/logo.svg" alt="<?php echo SITE_NAME; ?>" style="height:42px;margin:0 auto">
+        <img src="/assets/img/logo-v2.svg" alt="<?php echo SITE_NAME; ?>" style="height:42px;margin:0 auto">
     </div>
     <ul class="nav-list">
         <?php foreach ($nav_links as $link): ?>

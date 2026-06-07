@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 60" fill="none">
+  <defs>
+    <linearGradient id="gemGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="50%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#b45309"/>
+    </linearGradient>
+    <linearGradient id="gemShine" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.5)"/>
+      <stop offset="50%" stop-color="rgba(255,255,255,0.1)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+    </linearGradient>
+    <linearGradient id="textGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="40%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Diamond icon -->
+  <g transform="translate(4,2)">
+    <!-- Main gem shape -->
+    <polygon points="26,2 50,20 26,38 2,20" fill="url(#gemGrad)" stroke="#92400e" stroke-width="0.8"/>
+    <!-- Top facet -->
+    <polygon points="26,2 50,20 26,20" fill="rgba(255,255,255,0.2)"/>
+    <!-- Left facet -->
+    <polygon points="2,20 26,20 26,38" fill="rgba(0,0,0,0.1)"/>
+    <!-- Right facet -->
+    <polygon points="26,20 50,20 26,38" fill="rgba(0,0,0,0.08)"/>
+    <!-- Center shine -->
+    <polygon points="26,20 38,26 26,32 14,26" fill="url(#gemShine)"/>
+    <!-- Small sparkle -->
+    <circle cx="26" cy="20" r="1.8" fill="rgba(255,255,255,0.7)"/>
+  </g>
+
+  <!-- Wordmark -->
+  <text x="60" y="27" font-family="'Inter','Helvetica Neue',sans-serif" font-weight="700" font-size="19" letter-spacing="0.06em" fill="url(#textGrad)">
+    P R I M E A X I S
+  </text>
+  <text x="60" y="47" font-family="'Inter','Helvetica Neue',sans-serif" font-weight="400" font-size="9.5" letter-spacing="0.28em" fill="#94a3b8">
+    I N V E S T M E N T
+  </text>
+</svg>

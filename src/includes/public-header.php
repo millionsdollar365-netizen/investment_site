@@ -34,7 +34,7 @@
 </style>
 <nav class="nav" id="nav">
     <div class="container nav-inner">
-        <a href="/" class="nav-logo"><img src="/assets/img/logo.svg" alt="<?php echo SITE_NAME; ?>" style="height:46px"></a>
+        <a href="/" class="nav-logo"><img src="/assets/img/logo-v2.svg" alt="<?php echo SITE_NAME; ?>" style="height:46px"></a>
         <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><i class="fas fa-bars" id="menuIcon"></i></button>
         <ul class="nav-links" id="navLinks">
             <li><a href="/">Home</a></li>

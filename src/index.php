@@ -318,7 +318,7 @@
 <footer class="footer">
     <div class="container">
         <div class="footer-grid">
-            <div><h5><img src="/assets/img/logo.svg" alt="<?php echo SITE_NAME; ?>" style="height:32px"></h5><p class="text-muted" style="font-size:.85rem">Secure investment platform offering daily returns through crypto-backed plans. Trusted by thousands worldwide.</p></div>
+            <div><h5><img src="/assets/img/logo-v2.svg" alt="<?php echo SITE_NAME; ?>" style="height:32px"></h5><p class="text-muted" style="font-size:.85rem">Secure investment platform offering daily returns through crypto-backed plans. Trusted by thousands worldwide.</p></div>
             <div><h5>Quick Links</h5><a href="/login.php">Login</a><a href="/register.php">Register</a><a href="#about">About</a><a href="#features">Benefits</a></div>
             <div><h5>Support</h5><a href="#">support@primeaxisinv.com</a><a href="#faq">FAQ</a><a href="#">Terms & Conditions</a></div>
         </div>
