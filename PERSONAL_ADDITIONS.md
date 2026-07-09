@@ -872,3 +872,70 @@ After deployment or local testing, verify:
 ---
 
 *End of personal additions log for tag `CLAUDE-2026-05-20-EARNINGS-PAGE`.*
+
+---
+
+## 28. CLAUDE-2026-06-07-LANDING-VARIANTS
+
+**Tag:** `CLAUDE-2026-06-07-LANDING-VARIANTS`
+**Date:** June 7, 2026
+**Assistant:** Claude Opus 4.7
+**Context:** Created multiple landing page design experiments for comparison.
+
+### 28.1 Landing variants
+- `landing1.php` — Curricula-inspired warm editorial: cream parchment bg, Libre Baskerville serif, Playfair Display, sage green / dusty rose / sky blue accents
+- `landing2.php` — OrgChart-inspired corporate: clean white/blue, Inter + Space Grotesk fonts, indigo gradient cards
+- Both upgraded with glassmorphism effects (blur, frosted glass cards, premium shadows)
+
+### 28.2 Logo v2
+- `assets/img/logo-v2.svg` — 3D faceted diamond gem with 4 visible faces, gold gradient (bright→amber), light shine overlay, sparkle highlight
+- `assets/img/favicon.svg` updated to match
+- Applied to all pages (index, dashboard, auth, landing variants)
+
+---
+
+## 29. CLAUDE-2026-06-08-SCRATCH2
+
+**Tag:** `CLAUDE-2026-06-08-SCRATCH2`
+**Date:** June 8, 2026
+**Assistant:** Claude Opus 4.7
+**Context:** Scratch2 experimental landing with luxury design: Syne + Inter fonts, custom cursor (later removed), GSAP animations, crypto ticker bar, 3D tilt cards, floating about section.
+
+### 29.1 Features
+- Deep void background (#040308) with gold/cyan/violet accent palette
+- ScrollTrigger animations on hero, sections, and about cards
+- Live crypto ticker with price updates
+- 3D perspective cards with mousemove parallax
+- Floating overlapping about cards with independent animations
+- FAQ accordion
+
+### 29.2 Fixes
+- Custom cursor removed (cursor:none → cursor:auto, style.css cleaned)
+- About section rebuilt with Pro Max glass metric cards, slide-in animation, mobile scroll-snap
+- Focus rings and touch targets per Pro Max standards
+
+---
+
+## 30. CLAUDE-2026-07-09-SPRINGSTONE-AI-CONVENTIONS
+
+**Tag:** `CLAUDE-2026-07-09-SPRINGSTONE-AI-CONVENTIONS`
+**Date:** July 9, 2026
+**Assistant:** Claude Opus 4.7
+**Context:** Springstone-inspired landing + comprehensive AI coding conventions.
+
+### 30.1 Springstone landing
+- `springstone/index.php` — White/light theme matching springstonein.com: cream bg (#f8f9fb), white cards, dark ink text (#1a1a2e), gold accent (#b8860b)
+- 10 sections: hero + floating coins, partner strip, stats, about with counter badges, star-rated features, team, testimonials, FAQ accordion, CTA, footer
+- Mobile responsive with hamburger overlay + body scroll lock
+
+### 30.2 AI_CONVENTIONS.md
+- Complete project reference: directory structure, PHP paths, database schema, API conventions, frontend JS patterns, naming conventions, deployment workflow, server details, common mistakes, key URLs
+- Purpose: any AI or developer can read this and immediately understand how to work in the project
+
+### 30.3 Skills installed
+- `ui-ux-pro-max` — Design intelligence with 10 priority categories (accessibility, touch, performance, style, layout, typography, animation, forms, navigation, charts)
+- `clone-website` — Website cloning pipeline (Next.js + shadcn/ui + Tailwind v4)
+
+---
+
+*End of personal additions log for tag `CLAUDE-2026-07-09-SPRINGSTONE-AI-CONVENTIONS`.*

@@ -194,10 +194,19 @@
 | 24 | May 31 | 14 | Crypto withdrawal — coin selection + wallet auto-fill | ✅ |
 | 25 | May 31 | 14 | Wallet settings — per-coin save buttons in Settings page | ✅ |
 | 26 | June 1 | — | Documentation update — PROGRESS.md, DEPLOYMENT.md current | ✅ |
+| 27 | June 7 | — | Landing variants: curricula warm editorial + orgchart corporate | ✅ |
+| 28 | June 7 | — | Premium glassmorphism redesign for both landing variants | ✅ |
+| 29 | June 8 | — | Logo v2 — faceted diamond, premium wordmark, favicon | ✅ |
+| 30 | June 8 | — | Scratch2 experimental landing (luxury gold/void, GSAP, ticker) | ✅ |
+| 31 | July 9 | — | Springstone-inspired landing (white/light, gold accent) | ✅ |
+| 32 | July 9 | — | AI_CONVENTIONS.md — complete project reference for any AI/developer | ✅ |
+| 33 | July 9 | — | Clone-website + UI-UX Pro Max skills installed | ✅ |
 
 ---
 
-## NOTES & BLOCKERS
+**Last Updated:** July 9, 2026 — Springstone landing live, AI conventions published, skills installed<br>
+**Current Focus:** Landing page refinement + about section rebuild<br>
+**Changelog:** [PERSONAL_ADDITIONS.md](PERSONAL_ADDITIONS.md) • [AI_CONVENTIONS.md](AI_CONVENTIONS.md)## NOTES & BLOCKERS
 
 ### Completed
 - Phases 1-9: ✅ All core infrastructure, APIs, frontend, deployment
