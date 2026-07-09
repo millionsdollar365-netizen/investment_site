@@ -634,57 +634,7 @@ body {
 
 
 
-<!-- ── ABOUT ── -->
-<section class="section" id="about">
-  <div class="section-inner">
-    <div class="about-pro">
-      <!-- Visual side: stat cards with glass effect -->
-      <div class="about-visual" role="img" aria-label="Platform performance metrics">
-        <div class="about-metric-card" style="--delay:0s">
-          <span class="about-metric-icon bg-gold"><i class="fas fa-wallet"></i></span>
-          <div>
-            <div class="about-metric-value gold">$128.5K</div>
-            <div class="about-metric-label">Portfolio Balance</div>
-            <div class="about-metric-sub up">+$3,210 today</div>
-          </div>
-        </div>
-        <div class="about-metric-card" style="--delay:0.1s">
-          <span class="about-metric-icon bg-cyan"><i class="fas fa-chart-line"></i></span>
-          <div>
-            <div class="about-metric-value cyan">2.5%</div>
-            <div class="about-metric-label">Daily ROI</div>
-            <div class="about-metric-sub">$3,212 credited</div>
-          </div>
-        </div>
-        <div class="about-metric-card" style="--delay:0.2s">
-          <span class="about-metric-icon bg-green"><i class="fas fa-check-circle"></i></span>
-          <div>
-            <div class="about-metric-value green">Instant</div>
-            <div class="about-metric-label">Withdrawals</div>
-            <div class="about-metric-sub">BTC, USDT, ETH</div>
-          </div>
-        </div>
-      </div>
-      <!-- Text side -->
-      <div class="about-text">
-        <span class="section-label">About Us</span>
-        <h2 class="section-title">Your Trusted <em>Fintech</em> Investment Partner</h2>
-        <p class="section-sub"><?php echo SITE_NAME; ?> is a fintech investment company that invests pooled capital into a range of financial assets, including shares, cryptocurrency, bonds, and other investment funds.</p>
-        <p class="section-sub">Our team of Trade Captains, Strategic Advisors, and Financial Advisors work around the clock to ensure your capital generates consistent, daily returns — with complete transparency and institutional-grade security.</p>
-        <div class="about-stats-row">
-          <div class="about-stat">
-            <span class="about-stat-num gold">24/7</span>
-            <span class="about-stat-lbl">Support Available</span>
-          </div>
-          <div class="about-stat">
-            <span class="about-stat-num cyan">5min</span>
-            <span class="about-stat-lbl">Avg. Withdrawal Time</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+<!-- ── ABOUT ── (rebuilding) -->
 
 <!-- ── SERVICES ── -->
 <section class="section" id="services" style="background:rgba(255,255,255,0.01)">
