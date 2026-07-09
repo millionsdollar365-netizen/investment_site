@@ -41,3 +41,4 @@ package-lock.json
 # PHPUnit
 vendor/
 composer.lock
+connect-to-primeaxis.txt
