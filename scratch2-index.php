@@ -325,37 +325,48 @@ body {
 }
 .section-sub{color:var(--muted);font-size:1rem;max-width:560px;line-height:1.7;}
 
-/* ── ABOUT SECTION ── */
-.about-grid {display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;}
-.about-img-wrap {
-  position:relative;
+/* ── ABOUT SECTION (Pro Max) ── */
+.about-pro {
+  display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,5vw,5rem);align-items:center;
 }
-.about-cards-stack {
-  position:relative;height:380px;
+.about-visual {
+  display:flex;flex-direction:column;gap:1rem;
 }
-.about-mini-card {
-  position:absolute;background:var(--card);backdrop-filter:blur(16px);
-  border:1px solid var(--border);border-radius:14px;padding:1.25rem 1.5rem;
-  box-shadow:0 20px 50px rgba(0,0,0,.5);
-  transition:all .3s cubic-bezier(.34,1.56,.64,1);
-  max-width:calc(100% - 1rem);
+.about-metric-card {
+  display:flex;align-items:center;gap:1rem;
+  background:var(--card);backdrop-filter:blur(16px);
+  border:1px solid var(--border);border-radius:14px;
+  padding:1.25rem;transition:all .3s;
+  animation:slideIn .6s ease-out both;
+  animation-delay:var(--delay,0s);
 }
-.about-mini-card:hover{transform:scale(1.03) !important;z-index:10;border-color:var(--border-glow);}
-.about-card-1{top:0;left:0;right:20%;z-index:3;animation:floatA 7s ease-in-out infinite;}
-.about-card-2{top:50%;left:8%;right:0;transform:translateY(-50%);z-index:2;animation:floatB 8s ease-in-out infinite;}
-.about-card-3{bottom:0;left:16%;right:0;z-index:1;animation:floatC 6s ease-in-out infinite;}
-.about-card-label{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:.4rem;}
-.about-card-value{font-size:1.3rem;font-weight:800;font-family:'Syne',sans-serif;color:#fff;}
-.about-card-value.gold{color:var(--gold);}
-.about-card-value.cyan{color:var(--cyan);}
-.about-card-value.green{color:var(--emerald);}
-.about-card-sub{font-size:.75rem;color:var(--muted);margin-top:.2rem;}
-@media(max-width:900px){
-  .about-grid{grid-template-columns:1fr;}
-  .about-cards-stack{height:260px;}
-  .about-card-1{right:10%;}
-  .about-card-2{left:4%;}
-  .about-card-3{left:10%;}
+@keyframes slideIn {from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
+.about-metric-card:hover{border-color:var(--border-glow);transform:translateX(4px);}
+.about-metric-icon {
+  width:48px;height:48px;border-radius:12px;display:flex;align-items:center;
+  justify-content:center;font-size:1.1rem;color:#fff;flex-shrink:0;
+}
+.bg-gold{background:linear-gradient(135deg,var(--gold),var(--gold2))}
+.bg-cyan{background:linear-gradient(135deg,var(--cyan),#0ea5e9)}
+.bg-green{background:linear-gradient(135deg,var(--emerald),#22c55e)}
+.about-metric-value{font-size:1.2rem;font-weight:800;font-family:'Syne',sans-serif;}
+.about-metric-value.gold{color:var(--gold)}
+.about-metric-value.cyan{color:var(--cyan)}
+.about-metric-value.green{color:var(--emerald)}
+.about-metric-label{font-size:.75rem;color:var(--muted);margin-top:.1rem;}
+.about-metric-sub{font-size:.7rem;margin-top:.15rem;}
+.about-metric-sub.up{color:var(--emerald)}
+.about-text .section-sub{margin-bottom:1rem;}
+.about-stats-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.5rem;}
+.about-stat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;text-align:center;}
+.about-stat-num{display:block;font-size:1.4rem;font-weight:800;font-family:'Syne',sans-serif;}
+.about-stat-num.gold{color:var(--gold)}
+.about-stat-num.cyan{color:var(--cyan)}
+.about-stat-lbl{font-size:.75rem;color:var(--muted);margin-top:.2rem;display:block;}
+@media(max-width:768px){
+  .about-pro{grid-template-columns:1fr;gap:2.5rem;}
+  .about-visual{flex-direction:row;overflow-x:auto;gap:.75rem;padding-bottom:.5rem;-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;}
+  .about-metric-card{min-width:260px;scroll-snap-align:start;flex-shrink:0;}
 }
 
 /* ── SERVICES (INTERACTIVE 3D TILT CARDS) ── */
@@ -626,39 +637,48 @@ body {
 <!-- ── ABOUT ── -->
 <section class="section" id="about">
   <div class="section-inner">
-    <div class="about-grid">
-      <div class="about-img-wrap">
-        <div class="about-cards-stack">
-          <div class="about-mini-card about-card-1">
-            <div class="about-card-label">Portfolio Balance</div>
-            <div class="about-card-value gold">$128,492.30</div>
-            <div class="about-card-sub">+$3,210 today ↑</div>
+    <div class="about-pro">
+      <!-- Visual side: stat cards with glass effect -->
+      <div class="about-visual" role="img" aria-label="Platform performance metrics">
+        <div class="about-metric-card" style="--delay:0s">
+          <span class="about-metric-icon bg-gold"><i class="fas fa-wallet"></i></span>
+          <div>
+            <div class="about-metric-value gold">$128.5K</div>
+            <div class="about-metric-label">Portfolio Balance</div>
+            <div class="about-metric-sub up">+$3,210 today</div>
           </div>
-          <div class="about-mini-card about-card-2">
-            <div class="about-card-label">Daily ROI Earned</div>
-            <div class="about-card-value cyan">+2.5% / day</div>
-            <div class="about-card-sub">$3,212.31 credited</div>
+        </div>
+        <div class="about-metric-card" style="--delay:0.1s">
+          <span class="about-metric-icon bg-cyan"><i class="fas fa-chart-line"></i></span>
+          <div>
+            <div class="about-metric-value cyan">2.5%</div>
+            <div class="about-metric-label">Daily ROI</div>
+            <div class="about-metric-sub">$3,212 credited</div>
           </div>
-          <div class="about-mini-card about-card-3">
-            <div class="about-card-label">Withdrawal Status</div>
-            <div class="about-card-value green">Processed ✓</div>
-            <div class="about-card-sub">$10,000 → BTC wallet</div>
+        </div>
+        <div class="about-metric-card" style="--delay:0.2s">
+          <span class="about-metric-icon bg-green"><i class="fas fa-check-circle"></i></span>
+          <div>
+            <div class="about-metric-value green">Instant</div>
+            <div class="about-metric-label">Withdrawals</div>
+            <div class="about-metric-sub">BTC, USDT, ETH</div>
           </div>
         </div>
       </div>
-      <div>
+      <!-- Text side -->
+      <div class="about-text">
         <span class="section-label">About Us</span>
         <h2 class="section-title">Your Trusted <em>Fintech</em> Investment Partner</h2>
-        <p class="section-sub" style="margin-bottom:1.5rem"><?php echo SITE_NAME; ?> is a fintech investment company that invests pooled capital into a range of financial assets, including shares, cryptocurrency, bonds, and other investment funds.</p>
+        <p class="section-sub"><?php echo SITE_NAME; ?> is a fintech investment company that invests pooled capital into a range of financial assets, including shares, cryptocurrency, bonds, and other investment funds.</p>
         <p class="section-sub">Our team of Trade Captains, Strategic Advisors, and Financial Advisors work around the clock to ensure your capital generates consistent, daily returns — with complete transparency and institutional-grade security.</p>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-top:2rem;">
-          <div style="padding:1.25rem;background:var(--card);border:1px solid var(--border);border-radius:12px;">
-            <div style="font-size:1.5rem;font-weight:800;font-family:'Syne',sans-serif;color:var(--gold)">24/7</div>
-            <div style="font-size:.78rem;color:var(--muted);margin-top:.2rem">Support Available</div>
+        <div class="about-stats-row">
+          <div class="about-stat">
+            <span class="about-stat-num gold">24/7</span>
+            <span class="about-stat-lbl">Support Available</span>
           </div>
-          <div style="padding:1.25rem;background:var(--card);border:1px solid var(--border);border-radius:12px;">
-            <div style="font-size:1.5rem;font-weight:800;font-family:'Syne',sans-serif;color:var(--cyan)">5min</div>
-            <div style="font-size:.78rem;color:var(--muted);margin-top:.2rem">Avg. Withdrawal Time</div>
+          <div class="about-stat">
+            <span class="about-stat-num cyan">5min</span>
+            <span class="about-stat-lbl">Avg. Withdrawal Time</span>
           </div>
         </div>
       </div>
