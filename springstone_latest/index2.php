@@ -920,7 +920,7 @@ $base = '/springstone_latest';
                 </dl>
             </div>
             <div class="hero-art reveal">
-                <img src="<?php echo $base; ?>/images/hero-dashboard.png" alt="Isometric illustration of the PrimeAxis trading dashboard showing charts and portfolio gains" width="720" height="620">
+                <img src="<?php echo $base; ?>/images/hero-dashboard.webp" alt="Isometric illustration of the PrimeAxis trading dashboard showing charts and portfolio gains" width="720" height="620">
                 <div class="float-card">
                     <p>Portfolio Value</p>
                     <strong>$124,500</strong>
@@ -946,7 +946,7 @@ $base = '/springstone_latest';
     <section class="section" id="about">
         <div class="container about-grid">
             <div class="about-image reveal">
-                <div class="image-shell"><img src="<?php echo $base; ?>/images/about-advisor.png" alt="Financial advisor working at a modern desk with charts on dual monitors" width="640" height="560"></div>
+                <div class="image-shell"><img src="<?php echo $base; ?>/images/about-advisor.webp" alt="Financial advisor working at a modern desk with charts on dual monitors" width="640" height="560"></div>
                 <div class="badge one"><span class="badge-icon gold"><i class="fa-solid fa-award"></i></span><div><strong>30+</strong><span>Years Experience</span></div></div>
                 <div class="badge two"><span class="badge-icon purple"><i class="fa-solid fa-users"></i></span><div><strong>25,000+</strong><span>Satisfied Clients</span></div></div>
             </div>
@@ -972,7 +972,7 @@ $base = '/springstone_latest';
                     <article class="benefit-card right reveal"><span class="card-icon"><i class="fa-solid fa-briefcase"></i></span><h3>Investment Lending</h3><p>Investment lending for new projects and ideas.</p><div class="benefit-stat">$10M Available</div></article>
                     <article class="benefit-card right reveal"><span class="card-icon"><i class="fa-solid fa-shield-halved"></i></span><h3>Bank-Level Security</h3><p>Full control over your funds with 256-bit encryption.</p><div class="benefit-stat">100% Protected</div></article>
                 </div>
-                <div class="phone-wrap reveal"><img src="<?php echo $base; ?>/images/benefits-phone.png" alt="Smartphone showing the PrimeAxis investment dashboard app" width="420" height="720"></div>
+                <div class="phone-wrap reveal"><img src="<?php echo $base; ?>/images/benefits-phone.webp" alt="Smartphone showing the PrimeAxis investment dashboard app" width="420" height="720"></div>
                 <div class="benefit-col">
                     <article class="benefit-card reveal"><span class="card-icon"><i class="fa-solid fa-mobile-screen"></i></span><h3>Mobile Payments</h3><p>Flexible mobile payments for investors on the go.</p><div class="benefit-stat">4.9* Rating</div></article>
                     <article class="benefit-card reveal"><span class="card-icon"><i class="fa-solid fa-badge-dollar"></i></span><h3>Zero Fees</h3><p>Zero transaction fees for Pro plan members.</p><div class="benefit-stat">0% Fees</div></article>
@@ -1033,7 +1033,7 @@ $base = '/springstone_latest';
                     $img = $idx + 1;
                 ?>
                 <article class="team-card">
-                    <div class="team-img"><img src="<?php echo $base; ?>/images/team-<?php echo $img; ?>.png" alt="Portrait of <?php echo htmlspecialchars($member[0]); ?>, <?php echo htmlspecialchars($member[1]); ?>"><a class="linkedin" href="https://linkedin.com" target="_blank" rel="noopener" aria-label="<?php echo htmlspecialchars($member[0]); ?> on LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a></div>
+                    <div class="team-img"><img src="<?php echo $base; ?>/images/team-<?php echo $img; ?>.webp" alt="Portrait of <?php echo htmlspecialchars($member[0]); ?>, <?php echo htmlspecialchars($member[1]); ?>"><a class="linkedin" href="https://linkedin.com" target="_blank" rel="noopener" aria-label="<?php echo htmlspecialchars($member[0]); ?> on LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a></div>
                     <div class="team-body"><h3><?php echo htmlspecialchars($member[0]); ?></h3><p><?php echo htmlspecialchars($member[1]); ?></p></div>
                 </article>
                 <?php endforeach; ?>
@@ -1045,16 +1045,16 @@ $base = '/springstone_latest';
         <div class="container">
             <div class="section-head reveal"><span class="eyebrow">Testimonials</span><h2>What Our Clients Say</h2></div>
             <div class="testimonial-grid">
-                <figure class="testimonial-card reveal"><i class="fa-solid fa-quote-right quote-icon"></i><div class="stars">★★★★★</div><blockquote>"PrimeAxis stands out for its innovative technology and user-friendly interface. I feel empowered to make truly informed investment decisions."</blockquote><figcaption class="author"><img src="<?php echo $base; ?>/images/client-1.png" alt="Portrait of Mobarok Hossain"><div><strong>Mobarok Hossain</strong><span>Trade Master</span></div></figcaption></figure>
-                <figure class="testimonial-card reveal"><i class="fa-solid fa-quote-right quote-icon"></i><div class="stars">★★★★★</div><blockquote>"PrimeAxis has completely transformed how I approach investing. Their intuitive platform and data-driven insights helped me see significant portfolio growth in just a few months."</blockquote><figcaption class="author"><img src="<?php echo $base; ?>/images/client-2.png" alt="Portrait of Guy Hawkins"><div><strong>Guy Hawkins</strong><span>Trade Boss</span></div></figcaption></figure>
-                <figure class="testimonial-card reveal"><i class="fa-solid fa-quote-right quote-icon"></i><div class="stars">★★★★★</div><blockquote>"As a small business owner, I was hesitant about investing. Their expert guidance and personalized strategies have helped me secure my financial future. Highly recommended!"</blockquote><figcaption class="author"><img src="<?php echo $base; ?>/images/client-3.png" alt="Portrait of Belal Hossain"><div><strong>Belal Hossain</strong><span>Trade Genius</span></div></figcaption></figure>
+                <figure class="testimonial-card reveal"><i class="fa-solid fa-quote-right quote-icon"></i><div class="stars">★★★★★</div><blockquote>"PrimeAxis stands out for its innovative technology and user-friendly interface. I feel empowered to make truly informed investment decisions."</blockquote><figcaption class="author"><img src="<?php echo $base; ?>/images/client-1.webp" alt="Portrait of Mobarok Hossain"><div><strong>Mobarok Hossain</strong><span>Trade Master</span></div></figcaption></figure>
+                <figure class="testimonial-card reveal"><i class="fa-solid fa-quote-right quote-icon"></i><div class="stars">★★★★★</div><blockquote>"PrimeAxis has completely transformed how I approach investing. Their intuitive platform and data-driven insights helped me see significant portfolio growth in just a few months."</blockquote><figcaption class="author"><img src="<?php echo $base; ?>/images/client-2.webp" alt="Portrait of Guy Hawkins"><div><strong>Guy Hawkins</strong><span>Trade Boss</span></div></figcaption></figure>
+                <figure class="testimonial-card reveal"><i class="fa-solid fa-quote-right quote-icon"></i><div class="stars">★★★★★</div><blockquote>"As a small business owner, I was hesitant about investing. Their expert guidance and personalized strategies have helped me secure my financial future. Highly recommended!"</blockquote><figcaption class="author"><img src="<?php echo $base; ?>/images/client-3.webp" alt="Portrait of Belal Hossain"><div><strong>Belal Hossain</strong><span>Trade Genius</span></div></figcaption></figure>
             </div>
         </div>
     </section>
 
     <section class="section" id="faq">
         <div class="container faq-grid">
-            <div class="faq-image reveal"><div class="image-shell"><img src="<?php echo $base; ?>/images/faq-support.png" alt="Friendly customer support specialist wearing a headset" width="600" height="620"></div></div>
+            <div class="faq-image reveal"><div class="image-shell"><img src="<?php echo $base; ?>/images/faq-support.webp" alt="Friendly customer support specialist wearing a headset" width="600" height="620"></div></div>
             <div class="copy reveal">
                 <span class="eyebrow">Got Questions?</span>
                 <h2>Frequently Asked Questions</h2>
